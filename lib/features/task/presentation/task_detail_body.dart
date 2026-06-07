@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/enums/enums.dart';
 import '../../../core/models/subtask.dart';
 import '../../../core/models/task.dart';
+import '../../../l10n/app_localizations.dart';
 import '../domain/task_list_scope.dart';
 import '../task_providers.dart';
 import 'recurrence_picker.dart';
@@ -108,7 +109,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
 
           // Dates
           _DateRow(
-            label: 'Start date',
+            label: AppLocalizations.of(context)?.taskStartDate ?? 'Start date',
             date: taskView.task.startDate,
             onPicked: (d) async {
               final updated = _task!.copyWith(startDate: d);
@@ -116,7 +117,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
             },
           ),
           _DateRow(
-            label: 'Due date',
+            label: AppLocalizations.of(context)?.taskDueDate ?? 'Due date',
             date: taskView.task.dueDate,
             onPicked: (d) async {
               final updated = _task!.copyWith(dueDate: d);

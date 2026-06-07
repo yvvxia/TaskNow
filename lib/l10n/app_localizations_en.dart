@@ -21,6 +21,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSettings => 'Settings';
 
   @override
+  String get tasksTitle => 'Tasks';
+
+  @override
+  String get addTaskHint => 'Add a task… (press Enter)';
+
+  @override
+  String get newTaskTitle => 'Task title';
+
+  @override
+  String get taskStartDate => 'Start date';
+
+  @override
+  String get taskDueDate => 'Due date';
+
+  @override
+  String get dateNotSet => 'Not set';
+
+  @override
+  String get dateClear => 'Clear';
+
+  @override
+  String get emptyTaskList => 'No tasks here';
+
+  @override
+  String get createAction => 'Create';
+
+  @override
+  String get taskPriority => 'Priority';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

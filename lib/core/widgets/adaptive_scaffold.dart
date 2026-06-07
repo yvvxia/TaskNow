@@ -1,12 +1,36 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// A navigation destination shown in the adaptive shell.
 class AdaptiveDestination {
   const AdaptiveDestination(this.route, this.icon, this.label);
 
   final String route;
   final IconData icon;
+
+  /// English fallback label, used when localizations are unavailable
+  /// (e.g. isolated widget tests without the [AppLocalizations] delegate).
   final String label;
+
+  /// Resolves the localized label for this destination, falling back to
+  /// [label] when no [AppLocalizations] is in the tree.
+  String localizedLabel(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return label;
+    switch (route) {
+      case '/tasks':
+        return l10n.navTasks;
+      case '/calendar':
+        return l10n.navCalendar;
+      case '/search':
+        return l10n.navSearch;
+      case '/settings':
+        return l10n.navSettings;
+      default:
+        return label;
+    }
+  }
 }
 
 /// Top-level navigation destinations, shared across all layout sizes.
@@ -82,7 +106,10 @@ class AdaptiveScaffold extends StatelessWidget {
         onDestinationSelected: _selectIndex,
         destinations: <Widget>[
           for (final d in kAdaptiveDestinations)
-            NavigationDestination(icon: Icon(d.icon), label: d.label),
+            NavigationDestination(
+              icon: Icon(d.icon),
+              label: d.localizedLabel(context),
+            ),
         ],
       ),
     );
@@ -100,7 +127,7 @@ class AdaptiveScaffold extends StatelessWidget {
               for (final d in kAdaptiveDestinations)
                 NavigationRailDestination(
                   icon: Icon(d.icon),
-                  label: Text(d.label),
+                  label: Text(d.localizedLabel(context)),
                 ),
             ],
           ),
@@ -151,7 +178,7 @@ class _DesktopSidebar extends StatelessWidget {
           for (var i = 0; i < kAdaptiveDestinations.length; i++)
             ListTile(
               leading: Icon(kAdaptiveDestinations[i].icon),
-              title: Text(kAdaptiveDestinations[i].label),
+              title: Text(kAdaptiveDestinations[i].localizedLabel(context)),
               selected: i == selectedIndex,
               onTap: () => onSelect(i),
             ),

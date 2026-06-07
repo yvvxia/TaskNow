@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 /// Desktop top bar that lets the user quickly add a task by typing a title
 /// and pressing Enter.
 class QuickAddBar extends StatefulWidget {
@@ -45,7 +47,8 @@ class _QuickAddBarState extends State<QuickAddBar> {
         child: TextField(
           controller: _ctrl,
           decoration: InputDecoration(
-            hintText: 'Add a task… (press Enter)',
+            hintText: AppLocalizations.of(context)?.addTaskHint ??
+                'Add a task… (press Enter)',
             prefixIcon: const Icon(Icons.add),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),

@@ -14,7 +14,11 @@ part 'task_list_notifier.g.dart';
 ///
 /// Batch-select state (long-press → multi-select) is tracked via
 /// [selectedIds]; an empty set means no selection mode is active.
-@riverpod
+///
+/// Kept alive so navigating between shell destinations does not dispose and
+/// re-subscribe the underlying database stream (which caused an empty-list
+/// flash and perceptible jank on every tab switch).
+@Riverpod(keepAlive: true)
 class TaskListNotifier extends _$TaskListNotifier {
   final Set<String> _selectedIds = {};
 

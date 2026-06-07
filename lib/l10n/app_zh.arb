@@ -6,6 +6,17 @@
   "navSearch": "搜索",
   "navSettings": "设置",
 
+  "tasksTitle": "任务",
+  "addTaskHint": "添加任务…（按回车）",
+  "newTaskTitle": "任务标题",
+  "taskStartDate": "开始日期",
+  "taskDueDate": "截止日期",
+  "dateNotSet": "未设置",
+  "dateClear": "清除",
+  "emptyTaskList": "暂无任务",
+  "createAction": "创建",
+  "taskPriority": "优先级",
+
   "settingsTitle": "设置",
   "appearanceSection": "外观",
   "themeSystem": "跟随系统",

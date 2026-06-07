@@ -1,13 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:plan_list/app.dart';
+import 'package:plan_list/core/di/clock.dart';
+import 'package:plan_list/core/di/providers.dart';
 import 'package:plan_list/main.dart' as app_main;
 
+import 'helpers/fake_settings_store.dart';
+import 'helpers/fakes.dart';
+
 void main() {
+  // PlanListApp is a ConsumerWidget (reads theme/locale providers) and the
+  // routed pages read the data/settings providers, so it must be pumped inside
+  // a ProviderScope wired with the standard fakes. This lets the real page
+  // bodies render their (empty) data states rather than error fallbacks.
+  late FakeTaskRepository repo;
+  late FakeReminderRepository reminders;
+  late SpyNotificationService notif;
+  late FakeSettingsStore settings;
+  late FakeProjectRepository projects;
+
+  final frozen = DateTime.utc(2026, 6, 7);
+
+  setUp(() {
+    repo = FakeTaskRepository();
+    reminders = FakeReminderRepository();
+    notif = SpyNotificationService();
+    settings = FakeSettingsStore();
+    projects = FakeProjectRepository();
+  });
+
+  tearDown(() {
+    repo.dispose();
+    notif.dispose();
+    settings.dispose();
+  });
+
+  List<Override> baseOverrides() => [
+        taskRepositoryProvider.overrideWithValue(repo),
+        reminderRepositoryProvider.overrideWithValue(reminders),
+        notificationServiceProvider.overrideWithValue(notif),
+        settingsStoreProvider.overrideWithValue(settings),
+        projectRepositoryProvider.overrideWithValue(projects),
+        clockProvider.overrideWith((ref) => () => frozen),
+      ];
+
+  Widget wrap(GoRouter router) => ProviderScope(
+        overrides: baseOverrides(),
+        child: PlanListApp(router: router),
+      );
+
   testWidgets('router starts on the tasks page', (tester) async {
     final router = createAppRouter();
-    await tester.pumpWidget(PlanListApp(router: router));
+    await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('tasks-page')), findsOneWidget);
   });
@@ -15,7 +62,7 @@ void main() {
   testWidgets('router navigates between top-level destinations',
       (tester) async {
     final router = createAppRouter();
-    await tester.pumpWidget(PlanListApp(router: router));
+    await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
 
     router.go('/calendar');
@@ -34,7 +81,7 @@ void main() {
   testWidgets('task detail route passes the id path parameter',
       (tester) async {
     final router = createAppRouter();
-    await tester.pumpWidget(PlanListApp(router: router));
+    await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
 
     router.go('/task/abc-123');
@@ -46,7 +93,7 @@ void main() {
   testWidgets('tapping a shell destination navigates via go_router',
       (tester) async {
     final router = createAppRouter();
-    await tester.pumpWidget(PlanListApp(router: router));
+    await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Calendar'));

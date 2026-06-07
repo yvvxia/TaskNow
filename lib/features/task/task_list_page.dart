@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/models/task_draft.dart';
+import '../../l10n/app_localizations.dart';
 import 'domain/task_list_scope.dart';
 import 'presentation/quick_add_bar.dart';
 import 'presentation/task_list_notifier.dart';
@@ -56,74 +57,46 @@ class _TaskListContent extends ConsumerStatefulWidget {
 
 class _TaskListContentState extends ConsumerState<_TaskListContent> {
   Future<void> _quickAdd(String title) async {
-    await ref.read(createTaskUseCaseProvider).call(TaskDraft(title: title));
+    await _createDraft(TaskDraft(title: title));
+  }
+
+  Future<void> _createDraft(TaskDraft draft) async {
+    await ref.read(createTaskUseCaseProvider).call(draft);
   }
 
   void _openAddSheet(BuildContext context) {
-    final ctrl = TextEditingController();
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (sheetCtx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: ctrl,
-                    autofocus: true,
-                    decoration:
-                        const InputDecoration(hintText: 'New task title…'),
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: (v) async {
-                      if (v.trim().isNotEmpty) {
-                        await _quickAdd(v.trim());
-                      }
-                      if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () async {
-                    if (ctrl.text.trim().isNotEmpty) {
-                      await _quickAdd(ctrl.text.trim());
-                    }
-                    if (sheetCtx.mounted) Navigator.of(sheetCtx).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+      showDragHandle: true,
+      builder: (sheetCtx) => _AddTaskSheet(onCreate: _createDraft),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final tasksState = ref.watch(taskListProvider(widget.scope));
     final isWide = MediaQuery.of(context).size.width >= 600;
     final notifier = ref.read(taskListProvider(widget.scope).notifier);
 
+    final title = widget.scope is AllScope
+        ? (l10n?.tasksTitle ?? widget.scope.label)
+        : widget.scope.label;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.scope.label),
+        title: Text(title),
         actions: [
           if (notifier.selectedIds.isNotEmpty) ...[
             IconButton(
               icon: const Icon(Icons.check),
-              tooltip: 'Complete selected',
+              tooltip: l10n?.actionComplete ?? 'Complete',
               onPressed: notifier.completeSelected,
             ),
             IconButton(
               icon: const Icon(Icons.delete),
-              tooltip: 'Delete selected',
+              tooltip: l10n?.actionDelete ?? 'Delete',
               onPressed: notifier.deleteSelected,
             ),
           ],
@@ -164,7 +137,8 @@ class _TaskListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tasks.isEmpty) {
-      return const Center(child: Text('No tasks here'));
+      final l10n = AppLocalizations.of(context);
+      return Center(child: Text(l10n?.emptyTaskList ?? 'No tasks here'));
     }
     return ListView.builder(
       itemCount: tasks.length,
@@ -180,6 +154,158 @@ class _TaskListView extends StatelessWidget {
           onLongPress: () => notifier.toggleSelect(task.id),
         );
       },
+    );
+  }
+}
+
+/// Bottom sheet for creating a task with a title plus optional start and due
+/// dates. Builds a full [TaskDraft] so date-driven reminders and calendar
+/// placement work from creation time.
+class _AddTaskSheet extends StatefulWidget {
+  const _AddTaskSheet({required this.onCreate});
+
+  final Future<void> Function(TaskDraft draft) onCreate;
+
+  @override
+  State<_AddTaskSheet> createState() => _AddTaskSheetState();
+}
+
+class _AddTaskSheetState extends State<_AddTaskSheet> {
+  final _titleCtrl = TextEditingController();
+  DateTime? _startDate;
+  DateTime? _dueDate;
+  bool _submitting = false;
+
+  @override
+  void dispose() {
+    _titleCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<DateTime?> _pickDate(DateTime? initial) {
+    final now = DateTime.now();
+    return showDatePicker(
+      context: context,
+      initialDate: initial ?? now,
+      firstDate: DateTime(now.year - 5),
+      lastDate: DateTime(now.year + 10),
+    );
+  }
+
+  Future<void> _submit() async {
+    final title = _titleCtrl.text.trim();
+    if (title.isEmpty || _submitting) return;
+    setState(() => _submitting = true);
+    await widget.onCreate(
+      TaskDraft(title: title, startDate: _startDate, dueDate: _dueDate),
+    );
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final df = MaterialLocalizations.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 8,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: _titleCtrl,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: l10n?.newTaskTitle ?? 'Task title',
+              prefixIcon: const Icon(Icons.title),
+            ),
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _submit(),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: _DatePickerTile(
+                  icon: Icons.play_arrow,
+                  label: l10n?.taskStartDate ?? 'Start date',
+                  valueText: _startDate == null
+                      ? (l10n?.dateNotSet ?? 'Not set')
+                      : df.formatMediumDate(_startDate!),
+                  onTap: () async {
+                    final picked = await _pickDate(_startDate);
+                    if (picked != null) setState(() => _startDate = picked);
+                  },
+                  onClear: _startDate == null
+                      ? null
+                      : () => setState(() => _startDate = null),
+                ),
+              ),
+              Expanded(
+                child: _DatePickerTile(
+                  icon: Icons.flag,
+                  label: l10n?.taskDueDate ?? 'Due date',
+                  valueText: _dueDate == null
+                      ? (l10n?.dateNotSet ?? 'Not set')
+                      : df.formatMediumDate(_dueDate!),
+                  onTap: () async {
+                    final picked = await _pickDate(_dueDate);
+                    if (picked != null) setState(() => _dueDate = picked);
+                  },
+                  onClear: _dueDate == null
+                      ? null
+                      : () => setState(() => _dueDate = null),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: _submitting ? null : _submit,
+            icon: const Icon(Icons.check),
+            label: Text(l10n?.createAction ?? 'Create'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DatePickerTile extends StatelessWidget {
+  const _DatePickerTile({
+    required this.icon,
+    required this.label,
+    required this.valueText,
+    required this.onTap,
+    this.onClear,
+  });
+
+  final IconData icon;
+  final String label;
+  final String valueText;
+  final VoidCallback onTap;
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      leading: Icon(icon),
+      title: Text(label, style: Theme.of(context).textTheme.labelSmall),
+      subtitle: Text(valueText),
+      trailing: onClear == null
+          ? null
+          : IconButton(
+              icon: const Icon(Icons.clear, size: 18),
+              onPressed: onClear,
+            ),
+      onTap: onTap,
     );
   }
 }

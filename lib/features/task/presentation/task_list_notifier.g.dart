@@ -13,6 +13,10 @@ part of 'task_list_notifier.dart';
 ///
 /// Batch-select state (long-press → multi-select) is tracked via
 /// [selectedIds]; an empty set means no selection mode is active.
+///
+/// Kept alive so navigating between shell destinations does not dispose and
+/// re-subscribe the underlying database stream (which caused an empty-list
+/// flash and perceptible jank on every tab switch).
 
 @ProviderFor(TaskListNotifier)
 final taskListProvider = TaskListNotifierFamily._();
@@ -22,6 +26,10 @@ final taskListProvider = TaskListNotifierFamily._();
 ///
 /// Batch-select state (long-press → multi-select) is tracked via
 /// [selectedIds]; an empty set means no selection mode is active.
+///
+/// Kept alive so navigating between shell destinations does not dispose and
+/// re-subscribe the underlying database stream (which caused an empty-list
+/// flash and perceptible jank on every tab switch).
 final class TaskListNotifierProvider
     extends $StreamNotifierProvider<TaskListNotifier, List<TaskView>> {
   /// Riverpod-backed list notifier. Streams [TaskView] items for a given
@@ -29,13 +37,17 @@ final class TaskListNotifierProvider
   ///
   /// Batch-select state (long-press → multi-select) is tracked via
   /// [selectedIds]; an empty set means no selection mode is active.
+  ///
+  /// Kept alive so navigating between shell destinations does not dispose and
+  /// re-subscribe the underlying database stream (which caused an empty-list
+  /// flash and perceptible jank on every tab switch).
   TaskListNotifierProvider._({
     required TaskListNotifierFamily super.from,
     required TaskListScope super.argument,
   }) : super(
          retry: null,
          name: r'taskListProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -65,13 +77,17 @@ final class TaskListNotifierProvider
   }
 }
 
-String _$taskListNotifierHash() => r'4dc6e480d323a3b0d99efebe46a98b45513a2771';
+String _$taskListNotifierHash() => r'e1597ec69ed7719afc18754ceadd1bde43027d7d';
 
 /// Riverpod-backed list notifier. Streams [TaskView] items for a given
 /// [TaskListScope]. Exposes [complete], [toggleSubtask], and [delete] actions.
 ///
 /// Batch-select state (long-press → multi-select) is tracked via
 /// [selectedIds]; an empty set means no selection mode is active.
+///
+/// Kept alive so navigating between shell destinations does not dispose and
+/// re-subscribe the underlying database stream (which caused an empty-list
+/// flash and perceptible jank on every tab switch).
 
 final class TaskListNotifierFamily extends $Family
     with
@@ -88,7 +104,7 @@ final class TaskListNotifierFamily extends $Family
         name: r'taskListProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
   /// Riverpod-backed list notifier. Streams [TaskView] items for a given
@@ -96,6 +112,10 @@ final class TaskListNotifierFamily extends $Family
   ///
   /// Batch-select state (long-press → multi-select) is tracked via
   /// [selectedIds]; an empty set means no selection mode is active.
+  ///
+  /// Kept alive so navigating between shell destinations does not dispose and
+  /// re-subscribe the underlying database stream (which caused an empty-list
+  /// flash and perceptible jank on every tab switch).
 
   TaskListNotifierProvider call(TaskListScope scope) =>
       TaskListNotifierProvider._(argument: scope, from: this);
@@ -109,6 +129,10 @@ final class TaskListNotifierFamily extends $Family
 ///
 /// Batch-select state (long-press → multi-select) is tracked via
 /// [selectedIds]; an empty set means no selection mode is active.
+///
+/// Kept alive so navigating between shell destinations does not dispose and
+/// re-subscribe the underlying database stream (which caused an empty-list
+/// flash and perceptible jank on every tab switch).
 
 abstract class _$TaskListNotifier extends $StreamNotifier<List<TaskView>> {
   late final _$args = ref.$arg as TaskListScope;

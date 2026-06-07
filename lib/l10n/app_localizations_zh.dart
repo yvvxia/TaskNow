@@ -21,6 +21,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navSettings => '设置';
 
   @override
+  String get tasksTitle => '任务';
+
+  @override
+  String get addTaskHint => '添加任务…（按回车）';
+
+  @override
+  String get newTaskTitle => '任务标题';
+
+  @override
+  String get taskStartDate => '开始日期';
+
+  @override
+  String get taskDueDate => '截止日期';
+
+  @override
+  String get dateNotSet => '未设置';
+
+  @override
+  String get dateClear => '清除';
+
+  @override
+  String get emptyTaskList => '暂无任务';
+
+  @override
+  String get createAction => '创建';
+
+  @override
+  String get taskPriority => '优先级';
+
+  @override
   String get settingsTitle => '设置';
 
   @override

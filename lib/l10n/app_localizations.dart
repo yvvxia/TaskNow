@@ -122,6 +122,66 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get navSettings;
 
+  /// Title of the task list page
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasksTitle;
+
+  /// Hint for the desktop quick-add bar
+  ///
+  /// In en, this message translates to:
+  /// **'Add a task… (press Enter)'**
+  String get addTaskHint;
+
+  /// Hint for the new task title field
+  ///
+  /// In en, this message translates to:
+  /// **'Task title'**
+  String get newTaskTitle;
+
+  /// Label for a task start date
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get taskStartDate;
+
+  /// Label for a task due date
+  ///
+  /// In en, this message translates to:
+  /// **'Due date'**
+  String get taskDueDate;
+
+  /// Shown when a date has not been chosen
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get dateNotSet;
+
+  /// Button to clear a chosen date
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get dateClear;
+
+  /// Empty state for the task list
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks here'**
+  String get emptyTaskList;
+
+  /// Confirm button to create a task
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get createAction;
+
+  /// Label for task priority
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get taskPriority;
+
   /// Title of the Settings page
   ///
   /// In en, this message translates to:
