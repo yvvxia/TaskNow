@@ -8,6 +8,7 @@ import 'domain/delete_task_usecase.dart';
 import 'domain/recurrence_engine.dart';
 import 'domain/reorder_tasks_usecase.dart';
 import 'domain/toggle_subtask_usecase.dart';
+import 'domain/uncomplete_task_usecase.dart';
 import 'domain/update_task_usecase.dart';
 
 /// Singleton recurrence engine (pure, no IO).
@@ -35,6 +36,13 @@ final completeTaskUseCaseProvider = Provider<CompleteTaskUseCase>(
     ref.watch(reminderRepositoryProvider),
     ref.watch(reminderSchedulerProvider),
     ref.watch(recurrenceEngineProvider),
+  ),
+);
+
+final uncompleteTaskUseCaseProvider = Provider<UncompleteTaskUseCase>(
+  (ref) => UncompleteTaskUseCase(
+    ref.watch(taskRepositoryProvider),
+    ref.watch(reminderSchedulerProvider),
   ),
 );
 

@@ -37,6 +37,20 @@ class TaskListNotifier extends _$TaskListNotifier {
     await ref.read(completeTaskUseCaseProvider).call(id);
   }
 
+  Future<void> uncomplete(String id) async {
+    await ref.read(uncompleteTaskUseCaseProvider).call(id);
+  }
+
+  /// Flips a task between complete and incomplete based on its current state,
+  /// so tapping the checkbox of a finished task re-opens it.
+  Future<void> toggleComplete(TaskView task) async {
+    if (task.isCompleted) {
+      await uncomplete(task.id);
+    } else {
+      await complete(task.id);
+    }
+  }
+
   Future<void> toggleSubtask(String taskId, String subId) async {
     await ref.read(toggleSubtaskUseCaseProvider).call(taskId, subId);
   }

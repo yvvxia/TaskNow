@@ -148,6 +148,20 @@
   "actionAdd": "Add",
   "@actionAdd": {"description": "Add action label"},
 
+  "deleteTaskTitle": "Delete task?",
+  "@deleteTaskTitle": {"description": "Title of the delete-task confirmation dialog"},
+
+  "deleteTaskMessage": "This will permanently remove \"{title}\".",
+  "@deleteTaskMessage": {
+    "description": "Body of the delete-task confirmation dialog, naming the task",
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+
+  "deleteTaskGenericMessage": "This will permanently remove the task.",
+  "@deleteTaskGenericMessage": {"description": "Body of the delete-task confirmation dialog when the title is unavailable"},
+
   "errorEmptyTitle": "Title cannot be empty",
   "@errorEmptyTitle": {"description": "Error when task title is empty"},
 

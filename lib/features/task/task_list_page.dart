@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/models/task_draft.dart';
 import '../../l10n/app_localizations.dart';
+import 'domain/delete_task_usecase.dart';
 import 'domain/task_list_scope.dart';
 import 'presentation/quick_add_bar.dart';
 import 'presentation/task_list_notifier.dart';
@@ -134,6 +135,33 @@ class _TaskListView extends StatelessWidget {
   final List<TaskView> tasks;
   final TaskListNotifier notifier;
 
+  Future<void> _confirmDelete(BuildContext context, TaskView task) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(l10n?.deleteTaskTitle ?? 'Delete task?'),
+        content: Text(
+          l10n?.deleteTaskMessage(task.title) ??
+              'This will permanently remove "${task.title}".',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogCtx).pop(false),
+            child: Text(l10n?.actionCancel ?? 'Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
+            child: Text(l10n?.actionDelete ?? 'Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await notifier.delete(task.id, DeleteScope.thisOnly);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (tasks.isEmpty) {
@@ -150,7 +178,8 @@ class _TaskListView extends StatelessWidget {
           task: task,
           isSelected: isSelected,
           onTap: () => context.go('/task/${task.id}'),
-          onComplete: () => notifier.complete(task.id),
+          onComplete: () => notifier.toggleComplete(task),
+          onDelete: () => _confirmDelete(context, task),
           onLongPress: () => notifier.toggleSelect(task.id),
         );
       },

@@ -14,22 +14,71 @@ import 'l10n/app_localizations.dart';
 /// Brand seed color (proposal §5.5 primary `#1976D2`).
 const Color kSeedColor = Color(0xFF1976D2);
 
+/// Primary UI font family.
+///
+/// A single family is used for both Latin and CJK glyphs so mixed
+/// Chinese/English strings render at a consistent visual size. Roboto (the
+/// Flutter default) lacks CJK coverage, so Chinese characters fell back to a
+/// different system font with different metrics — that mismatch is what made
+/// text look like it had inconsistent ("大小字") sizing.
+const String kFontFamily = 'Microsoft YaHei UI';
+
+/// Cross-platform fallbacks for [kFontFamily]. On non-Windows targets the
+/// primary family is absent, so the first available fallback (a full
+/// Latin+CJK family) is used instead.
+const List<String> kFontFamilyFallback = <String>[
+  'Microsoft YaHei',
+  'PingFang SC',
+  'Noto Sans CJK SC',
+  'Noto Sans SC',
+  'Source Han Sans SC',
+];
+
 /// Pre-built light theme. Computed once (rather than on every `build`) because
 /// [ColorScheme.fromSeed] is comparatively expensive and re-running it on each
 /// rebuild contributes to navigation jank.
 final ThemeData kLightTheme = ThemeData(
   useMaterial3: true,
+  fontFamily: kFontFamily,
+  fontFamilyFallback: kFontFamilyFallback,
   colorScheme: ColorScheme.fromSeed(seedColor: kSeedColor),
 );
 
 /// Pre-built dark theme. See [kLightTheme].
 final ThemeData kDarkTheme = ThemeData(
   useMaterial3: true,
+  fontFamily: kFontFamily,
+  fontFamilyFallback: kFontFamilyFallback,
   colorScheme: ColorScheme.fromSeed(
     seedColor: kSeedColor,
     brightness: Brightness.dark,
   ),
 );
+
+/// Duration of the cross-fade played when switching between shell routes.
+const Duration kRouteTransitionDuration = Duration(milliseconds: 220);
+
+/// Wraps [child] in a [CustomTransitionPage] that cross-fades on entry/exit.
+///
+/// Applying the transition at the route level (rather than animating the
+/// [ShellRoute] child with an [AnimatedSwitcher]) lets the inner [Navigator]
+/// own the overlap between the outgoing and incoming pages. That avoids the
+/// hard swap that briefly flashed the previous page, without duplicating the
+/// `GlobalKey`s that `go_router` assigns to each page.
+CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    transitionDuration: kRouteTransitionDuration,
+    reverseTransitionDuration: kRouteTransitionDuration,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+        child: child,
+      );
+    },
+  );
+}
 
 /// Builds the application router. A factory (rather than a singleton) so tests
 /// can construct an isolated router per test.
@@ -46,24 +95,30 @@ GoRouter createAppRouter() {
         routes: <RouteBase>[
           GoRoute(
             path: '/tasks',
-            builder: (context, state) => const TaskListPage(),
+            pageBuilder: (context, state) =>
+                _fadePage(state, const TaskListPage()),
           ),
           GoRoute(
             path: '/calendar',
-            builder: (context, state) => const CalendarPage(),
+            pageBuilder: (context, state) =>
+                _fadePage(state, const CalendarPage()),
           ),
           GoRoute(
             path: '/search',
-            builder: (context, state) => const SearchPage(),
+            pageBuilder: (context, state) =>
+                _fadePage(state, const SearchPage()),
           ),
           GoRoute(
             path: '/settings',
-            builder: (context, state) => const SettingsPage(),
+            pageBuilder: (context, state) =>
+                _fadePage(state, const SettingsPage()),
           ),
           GoRoute(
             path: '/task/:id',
-            builder: (context, state) =>
-                TaskDetailPage(taskId: state.pathParameters['id']!),
+            pageBuilder: (context, state) => _fadePage(
+              state,
+              TaskDetailPage(taskId: state.pathParameters['id']!),
+            ),
           ),
         ],
       ),

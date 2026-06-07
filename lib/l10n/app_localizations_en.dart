@@ -147,6 +147,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionAdd => 'Add';
 
   @override
+  String get deleteTaskTitle => 'Delete task?';
+
+  @override
+  String deleteTaskMessage(String title) {
+    return 'This will permanently remove \"$title\".';
+  }
+
+  @override
+  String get deleteTaskGenericMessage =>
+      'This will permanently remove the task.';
+
+  @override
   String get errorEmptyTitle => 'Title cannot be empty';
 
   @override

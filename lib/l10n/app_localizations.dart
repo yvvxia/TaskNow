@@ -362,6 +362,24 @@ abstract class AppLocalizations {
   /// **'Add'**
   String get actionAdd;
 
+  /// Title of the delete-task confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete task?'**
+  String get deleteTaskTitle;
+
+  /// Body of the delete-task confirmation dialog, naming the task
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently remove \"{title}\".'**
+  String deleteTaskMessage(String title);
+
+  /// Body of the delete-task confirmation dialog when the title is unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently remove the task.'**
+  String get deleteTaskGenericMessage;
+
   /// Error when task title is empty
   ///
   /// In en, this message translates to:

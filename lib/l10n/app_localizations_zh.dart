@@ -147,6 +147,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get actionAdd => '添加';
 
   @override
+  String get deleteTaskTitle => '删除任务？';
+
+  @override
+  String deleteTaskMessage(String title) {
+    return '将永久删除“$title”。';
+  }
+
+  @override
+  String get deleteTaskGenericMessage => '将永久删除该任务。';
+
+  @override
   String get errorEmptyTitle => '标题不能为空';
 
   @override

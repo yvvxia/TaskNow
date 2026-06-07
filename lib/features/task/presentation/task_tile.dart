@@ -4,23 +4,39 @@ import '../../../core/enums/enums.dart';
 import 'task_view.dart';
 
 /// A single row in the task list showing checkbox, title, priority dot,
-/// date range and subtask badge. Supports long-press for multi-select mode
-/// and (on narrow viewports) left-swipe to complete.
+/// date range and subtask badge. Supports long-press for multi-select mode,
+/// swipe-right to toggle completion and swipe-left to delete.
 class TaskTile extends StatelessWidget {
   const TaskTile({
     super.key,
     required this.task,
     this.onComplete,
+    this.onDelete,
     this.onTap,
     this.isSelected = false,
     this.onLongPress,
   });
 
   final TaskView task;
+
+  /// Invoked to toggle the task between complete and incomplete.
   final VoidCallback? onComplete;
+
+  /// Invoked to permanently remove the task. When null, swipe-to-delete and
+  /// the inline delete button are disabled.
+  final VoidCallback? onDelete;
   final VoidCallback? onTap;
   final bool isSelected;
   final VoidCallback? onLongPress;
+
+  DismissDirection get _dismissDirection {
+    if (onComplete != null && onDelete != null) {
+      return DismissDirection.horizontal;
+    }
+    if (onComplete != null) return DismissDirection.startToEnd;
+    if (onDelete != null) return DismissDirection.endToStart;
+    return DismissDirection.none;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +45,30 @@ class TaskTile extends StatelessWidget {
 
     return Dismissible(
       key: Key('dismissible-${task.id}'),
-      direction: DismissDirection.startToEnd,
+      direction: _dismissDirection,
       background: Container(
         color: theme.colorScheme.primary,
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.only(left: 16),
-        child: Icon(Icons.check, color: theme.colorScheme.onPrimary),
+        child: Icon(
+          task.isCompleted ? Icons.undo : Icons.check,
+          color: theme.colorScheme.onPrimary,
+        ),
       ),
-      confirmDismiss: (_) async {
-        onComplete?.call();
-        return false; // Never actually dismiss – the repo drives removal.
+      secondaryBackground: Container(
+        color: theme.colorScheme.error,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 16),
+        child: Icon(Icons.delete, color: theme.colorScheme.onError),
+      ),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          onComplete?.call();
+          return false; // Completion is a state change, not a removal.
+        }
+        // endToStart → delete. Let the row dismiss; the repo drives removal.
+        onDelete?.call();
+        return false;
       },
       child: ListTile(
         selected: isSelected,
@@ -66,6 +96,14 @@ class TaskTile extends StatelessWidget {
               ),
             const SizedBox(width: 6),
             _PriorityDot(priority: task.priority),
+            if (onDelete != null)
+              IconButton(
+                key: Key('delete-${task.id}'),
+                icon: const Icon(Icons.delete_outline),
+                visualDensity: VisualDensity.compact,
+                tooltip: MaterialLocalizations.of(context).deleteButtonTooltip,
+                onPressed: onDelete,
+              ),
           ],
         ),
       ),
