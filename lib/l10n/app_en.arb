@@ -1,0 +1,144 @@
+{
+  "@@locale": "en",
+
+  "navTasks": "Tasks",
+  "@navTasks": {"description": "Navigation label for Tasks tab"},
+
+  "navCalendar": "Calendar",
+  "@navCalendar": {"description": "Navigation label for Calendar tab"},
+
+  "navSearch": "Search",
+  "@navSearch": {"description": "Navigation label for Search tab"},
+
+  "navSettings": "Settings",
+  "@navSettings": {"description": "Navigation label for Settings tab"},
+
+  "settingsTitle": "Settings",
+  "@settingsTitle": {"description": "Title of the Settings page"},
+
+  "appearanceSection": "Appearance",
+  "@appearanceSection": {"description": "Settings section header for appearance"},
+
+  "themeSystem": "System",
+  "@themeSystem": {"description": "Theme option: follow system"},
+
+  "themeLight": "Light",
+  "@themeLight": {"description": "Theme option: light mode"},
+
+  "themeDark": "Dark",
+  "@themeDark": {"description": "Theme option: dark mode"},
+
+  "languageSection": "Language",
+  "@languageSection": {"description": "Settings section header for language"},
+
+  "languageEnglish": "English",
+  "@languageEnglish": {"description": "Language option: English"},
+
+  "languageChinese": "中文",
+  "@languageChinese": {"description": "Language option: Chinese"},
+
+  "notificationsSection": "Notifications",
+  "@notificationsSection": {"description": "Settings section header for notifications"},
+
+  "notificationsGlobal": "Enable Notifications",
+  "@notificationsGlobal": {"description": "Toggle for global notifications"},
+
+  "notificationsDefaultReminder": "Default Reminder",
+  "@notificationsDefaultReminder": {"description": "Setting for default reminder advance time"},
+
+  "notificationsDefaultReminderValue": "{minutes} min before",
+  "@notificationsDefaultReminderValue": {
+    "description": "Value label for default reminder minutes",
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+
+  "notificationsOverdueRepeat": "Overdue Repeat Interval",
+  "@notificationsOverdueRepeat": {"description": "Setting for overdue notification repeat interval"},
+
+  "notificationsOverdueRepeatValue": "Every {hours} h",
+  "@notificationsOverdueRepeatValue": {
+    "description": "Value label for overdue repeat hours",
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+
+  "dndSection": "Do Not Disturb",
+  "@dndSection": {"description": "Settings section header for DND"},
+
+  "dndEnabled": "Enable Do Not Disturb",
+  "@dndEnabled": {"description": "Toggle for do not disturb mode"},
+
+  "dndStart": "DND Start",
+  "@dndStart": {"description": "Setting for DND start time"},
+
+  "dndEnd": "DND End",
+  "@dndEnd": {"description": "Setting for DND end time"},
+
+  "syncSection": "Cloud Sync",
+  "@syncSection": {"description": "Settings section header for sync"},
+
+  "syncComingSoon": "Cloud sync — coming in Phase 2",
+  "@syncComingSoon": {"description": "Placeholder text for sync feature"},
+
+  "aboutSection": "About",
+  "@aboutSection": {"description": "Settings section header for about"},
+
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "description": "App version label",
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+
+  "aboutPrivacy": "Privacy Policy",
+  "@aboutPrivacy": {"description": "Link to privacy policy"},
+
+  "aboutOpenSource": "Open Source Licenses",
+  "@aboutOpenSource": {"description": "Link to open source licenses"},
+
+  "actionSave": "Save",
+  "@actionSave": {"description": "Save action label"},
+
+  "actionCancel": "Cancel",
+  "@actionCancel": {"description": "Cancel action label"},
+
+  "actionDelete": "Delete",
+  "@actionDelete": {"description": "Delete action label"},
+
+  "actionComplete": "Complete",
+  "@actionComplete": {"description": "Complete action label"},
+
+  "actionEdit": "Edit",
+  "@actionEdit": {"description": "Edit action label"},
+
+  "actionAdd": "Add",
+  "@actionAdd": {"description": "Add action label"},
+
+  "errorEmptyTitle": "Title cannot be empty",
+  "@errorEmptyTitle": {"description": "Error when task title is empty"},
+
+  "errorDueBeforeStart": "Due date must be after start date",
+  "@errorDueBeforeStart": {"description": "Error when due date is before start date"},
+
+  "errorInvalidReminder": "Invalid reminder time",
+  "@errorInvalidReminder": {"description": "Error for invalid reminder"},
+
+  "errorNotFound": "Item not found",
+  "@errorNotFound": {"description": "Error when item is not found"},
+
+  "errorPersistence": "Failed to save data",
+  "@errorPersistence": {"description": "Error when saving data fails"},
+
+  "errorPermission": "Permission denied",
+  "@errorPermission": {"description": "Error when permission is denied"},
+
+  "minutesDialog": "Set reminder advance (minutes)",
+  "@minutesDialog": {"description": "Dialog title for setting reminder minutes"},
+
+  "hoursDialog": "Set overdue repeat interval (hours)",
+  "@hoursDialog": {"description": "Dialog title for setting overdue repeat hours"}
+}

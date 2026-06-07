@@ -1,0 +1,135 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/di/clock.dart';
+import '../../../core/di/providers.dart';
+import '../../../core/enums/enums.dart';
+import '../../../core/enums/status_filter.dart';
+import '../../../core/models/project.dart';
+import '../../../core/models/tag.dart';
+import '../search_controller.dart';
+import 'date_filter_sheet.dart';
+
+/// Horizontal filter chips for status, priority, tags, projects, and date.
+class FilterChipsRow extends ConsumerWidget {
+  const FilterChipsRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = ref.watch(searchControllerProvider);
+    final controller = ref.read(searchControllerProvider.notifier);
+    final now = ref.watch(clockProvider)();
+    final tagsAsync = ref.watch(_tagsProvider);
+    final projectsAsync = ref.watch(_projectsProvider);
+
+    return SingleChildScrollView(
+      key: const Key('filter-chips-row'),
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        children: [
+          _StatusMenuChip(
+            selected: query.statusFilter,
+            onSelected: controller.setStatus,
+          ),
+          const SizedBox(width: 8),
+          ...Priority.values.map(
+            (p) => Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: FilterChip(
+                key: Key('priority-chip-${p.name}'),
+                label: Text(priorityLabel(p)),
+                selected: query.effectivePriorities?.contains(p) ?? false,
+                onSelected: (_) => controller.togglePriority(p),
+              ),
+            ),
+          ),
+          FilterChip(
+            key: const Key('date-filter-chip'),
+            label: Text(dateFilterLabel(query.dateFilter, now)),
+            selected: query.dateFilter != null,
+            onSelected: (_) async {
+              final picked = await DateFilterSheet.show(context, now: now);
+              if (picked != null || query.dateFilter != null) {
+                controller.setDate(picked);
+              }
+            },
+          ),
+          const SizedBox(width: 8),
+          ...tagsAsync.maybeWhen(
+            data: (tags) => tags.map(
+              (tag) => Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  key: Key('tag-chip-${tag.id}'),
+                  label: Text(tag.name),
+                  selected: query.tagIds.contains(tag.id),
+                  onSelected: (_) => controller.toggleTag(tag.id),
+                ),
+              ),
+            ),
+            orElse: () => const <Widget>[],
+          ),
+          ...projectsAsync.maybeWhen(
+            data: (projects) => projects.map(
+              (project) => Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: FilterChip(
+                  key: Key('project-chip-${project.id}'),
+                  label: Text(project.name),
+                  selected: query.effectiveProjectIds.contains(project.id),
+                  onSelected: (_) => controller.toggleProject(project.id),
+                ),
+              ),
+            ),
+            orElse: () => const <Widget>[],
+          ),
+          ActionChip(
+            key: const Key('clear-filters-chip'),
+            label: const Text('Clear'),
+            onPressed: controller.clear,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusMenuChip extends StatelessWidget {
+  const _StatusMenuChip({
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final StatusFilter selected;
+  final ValueChanged<StatusFilter> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<StatusFilter>(
+      key: const Key('status-filter-chip'),
+      initialValue: selected,
+      onSelected: onSelected,
+      child: Chip(
+        label: Text(statusFilterLabel(selected)),
+        avatar: const Icon(Icons.filter_list, size: 18),
+      ),
+      itemBuilder: (context) => StatusFilter.values
+          .map(
+            (s) => PopupMenuItem(
+              value: s,
+              child: Text(statusFilterLabel(s)),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+final _tagsProvider = StreamProvider<List<Tag>>((ref) {
+  return ref.watch(tagRepositoryProvider).watchAll();
+});
+
+final _projectsProvider = StreamProvider<List<Project>>((ref) {
+  return ref.watch(projectRepositoryProvider).watchAll();
+});

@@ -1,0 +1,71 @@
+{
+  "@@locale": "zh",
+
+  "navTasks": "任务",
+  "navCalendar": "日历",
+  "navSearch": "搜索",
+  "navSettings": "设置",
+
+  "settingsTitle": "设置",
+  "appearanceSection": "外观",
+  "themeSystem": "跟随系统",
+  "themeLight": "浅色",
+  "themeDark": "深色",
+
+  "languageSection": "语言",
+  "languageEnglish": "English",
+  "languageChinese": "中文",
+
+  "notificationsSection": "通知",
+  "notificationsGlobal": "启用通知",
+  "notificationsDefaultReminder": "默认提醒时间",
+  "notificationsDefaultReminderValue": "提前 {minutes} 分钟",
+  "@notificationsDefaultReminderValue": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+
+  "notificationsOverdueRepeat": "逾期重复间隔",
+  "notificationsOverdueRepeatValue": "每 {hours} 小时",
+  "@notificationsOverdueRepeatValue": {
+    "placeholders": {
+      "hours": {"type": "int"}
+    }
+  },
+
+  "dndSection": "免打扰",
+  "dndEnabled": "启用免打扰",
+  "dndStart": "开始时间",
+  "dndEnd": "结束时间",
+
+  "syncSection": "云同步",
+  "syncComingSoon": "云同步 — 即将在第二阶段推出",
+
+  "aboutSection": "关于",
+  "aboutVersion": "版本 {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "aboutPrivacy": "隐私政策",
+  "aboutOpenSource": "开源许可",
+
+  "actionSave": "保存",
+  "actionCancel": "取消",
+  "actionDelete": "删除",
+  "actionComplete": "完成",
+  "actionEdit": "编辑",
+  "actionAdd": "添加",
+
+  "errorEmptyTitle": "标题不能为空",
+  "errorDueBeforeStart": "截止日期不能早于开始日期",
+  "errorInvalidReminder": "无效的提醒时间",
+  "errorNotFound": "未找到该项目",
+  "errorPersistence": "保存数据失败",
+  "errorPermission": "权限被拒绝",
+
+  "minutesDialog": "设置提醒提前时间（分钟）",
+  "hoursDialog": "设置逾期重复间隔（小时）"
+}
