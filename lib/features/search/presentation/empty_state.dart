@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 /// Friendly empty state when search returns no tasks.
 class EmptyState extends StatelessWidget {
   const EmptyState({super.key, this.message});
@@ -9,6 +11,7 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     // Centered when there is room, but scrollable so it can never overflow
     // (e.g. very short windows or transient layout frames during navigation).
     return LayoutBuilder(
@@ -33,13 +36,15 @@ class EmptyState extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    message ?? 'No tasks match your search',
+                    message ?? l10n?.searchNoResults ??
+                        'No tasks match your search',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Try different keywords or filters',
+                    l10n?.searchTryDifferentFilters ??
+                        'Try different keywords or filters',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.outline,

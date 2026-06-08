@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/task_bar.dart';
 import '../calendar_providers.dart';
 import '../calendar_view_state_notifier.dart';
@@ -26,7 +27,12 @@ class DayView extends ConsumerWidget {
 
     return barsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Error: $e')),
+      error: (e, _) => Center(
+        child: Text(
+          AppLocalizations.of(context)?.calendarLoadError(e.toString()) ??
+              'Error: $e',
+        ),
+      ),
       data: (bars) {
         final dayBars = bars
             .where((b) =>

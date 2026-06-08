@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/gantt_drag_intent.dart';
 import '../../domain/task_bar.dart';
 import '../../domain/time_axis.dart';
@@ -32,7 +33,12 @@ class GanttView extends ConsumerWidget {
 
     return barsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Error: $e')),
+      error: (e, _) => Center(
+        child: Text(
+          AppLocalizations.of(context)?.calendarLoadError(e.toString()) ??
+              'Error: $e',
+        ),
+      ),
       data: (bars) {
         final origin = DateTime(
           view.visibleRange.start.year,
@@ -121,7 +127,8 @@ class _DayHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = DateFormat('E\nd');
+    final l10n = AppLocalizations.of(context);
+    final fmt = DateFormat('E\nd', l10n?.localeName);
     return SizedBox(
       height: height,
       child: Row(

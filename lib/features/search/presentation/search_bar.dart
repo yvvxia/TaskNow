@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../search_controller.dart';
 
 /// Top search field with debounced keyword updates.
@@ -28,13 +29,14 @@ class _TaskSearchBarState extends ConsumerState<TaskSearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: TextField(
         key: const Key('search-bar-field'),
         controller: _controller,
         decoration: InputDecoration(
-          hintText: 'Search tasks…',
+          hintText: l10n?.searchHint ?? 'Search tasks…',
           prefixIcon: const Icon(Icons.search),
           suffixIcon: _controller.text.isEmpty
               ? null

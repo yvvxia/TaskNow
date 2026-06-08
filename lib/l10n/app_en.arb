@@ -43,6 +43,118 @@
   "taskPriority": "Priority",
   "@taskPriority": {"description": "Label for task priority"},
 
+  "calendarPrevious": "Previous",
+  "@calendarPrevious": {"description": "Calendar previous-window button tooltip"},
+
+  "calendarNext": "Next",
+  "@calendarNext": {"description": "Calendar next-window button tooltip"},
+
+  "calendarToday": "Today",
+  "@calendarToday": {"description": "Calendar button or date label for today"},
+
+  "calendarDay": "Day",
+  "@calendarDay": {"description": "Calendar view selector label for day view"},
+
+  "calendarWeek": "Week",
+  "@calendarWeek": {"description": "Calendar view selector label for week view"},
+
+  "calendarMonth": "Month",
+  "@calendarMonth": {"description": "Calendar view selector label for month view"},
+
+  "calendarGantt": "Gantt",
+  "@calendarGantt": {"description": "Calendar view selector label for gantt view"},
+
+  "calendarLoadError": "Error: {message}",
+  "@calendarLoadError": {
+    "description": "Calendar load error message",
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+
+  "calendarWeekTaskCount": "{count, plural, =0{No tasks this week} =1{1 task this week} other{{count} tasks this week}}",
+  "@calendarWeekTaskCount": {
+    "description": "Summary text for number of tasks in the current week",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "calendarMoreTasks": "+{count} more",
+  "@calendarMoreTasks": {
+    "description": "Month cell overflow label for hidden tasks",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "searchHint": "Search tasks…",
+  "@searchHint": {"description": "Hint text for the search input"},
+
+  "searchNoResults": "No tasks match your search",
+  "@searchNoResults": {"description": "Search empty-state title"},
+
+  "searchTryDifferentFilters": "Try different keywords or filters",
+  "@searchTryDifferentFilters": {"description": "Search empty-state helper text"},
+
+  "searchFailed": "Search failed: {message}",
+  "@searchFailed": {
+    "description": "Search load error message",
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+
+  "searchClearFilters": "Clear",
+  "@searchClearFilters": {"description": "Action chip label to clear search filters"},
+
+  "searchDateFilter": "Date",
+  "@searchDateFilter": {"description": "Default date filter chip label"},
+
+  "searchDateToday": "Today",
+  "@searchDateToday": {"description": "Search date filter label for today"},
+
+  "searchDateThisWeek": "This week",
+  "@searchDateThisWeek": {"description": "Search date filter label for this week"},
+
+  "searchDateThisMonth": "This month",
+  "@searchDateThisMonth": {"description": "Search date filter label for this month"},
+
+  "searchDateCustomRange": "Custom range",
+  "@searchDateCustomRange": {"description": "Search date filter label for a custom range"},
+
+  "searchDateClearFilter": "Clear date filter",
+  "@searchDateClearFilter": {"description": "Search date filter label to clear the selected date"},
+
+  "searchDateOverlap": "Overlap {range}",
+  "@searchDateOverlap": {
+    "description": "Search date overlap chip label",
+    "placeholders": {
+      "range": {"type": "String"}
+    }
+  },
+
+  "searchStatusAll": "All",
+  "@searchStatusAll": {"description": "Search status filter label for all tasks"},
+
+  "searchStatusIncomplete": "Incomplete",
+  "@searchStatusIncomplete": {"description": "Search status filter label for incomplete tasks"},
+
+  "searchStatusDone": "Done",
+  "@searchStatusDone": {"description": "Search status filter label for completed tasks"},
+
+  "searchStatusOverdue": "Overdue",
+  "@searchStatusOverdue": {"description": "Search status filter label for overdue tasks"},
+
+  "searchPriorityHigh": "High",
+  "@searchPriorityHigh": {"description": "Search priority filter label for high priority"},
+
+  "searchPriorityMedium": "Medium",
+  "@searchPriorityMedium": {"description": "Search priority filter label for medium priority"},
+
+  "searchPriorityLow": "Low",
+  "@searchPriorityLow": {"description": "Search priority filter label for low priority"},
+
   "settingsTitle": "Settings",
   "@settingsTitle": {"description": "Title of the Settings page"},
 

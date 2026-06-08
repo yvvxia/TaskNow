@@ -51,6 +51,110 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskPriority => 'Priority';
 
   @override
+  String get calendarPrevious => 'Previous';
+
+  @override
+  String get calendarNext => 'Next';
+
+  @override
+  String get calendarToday => 'Today';
+
+  @override
+  String get calendarDay => 'Day';
+
+  @override
+  String get calendarWeek => 'Week';
+
+  @override
+  String get calendarMonth => 'Month';
+
+  @override
+  String get calendarGantt => 'Gantt';
+
+  @override
+  String calendarLoadError(String message) {
+    return 'Error: $message';
+  }
+
+  @override
+  String calendarWeekTaskCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tasks this week',
+      one: '1 task this week',
+      zero: 'No tasks this week',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarMoreTasks(int count) {
+    return '+$count more';
+  }
+
+  @override
+  String get searchHint => 'Search tasks…';
+
+  @override
+  String get searchNoResults => 'No tasks match your search';
+
+  @override
+  String get searchTryDifferentFilters => 'Try different keywords or filters';
+
+  @override
+  String searchFailed(String message) {
+    return 'Search failed: $message';
+  }
+
+  @override
+  String get searchClearFilters => 'Clear';
+
+  @override
+  String get searchDateFilter => 'Date';
+
+  @override
+  String get searchDateToday => 'Today';
+
+  @override
+  String get searchDateThisWeek => 'This week';
+
+  @override
+  String get searchDateThisMonth => 'This month';
+
+  @override
+  String get searchDateCustomRange => 'Custom range';
+
+  @override
+  String get searchDateClearFilter => 'Clear date filter';
+
+  @override
+  String searchDateOverlap(String range) {
+    return 'Overlap $range';
+  }
+
+  @override
+  String get searchStatusAll => 'All';
+
+  @override
+  String get searchStatusIncomplete => 'Incomplete';
+
+  @override
+  String get searchStatusDone => 'Done';
+
+  @override
+  String get searchStatusOverdue => 'Overdue';
+
+  @override
+  String get searchPriorityHigh => 'High';
+
+  @override
+  String get searchPriorityMedium => 'Medium';
+
+  @override
+  String get searchPriorityLow => 'Low';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/task_bar.dart';
 import '../calendar_providers.dart';
 import '../calendar_view_state_notifier.dart';
@@ -37,12 +38,17 @@ class MonthView extends ConsumerWidget {
 
     return barsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Error: $e')),
+      error: (e, _) => Center(
+        child: Text(
+          AppLocalizations.of(context)?.calendarLoadError(e.toString()) ??
+              'Error: $e',
+        ),
+      ),
       data: (bars) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const _WeekdayHeader(),
+            _WeekdayHeader(localeName: AppLocalizations.of(context)?.localeName),
             const Divider(height: 1),
             Expanded(
               child: GridView.builder(
@@ -83,11 +89,17 @@ class MonthView extends ConsumerWidget {
 }
 
 class _WeekdayHeader extends StatelessWidget {
-  const _WeekdayHeader();
+  const _WeekdayHeader({this.localeName});
+
+  final String? localeName;
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    final monday = DateTime.utc(2026, 1, 5);
+    final fmt = DateFormat.E(localeName);
+    final labels = [
+      for (var i = 0; i < 7; i++) fmt.format(monday.add(Duration(days: i))),
+    ];
     return SizedBox(
       height: 24,
       child: Row(
@@ -158,7 +170,8 @@ class _DayCell extends StatelessWidget {
                 _MiniBar(bar: bar, onTap: () => onSelect(bar.task.id)),
               if (showMore && hidden > 0)
                 Text(
-                  '+$hidden more',
+                  AppLocalizations.of(context)?.calendarMoreTasks(hidden) ??
+                      '+$hidden more',
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
             ],
@@ -201,4 +214,5 @@ class _MiniBar extends StatelessWidget {
 }
 
 /// Formats the month label, e.g. "June 2026". Exposed for the header.
-String monthLabel(DateTime anchor) => DateFormat.yMMMM().format(anchor);
+String monthLabel(DateTime anchor, [String? localeName]) =>
+    DateFormat.yMMMM(localeName).format(anchor);

@@ -49,6 +49,18 @@ class FlutterLocalNotificationService implements INotificationService {
       onDidReceiveBackgroundNotificationResponse: _onBackgroundResponse,
     );
 
+    // Handle the case where the app was launched by tapping a notification
+    // while terminated. Referencing this method is also required to avoid an
+    // AOT tree-shaking crash in flutter_local_notifications_windows on
+    // `flutter build windows --release` (see MaikuB/flutter_local_notifications#2615).
+    final launchDetails = await _plugin.getNotificationAppLaunchDetails();
+    if (launchDetails?.didNotificationLaunchApp ?? false) {
+      final response = launchDetails!.notificationResponse;
+      if (response != null) {
+        _onResponse(response);
+      }
+    }
+
     if (!kIsWeb && Platform.isAndroid) {
       final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();

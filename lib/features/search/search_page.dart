@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'presentation/empty_state.dart';
 import 'presentation/filter_chips_row.dart';
 import 'presentation/result_list.dart';
@@ -22,6 +23,7 @@ class SearchPage extends ConsumerWidget {
 
     final query = ref.watch(searchControllerProvider);
     final resultsAsync = ref.watch(searchResultsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       key: const Key('search-page'),
@@ -41,7 +43,10 @@ class SearchPage extends ConsumerWidget {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (err, _) => EmptyState(message: 'Search failed: $err'),
+            error: (err, _) => EmptyState(
+              message: l10n?.searchFailed(err.toString()) ??
+                  'Search failed: $err',
+            ),
           ),
         ),
       ],

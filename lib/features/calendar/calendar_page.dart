@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../core/enums/enums.dart';
 import '../../core/widgets/adaptive_scaffold.dart';
+import '../../l10n/app_localizations.dart';
 import '../task/presentation/task_detail_body.dart';
 import 'presentation/calendar_view_state_notifier.dart';
 import 'presentation/views/day_view.dart';
@@ -91,6 +92,7 @@ class _CalendarHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final view = ref.watch(calendarViewStateProvider);
     final notifier = ref.read(calendarViewStateProvider.notifier);
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -101,13 +103,18 @@ class _CalendarHeader extends ConsumerWidget {
               IconButton(
                 key: const Key('calendar-prev'),
                 icon: const Icon(Icons.chevron_left),
-                tooltip: 'Previous',
+                tooltip: l10n?.calendarPrevious ?? 'Previous',
                 onPressed: notifier.prev,
               ),
               Expanded(
                 child: Center(
                   child: Text(
-                    _label(view.type, view.anchor, view.visibleRange),
+                    _label(
+                      view.type,
+                      view.anchor,
+                      view.visibleRange,
+                      l10n?.localeName,
+                    ),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
@@ -115,12 +122,12 @@ class _CalendarHeader extends ConsumerWidget {
               TextButton(
                 key: const Key('calendar-today'),
                 onPressed: notifier.goToToday,
-                child: const Text('Today'),
+                child: Text(l10n?.calendarToday ?? 'Today'),
               ),
               IconButton(
                 key: const Key('calendar-next'),
                 icon: const Icon(Icons.chevron_right),
-                tooltip: 'Next',
+                tooltip: l10n?.calendarNext ?? 'Next',
                 onPressed: notifier.next,
               ),
             ],
@@ -131,26 +138,26 @@ class _CalendarHeader extends ConsumerWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: SegmentedButton<CalendarViewType>(
-                segments: const [
+                segments: [
                   ButtonSegment(
                     value: CalendarViewType.day,
-                    label: Text('Day'),
-                    icon: Icon(Icons.calendar_view_day),
+                    label: Text(l10n?.calendarDay ?? 'Day'),
+                    icon: const Icon(Icons.calendar_view_day),
                   ),
                   ButtonSegment(
                     value: CalendarViewType.week,
-                    label: Text('Week'),
-                    icon: Icon(Icons.calendar_view_week),
+                    label: Text(l10n?.calendarWeek ?? 'Week'),
+                    icon: const Icon(Icons.calendar_view_week),
                   ),
                   ButtonSegment(
                     value: CalendarViewType.month,
-                    label: Text('Month'),
-                    icon: Icon(Icons.calendar_view_month),
+                    label: Text(l10n?.calendarMonth ?? 'Month'),
+                    icon: const Icon(Icons.calendar_view_month),
                   ),
                   ButtonSegment(
                     value: CalendarViewType.gantt,
-                    label: Text('Gantt'),
-                    icon: Icon(Icons.view_timeline),
+                    label: Text(l10n?.calendarGantt ?? 'Gantt'),
+                    icon: const Icon(Icons.view_timeline),
                   ),
                 ],
                 selected: {view.type},
@@ -164,15 +171,20 @@ class _CalendarHeader extends ConsumerWidget {
     );
   }
 
-  String _label(CalendarViewType type, DateTime anchor, DateTimeRange range) {
+  String _label(
+    CalendarViewType type,
+    DateTime anchor,
+    DateTimeRange range,
+    String? localeName,
+  ) {
     switch (type) {
       case CalendarViewType.day:
-        return DateFormat.yMMMEd().format(anchor);
+        return DateFormat.yMMMEd(localeName).format(anchor);
       case CalendarViewType.month:
-        return DateFormat.yMMMM().format(anchor);
+        return DateFormat.yMMMM(localeName).format(anchor);
       case CalendarViewType.week:
       case CalendarViewType.gantt:
-        final fmt = DateFormat.MMMd();
+        final fmt = DateFormat.MMMd(localeName);
         return '${fmt.format(range.start)} – ${fmt.format(range.end)}';
     }
   }

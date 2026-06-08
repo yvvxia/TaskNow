@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/task_bar.dart';
 import '../../domain/time_axis.dart';
 import '../calendar_providers.dart';
@@ -29,7 +30,12 @@ class WeekView extends ConsumerWidget {
 
     return barsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(child: Text('Error: $e')),
+      error: (e, _) => Center(
+        child: Text(
+          AppLocalizations.of(context)?.calendarLoadError(e.toString()) ??
+              'Error: $e',
+        ),
+      ),
       data: (bars) {
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -81,7 +87,9 @@ class WeekView extends ConsumerWidget {
                     behavior: HitTestBehavior.opaque,
                     child: Center(
                       child: Text(
-                        '${bars.length} task(s) this week',
+                        AppLocalizations.of(context)
+                                ?.calendarWeekTaskCount(bars.length) ??
+                            '${bars.length} task(s) this week',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
@@ -104,7 +112,8 @@ class _WeekHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fmt = DateFormat('E d');
+    final l10n = AppLocalizations.of(context);
+    final fmt = DateFormat('E d', l10n?.localeName);
     return SizedBox(
       height: 28,
       child: Row(

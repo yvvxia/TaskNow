@@ -51,6 +51,109 @@ class AppLocalizationsZh extends AppLocalizations {
   String get taskPriority => '优先级';
 
   @override
+  String get calendarPrevious => '上一个';
+
+  @override
+  String get calendarNext => '下一个';
+
+  @override
+  String get calendarToday => '今天';
+
+  @override
+  String get calendarDay => '日';
+
+  @override
+  String get calendarWeek => '周';
+
+  @override
+  String get calendarMonth => '月';
+
+  @override
+  String get calendarGantt => '甘特图';
+
+  @override
+  String calendarLoadError(String message) {
+    return '加载失败：$message';
+  }
+
+  @override
+  String calendarWeekTaskCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '本周 $count 个任务',
+      zero: '本周暂无任务',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String calendarMoreTasks(int count) {
+    return '还有 $count 个';
+  }
+
+  @override
+  String get searchHint => '搜索任务…';
+
+  @override
+  String get searchNoResults => '没有匹配的任务';
+
+  @override
+  String get searchTryDifferentFilters => '试试其他关键词或筛选条件';
+
+  @override
+  String searchFailed(String message) {
+    return '搜索失败：$message';
+  }
+
+  @override
+  String get searchClearFilters => '清除';
+
+  @override
+  String get searchDateFilter => '日期';
+
+  @override
+  String get searchDateToday => '今天';
+
+  @override
+  String get searchDateThisWeek => '本周';
+
+  @override
+  String get searchDateThisMonth => '本月';
+
+  @override
+  String get searchDateCustomRange => '自定义范围';
+
+  @override
+  String get searchDateClearFilter => '清除日期筛选';
+
+  @override
+  String searchDateOverlap(String range) {
+    return '重叠 $range';
+  }
+
+  @override
+  String get searchStatusAll => '全部';
+
+  @override
+  String get searchStatusIncomplete => '未完成';
+
+  @override
+  String get searchStatusDone => '已完成';
+
+  @override
+  String get searchStatusOverdue => '已逾期';
+
+  @override
+  String get searchPriorityHigh => '高';
+
+  @override
+  String get searchPriorityMedium => '中';
+
+  @override
+  String get searchPriorityLow => '低';
+
+  @override
   String get settingsTitle => '设置';
 
   @override

@@ -17,6 +17,62 @@
   "createAction": "创建",
   "taskPriority": "优先级",
 
+  "calendarPrevious": "上一个",
+  "calendarNext": "下一个",
+  "calendarToday": "今天",
+  "calendarDay": "日",
+  "calendarWeek": "周",
+  "calendarMonth": "月",
+  "calendarGantt": "甘特图",
+  "calendarLoadError": "加载失败：{message}",
+  "@calendarLoadError": {
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+  "calendarWeekTaskCount": "{count, plural, =0{本周暂无任务} other{本周 {count} 个任务}}",
+  "@calendarWeekTaskCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "calendarMoreTasks": "还有 {count} 个",
+  "@calendarMoreTasks": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "searchHint": "搜索任务…",
+  "searchNoResults": "没有匹配的任务",
+  "searchTryDifferentFilters": "试试其他关键词或筛选条件",
+  "searchFailed": "搜索失败：{message}",
+  "@searchFailed": {
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+  "searchClearFilters": "清除",
+  "searchDateFilter": "日期",
+  "searchDateToday": "今天",
+  "searchDateThisWeek": "本周",
+  "searchDateThisMonth": "本月",
+  "searchDateCustomRange": "自定义范围",
+  "searchDateClearFilter": "清除日期筛选",
+  "searchDateOverlap": "重叠 {range}",
+  "@searchDateOverlap": {
+    "placeholders": {
+      "range": {"type": "String"}
+    }
+  },
+  "searchStatusAll": "全部",
+  "searchStatusIncomplete": "未完成",
+  "searchStatusDone": "已完成",
+  "searchStatusOverdue": "已逾期",
+  "searchPriorityHigh": "高",
+  "searchPriorityMedium": "中",
+  "searchPriorityLow": "低",
+
   "settingsTitle": "设置",
   "appearanceSection": "外观",
   "themeSystem": "跟随系统",

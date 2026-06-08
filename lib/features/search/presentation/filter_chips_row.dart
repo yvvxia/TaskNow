@@ -7,6 +7,7 @@ import '../../../core/enums/enums.dart';
 import '../../../core/enums/status_filter.dart';
 import '../../../core/models/project.dart';
 import '../../../core/models/tag.dart';
+import '../../../l10n/app_localizations.dart';
 import '../search_controller.dart';
 import 'date_filter_sheet.dart';
 
@@ -21,6 +22,7 @@ class FilterChipsRow extends ConsumerWidget {
     final now = ref.watch(clockProvider)();
     final tagsAsync = ref.watch(_tagsProvider);
     final projectsAsync = ref.watch(_projectsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return SingleChildScrollView(
       key: const Key('filter-chips-row'),
@@ -38,7 +40,7 @@ class FilterChipsRow extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 8),
               child: FilterChip(
                 key: Key('priority-chip-${p.name}'),
-                label: Text(priorityLabel(p)),
+                label: Text(priorityLabel(p, l10n)),
                 selected: query.effectivePriorities?.contains(p) ?? false,
                 onSelected: (_) => controller.togglePriority(p),
               ),
@@ -46,7 +48,7 @@ class FilterChipsRow extends ConsumerWidget {
           ),
           FilterChip(
             key: const Key('date-filter-chip'),
-            label: Text(dateFilterLabel(query.dateFilter, now)),
+            label: Text(dateFilterLabel(query.dateFilter, now, l10n)),
             selected: query.dateFilter != null,
             onSelected: (_) async {
               final picked = await DateFilterSheet.show(context, now: now);
@@ -86,7 +88,7 @@ class FilterChipsRow extends ConsumerWidget {
           ),
           ActionChip(
             key: const Key('clear-filters-chip'),
-            label: const Text('Clear'),
+            label: Text(l10n?.searchClearFilters ?? 'Clear'),
             onPressed: controller.clear,
           ),
         ],
@@ -111,14 +113,14 @@ class _StatusMenuChip extends StatelessWidget {
       initialValue: selected,
       onSelected: onSelected,
       child: Chip(
-        label: Text(statusFilterLabel(selected)),
+        label: Text(statusFilterLabel(selected, AppLocalizations.of(context))),
         avatar: const Icon(Icons.filter_list, size: 18),
       ),
       itemBuilder: (context) => StatusFilter.values
           .map(
             (s) => PopupMenuItem(
               value: s,
-              child: Text(statusFilterLabel(s)),
+              child: Text(statusFilterLabel(s, AppLocalizations.of(context))),
             ),
           )
           .toList(),

@@ -182,6 +182,180 @@ abstract class AppLocalizations {
   /// **'Priority'**
   String get taskPriority;
 
+  /// Calendar previous-window button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get calendarPrevious;
+
+  /// Calendar next-window button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get calendarNext;
+
+  /// Calendar button or date label for today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get calendarToday;
+
+  /// Calendar view selector label for day view
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get calendarDay;
+
+  /// Calendar view selector label for week view
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get calendarWeek;
+
+  /// Calendar view selector label for month view
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get calendarMonth;
+
+  /// Calendar view selector label for gantt view
+  ///
+  /// In en, this message translates to:
+  /// **'Gantt'**
+  String get calendarGantt;
+
+  /// Calendar load error message
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {message}'**
+  String calendarLoadError(String message);
+
+  /// Summary text for number of tasks in the current week
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No tasks this week} =1{1 task this week} other{{count} tasks this week}}'**
+  String calendarWeekTaskCount(int count);
+
+  /// Month cell overflow label for hidden tasks
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String calendarMoreTasks(int count);
+
+  /// Hint text for the search input
+  ///
+  /// In en, this message translates to:
+  /// **'Search tasks…'**
+  String get searchHint;
+
+  /// Search empty-state title
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks match your search'**
+  String get searchNoResults;
+
+  /// Search empty-state helper text
+  ///
+  /// In en, this message translates to:
+  /// **'Try different keywords or filters'**
+  String get searchTryDifferentFilters;
+
+  /// Search load error message
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed: {message}'**
+  String searchFailed(String message);
+
+  /// Action chip label to clear search filters
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get searchClearFilters;
+
+  /// Default date filter chip label
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get searchDateFilter;
+
+  /// Search date filter label for today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get searchDateToday;
+
+  /// Search date filter label for this week
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get searchDateThisWeek;
+
+  /// Search date filter label for this month
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get searchDateThisMonth;
+
+  /// Search date filter label for a custom range
+  ///
+  /// In en, this message translates to:
+  /// **'Custom range'**
+  String get searchDateCustomRange;
+
+  /// Search date filter label to clear the selected date
+  ///
+  /// In en, this message translates to:
+  /// **'Clear date filter'**
+  String get searchDateClearFilter;
+
+  /// Search date overlap chip label
+  ///
+  /// In en, this message translates to:
+  /// **'Overlap {range}'**
+  String searchDateOverlap(String range);
+
+  /// Search status filter label for all tasks
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get searchStatusAll;
+
+  /// Search status filter label for incomplete tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Incomplete'**
+  String get searchStatusIncomplete;
+
+  /// Search status filter label for completed tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get searchStatusDone;
+
+  /// Search status filter label for overdue tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get searchStatusOverdue;
+
+  /// Search priority filter label for high priority
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get searchPriorityHigh;
+
+  /// Search priority filter label for medium priority
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get searchPriorityMedium;
+
+  /// Search priority filter label for low priority
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get searchPriorityLow;
+
   /// Title of the Settings page
   ///
   /// In en, this message translates to:
