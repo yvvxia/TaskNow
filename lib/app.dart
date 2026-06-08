@@ -55,16 +55,18 @@ final ThemeData kDarkTheme = ThemeData(
   ),
 );
 
-/// Duration of the cross-fade played when switching between shell routes.
-const Duration kRouteTransitionDuration = Duration(milliseconds: 220);
+/// Duration of the transition played when switching between shell routes.
+const Duration kRouteTransitionDuration = Duration(milliseconds: 260);
 
-/// Wraps [child] in a [CustomTransitionPage] that cross-fades on entry/exit.
+/// Wraps [child] in a [CustomTransitionPage] using a Material "fade-through":
+/// the outgoing page fades fully out over the first part of the animation and
+/// the incoming page fades in only afterwards, so the two pages are never
+/// visible on top of each other at the same time (no overlap / ghosting).
 ///
 /// Applying the transition at the route level (rather than animating the
 /// [ShellRoute] child with an [AnimatedSwitcher]) lets the inner [Navigator]
-/// own the overlap between the outgoing and incoming pages. That avoids the
-/// hard swap that briefly flashed the previous page, without duplicating the
-/// `GlobalKey`s that `go_router` assigns to each page.
+/// own the sequencing, without duplicating the `GlobalKey`s that `go_router`
+/// assigns to each page.
 CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
   return CustomTransitionPage<void>(
     key: state.pageKey,
@@ -72,9 +74,22 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
     reverseTransitionDuration: kRouteTransitionDuration,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      // Incoming page: stay invisible for the first 40%, then fade in.
+      final fadeIn = CurvedAnimation(
+        parent: animation,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+      );
+      // This page when it is being covered by a new route: fade out during
+      // the first 40%, then stay gone.
+      final fadeOut = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+          parent: secondaryAnimation,
+          curve: const Interval(0.0, 0.4, curve: Curves.easeIn),
+        ),
+      );
       return FadeTransition(
-        opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-        child: child,
+        opacity: fadeIn,
+        child: FadeTransition(opacity: fadeOut, child: child),
       );
     },
   );

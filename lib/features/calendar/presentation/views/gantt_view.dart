@@ -175,7 +175,9 @@ class _GanttBody extends StatefulWidget {
 enum _Edge { none, start, end }
 
 class _GanttBodyState extends State<_GanttBody> {
-  static const double _handleWidth = 10;
+  /// Width of the grab zone at each end of a bar that triggers a resize rather
+  /// than a whole-bar move. Wide enough to be easy to hit with a mouse.
+  static const double _handleWidth = 14;
 
   // Active drag bookkeeping (one bar at a time).
   String? _dragId;
@@ -196,60 +198,60 @@ class _GanttBodyState extends State<_GanttBody> {
     return Rect.fromLTRB(left, top, right, top + widget.rowHeight);
   }
 
-  // --- Whole-bar move -------------------------------------------------------
+  /// Rendered width (in px) of [bar], matching the layout used in [_buildBar].
+  double _barWidth(TaskBar bar) =>
+      (_rectFor(bar).width - 2).clamp(GanttView.pxPerDay - 2, double.infinity);
 
-  void _moveStart(String id) {
+  // --- Unified bar drag (move in the middle, resize near the edges) ---------
+  //
+  // A single horizontal-drag recognizer per bar avoids the gesture-arena fight
+  // that previously let the whole-bar move steal drags from the narrow edge
+  // handles. Which operation runs is decided by where the drag begins.
+
+  void _dragStart(TaskBar bar, Offset local) {
     if (!_canDrag) return;
+    final width = _barWidth(bar);
+    final _Edge edge;
+    if (local.dx <= _handleWidth) {
+      edge = _Edge.start;
+    } else if (local.dx >= width - _handleWidth) {
+      edge = _Edge.end;
+    } else {
+      edge = _Edge.none;
+    }
     setState(() {
-      _dragId = id;
-      _edge = _Edge.none;
-      _dragDx = 0;
-    });
-  }
-
-  void _moveUpdate(DragUpdateDetails d) {
-    if (_dragId == null) return;
-    setState(() => _dragDx += d.primaryDelta ?? d.delta.dx);
-  }
-
-  Future<void> _moveEnd(TaskBar bar) async {
-    final id = _dragId;
-    final dx = _dragDx;
-    setState(() {
-      _dragId = null;
-      _dragDx = 0;
-    });
-    _armed = false;
-    if (id == null) return;
-    final days = (dx / GanttView.pxPerDay).round();
-    if (days == 0) return;
-    await widget.onApply(
-      MoveDrag(taskId: id, delta: Duration(days: days)),
-    );
-  }
-
-  // --- Edge resize ----------------------------------------------------------
-
-  void _resizeStart(String id, _Edge edge) {
-    if (!_canDrag) return;
-    setState(() {
-      _dragId = id;
+      _dragId = bar.task.id;
       _edge = edge;
       _dragDx = 0;
     });
   }
 
-  Future<void> _resizeEnd(TaskBar bar, _Edge edge) async {
+  void _dragUpdate(DragUpdateDetails d) {
+    if (_dragId == null) return;
+    setState(() => _dragDx += d.primaryDelta ?? d.delta.dx);
+  }
+
+  Future<void> _dragEnd(TaskBar bar) async {
     final id = _dragId;
     final dx = _dragDx;
-    final wasEdge = _edge;
+    final edge = _edge;
     setState(() {
       _dragId = null;
       _edge = _Edge.none;
       _dragDx = 0;
     });
     _armed = false;
-    if (id == null || wasEdge != edge) return;
+    if (id == null) return;
+
+    if (edge == _Edge.none) {
+      final days = (dx / GanttView.pxPerDay).round();
+      if (days == 0) return;
+      await widget.onApply(
+        MoveDrag(taskId: id, delta: Duration(days: days)),
+      );
+      return;
+    }
+
     final anchor = edge == _Edge.start ? bar.barStart : bar.barEnd;
     final newDate = widget.axis.snapToDay(
       widget.axis.dxToDate(widget.axis.dateToDx(anchor) + dx),
@@ -333,10 +335,25 @@ class _GanttBodyState extends State<_GanttBody> {
     final rect = _rectFor(bar);
     final selected = bar.task.id == widget.selectedTaskId;
     final dragging = _dragId == bar.task.id;
-    final width =
-        (rect.width - 2).clamp(GanttView.pxPerDay - 2, double.infinity);
-    // Live visual offset while moving the whole bar.
-    final visualLeft = rect.left + 1 + (dragging && _edge == _Edge.none ? _dragDx : 0);
+    final baseLeft = rect.left + 1;
+    final baseWidth = _barWidth(bar);
+
+    // Live preview while dragging: move shifts the bar, edge resizes grow or
+    // shrink it from the dragged side.
+    var visualLeft = baseLeft;
+    var width = baseWidth;
+    if (dragging) {
+      switch (_edge) {
+        case _Edge.none:
+          visualLeft += _dragDx;
+        case _Edge.start:
+          visualLeft += _dragDx;
+          width -= _dragDx;
+        case _Edge.end:
+          width += _dragDx;
+      }
+      width = width.clamp(GanttView.pxPerDay - 2, double.infinity);
+    }
 
     return Positioned(
       left: visualLeft,
@@ -347,9 +364,13 @@ class _GanttBodyState extends State<_GanttBody> {
         behavior: HitTestBehavior.opaque,
         onTap: () => widget.onSelect(bar.task.id),
         onLongPress: widget.isDesktop ? null : () => _armed = true,
-        onHorizontalDragStart: (_) => _moveStart(bar.task.id),
-        onHorizontalDragUpdate: _moveUpdate,
-        onHorizontalDragEnd: (_) => _moveEnd(bar),
+        // Pan (not horizontal-drag) so a slightly diagonal mouse/touch drag on
+        // the bar is still captured here instead of being stolen by the
+        // surrounding vertical scroll view. Only the horizontal component is
+        // used (see [_dragUpdate]).
+        onPanStart: (d) => _dragStart(bar, d.localPosition),
+        onPanUpdate: _dragUpdate,
+        onPanEnd: (_) => _dragEnd(bar),
         child: Stack(
           children: [
             Container(
@@ -383,23 +404,21 @@ class _GanttBodyState extends State<_GanttBody> {
     );
   }
 
+  /// Edge affordance: shows a resize cursor on desktop. A bare [MouseRegion]
+  /// only reacts to hover for the cursor and never joins the gesture arena, so
+  /// the drag still falls through to the bar's single recognizer (see
+  /// [_dragStart]) — no gesture-arena conflict.
   Widget _resizeHandle(TaskBar bar, _Edge edge) {
     return Positioned(
+      key: Key('gantt-handle-${edge.name}-${bar.task.id}'),
       left: edge == _Edge.start ? 0 : null,
       right: edge == _Edge.end ? 0 : null,
       top: 0,
       bottom: 0,
       width: _handleWidth,
-      child: GestureDetector(
-        key: Key('gantt-handle-${edge.name}-${bar.task.id}'),
-        behavior: HitTestBehavior.opaque,
-        onHorizontalDragStart: (_) => _resizeStart(bar.task.id, edge),
-        onHorizontalDragUpdate: _moveUpdate,
-        onHorizontalDragEnd: (_) => _resizeEnd(bar, edge),
-        child: const MouseRegion(
-          cursor: SystemMouseCursors.resizeLeftRight,
-          child: SizedBox.expand(),
-        ),
+      child: const MouseRegion(
+        cursor: SystemMouseCursors.resizeLeftRight,
+        child: SizedBox.expand(),
       ),
     );
   }
