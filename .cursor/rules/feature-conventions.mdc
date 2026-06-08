@@ -1,0 +1,44 @@
+---
+description: PlanList feature conventions - every new feature goes l10n + usecase + test
+alwaysApply: true
+---
+
+# Adding a feature: l10n + usecase + test
+
+Every new user-facing feature or behavior change MUST satisfy all three. PRs
+missing any of these are incomplete.
+
+## 1. l10n — no hardcoded user-facing strings
+
+Any text shown to the user goes through `AppLocalizations`, with keys added to
+**both** `lib/l10n/app_en.arb` and `lib/l10n/app_zh.arb`, then regenerated.
+
+```dart
+// BAD: hardcoded, breaks zh/en switching
+Text('No tasks')
+
+// GOOD
+Text(AppLocalizations.of(context)!.emptyTasks)
+```
+
+After editing ARB files, regenerate: `flutter gen-l10n` (or `flutter pub get`).
+Keep `app_en.arb` and `app_zh.arb` key sets in sync — every key in one exists in
+the other.
+
+## 2. usecase — business logic lives in `domain/`, not widgets
+
+New behavior that touches data goes in a `*UseCase` under
+`lib/features/<feature>/domain/`, exposed via a Riverpod `*UseCaseProvider`, and
+called from the presentation layer. Do not call repositories/services directly
+from widgets.
+
+`presentation/` and `domain/` MUST NOT import `data/` or `platform/` — depend on
+`core/contracts` interfaces only (enforced by `tool/check_layer_imports.sh`).
+
+## 3. test — cover the new logic
+
+- Use cases / notifiers / pure logic → unit test under `test/unit/...`.
+- Widgets / pages → widget test (and golden where it already exists) under
+  `test/widget/...`.
+- Mirror the `lib/` path in `test/`. Run `flutter test` before committing.
+- Coverage thresholds (`tool/check_coverage.dart`): domain ≥ 90%, data ≥ 80%.
