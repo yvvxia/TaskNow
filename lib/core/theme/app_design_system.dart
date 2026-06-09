@@ -78,8 +78,9 @@ abstract final class AppDesignSystem {
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: FontWeight.w600,
+            letterSpacing: -0.1,
             color: selected ? palette.primary : palette.onSurfaceVariant,
           );
         }),
@@ -153,32 +154,65 @@ abstract final class AppDesignSystem {
   static TextTheme _textTheme(SemanticPalette palette) {
     return TextTheme(
       titleLarge: TextStyle(
-        fontSize: 22,
+        fontSize: 20,
         fontWeight: FontWeight.w700,
+        letterSpacing: -0.2,
         color: palette.onSurface,
         height: 1.4,
       ),
       titleMedium: TextStyle(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
+        color: palette.onSurface,
+        height: 1.4,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
         color: palette.onSurface,
         height: 1.4,
       ),
       bodyLarge: TextStyle(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.w500,
+        letterSpacing: -0.2,
         color: palette.onSurface,
         height: 1.5,
       ),
       bodyMedium: TextStyle(
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w500,
+        letterSpacing: -0.2,
         color: palette.onSurfaceVariant,
         height: 1.5,
       ),
-      labelSmall: TextStyle(
+      bodySmall: TextStyle(
         fontSize: 11,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.1,
+        color: palette.onSurfaceVariant,
+        height: 1.4,
+      ),
+      labelLarge: TextStyle(
+        fontSize: 13,
         fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
+        color: palette.onSurface,
+        height: 1.4,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        letterSpacing: -0.1,
+        color: palette.onSurfaceVariant,
+        height: 1.4,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.1,
         color: palette.onSurfaceVariant,
         height: 1.4,
       ),
