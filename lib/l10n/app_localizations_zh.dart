@@ -247,6 +247,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutOpenSource => '开源许可';
 
   @override
+  String get aboutFonts => '字体';
+
+  @override
   String get actionSave => '保存';
 
   @override

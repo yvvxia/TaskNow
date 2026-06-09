@@ -20,6 +20,19 @@
 | Priority | red / amber / green | same hues, brighter | Dots + small badges only |
 | Complete | `#94A3B8` | `#64748B` | Strikethrough titles |
 
+## Typography
+
+- **Font** — [MiSans](https://hyperos.mi.com/font/) (Xiaomi), a global free
+  commercial-use font, **bundled** in `assets/fonts/` so Windows and Android
+  share identical CJK + Latin metrics (no reliance on host fonts like
+  Microsoft YaHei).
+- **Weights** — only 400 (Regular) / 500 (Medium) / 600 (Semibold). No 700 bold;
+  hierarchy comes from size + 500/600, keeping the UI light and clean.
+  - Body: 400 · Section / list titles: 500 · Page & app-bar titles: 600.
+- **License note** — per the MiSans IP License, the app must state that MiSans
+  Fonts are used (surface in Settings → About). Font files must not be
+  redistributed on their own.
+
 ## Do / Don't
 
 | Do | Don't |

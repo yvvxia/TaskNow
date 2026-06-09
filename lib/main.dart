@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,6 +29,18 @@ import 'platform/sync/no_op_sync_engine.dart';
 /// lazily and guarded by [NotificationBootstrap].
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // MiSans IP License requires the app to state that MiSans Fonts are used.
+  LicenseRegistry.addLicense(() async* {
+    yield const LicenseEntryWithLineBreaks(
+      <String>['MiSans'],
+      'This application uses MiSans Fonts.\n\n'
+      'MiSans © Xiaomi Inc. — a global free commercial-use font, licensed '
+      'under the MiSans Fonts Intellectual Property License Agreement. The '
+      'font files are bundled unmodified and are not redistributed separately. '
+      'See https://hyperos.mi.com/font/ for the full agreement.',
+    );
+  });
 
   // Data layer — LazyDatabase defers the file/path lookup to first query.
   final AppDatabase db = AppDatabase(openConnection());

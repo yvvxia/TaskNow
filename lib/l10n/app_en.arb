@@ -257,6 +257,9 @@
   "aboutOpenSource": "Open Source Licenses",
   "@aboutOpenSource": {"description": "Link to open source licenses"},
 
+  "aboutFonts": "Fonts",
+  "@aboutFonts": {"description": "About section: font attribution title"},
+
   "actionSave": "Save",
   "@actionSave": {"description": "Save action label"},
 

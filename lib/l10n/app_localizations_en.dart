@@ -248,6 +248,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutOpenSource => 'Open Source Licenses';
 
   @override
+  String get aboutFonts => 'Fonts';
+
+  @override
   String get actionSave => 'Save';
 
   @override

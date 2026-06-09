@@ -530,6 +530,12 @@ abstract class AppLocalizations {
   /// **'Open Source Licenses'**
   String get aboutOpenSource;
 
+  /// About section: font attribution title
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts'**
+  String get aboutFonts;
+
   /// Generic save button
   ///
   /// In en, this message translates to:

@@ -4,11 +4,12 @@ import 'app_radius.dart';
 import 'app_spacing.dart';
 import 'semantic_colors.dart';
 
-/// Primary UI font family (CJK + Latin consistent metrics).
-const String kFontFamily = 'Microsoft YaHei UI';
+/// Primary UI font family: MiSans (bundled, CJK + Latin consistent metrics).
+const String kFontFamily = 'MiSans';
 
+/// System CJK fallbacks if a glyph is missing from MiSans.
 const List<String> kFontFamilyFallback = <String>[
-  'Microsoft YaHei',
+  'Microsoft YaHei UI',
   'PingFang SC',
   'Noto Sans CJK SC',
   'Noto Sans SC',
@@ -148,7 +149,7 @@ abstract final class AppDesignSystem {
       ),
       titleMedium: TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: palette.onSurface,
         height: 1.4,
       ),

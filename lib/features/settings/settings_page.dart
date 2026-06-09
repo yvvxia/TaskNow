@@ -406,6 +406,11 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
           onTap: () {},
         ),
         ListTile(
+          leading: const Icon(Icons.font_download_outlined),
+          title: Text(l10n?.aboutFonts ?? 'Fonts'),
+          subtitle: const Text('MiSans © Xiaomi Inc.'),
+        ),
+        ListTile(
           leading: const Icon(Icons.open_in_new),
           title: Text(l10n?.aboutOpenSource ?? 'Open Source Licenses'),
           onTap: () => showLicensePage(
