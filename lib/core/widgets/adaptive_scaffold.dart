@@ -386,7 +386,14 @@ class _DesktopSidebar extends ConsumerWidget {
       width: width,
       child: Material(
         color: palette.surfaceContainerLow,
-        child: ListView(
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            visualDensity: const VisualDensity(horizontal: -1, vertical: -2),
+            listTileTheme: Theme.of(
+              context,
+            ).listTileTheme.copyWith(minTileHeight: 40),
+          ),
+          child: ListView(
           padding: EdgeInsets.symmetric(vertical: collapsed ? 8 : 0),
           children: <Widget>[
             if (!collapsed)
@@ -640,6 +647,7 @@ class _DesktopSidebar extends ConsumerWidget {
               onTap: () => onNavigate('/settings'),
             ),
           ],
+        ),
         ),
       ),
     );
