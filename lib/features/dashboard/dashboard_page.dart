@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-
 import '../../core/models/project.dart';
 import '../../core/models/task.dart';
+import '../../core/widgets/shell_navigation.dart';
 import '../../l10n/app_localizations.dart';
-import '../calendar/domain/gantt_layout.dart';
 import '../project/project_providers.dart';
+import '../task/presentation/task_list_row.dart';
+import '../task/presentation/task_view.dart';
 import 'dashboard_providers.dart';
 
 /// Home dashboard: today's and upcoming tasks across all projects, grouped
@@ -93,6 +92,7 @@ class _DashboardBody extends ConsumerWidget {
     List<Task> tasks,
     Map<String, Project> projectsById,
   ) {
+    final now = DateTime.now();
     final l10n = AppLocalizations.of(context);
     if (tasks.isEmpty) {
       return [
@@ -109,7 +109,11 @@ class _DashboardBody extends ConsumerWidget {
     }
     return [
       for (final task in tasks)
-        _DashboardTaskTile(task: task, project: projectsById[task.projectId]),
+        TaskListRow(
+          key: Key('dashboard-task-${task.id}'),
+          task: TaskView.from(task, now),
+          onTap: () => openTaskDetail(context, ref, task.id),
+        ),
     ];
   }
 }
@@ -152,45 +156,6 @@ class _SectionHeader extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _DashboardTaskTile extends StatelessWidget {
-  const _DashboardTaskTile({required this.task, required this.project});
-
-  final Task task;
-  final Project? project;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final due = task.dueDate?.toLocal();
-    final dueLabel = due == null
-        ? null
-        : DateFormat.MMMEd(l10n?.localeName).add_jm().format(due);
-    final projectName = project?.name;
-    final dotColor = project == null
-        ? Theme.of(context).colorScheme.outline
-        : (GanttLayout.parseColor(project!.color) ??
-              GanttLayout.projectColor(task.projectId ?? ''));
-
-    return ListTile(
-      key: Key('dashboard-task-${task.id}'),
-      dense: true,
-      leading: Container(
-        width: 10,
-        height: 10,
-        margin: const EdgeInsets.only(top: 6),
-        decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
-      ),
-      title: Text(task.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Text(
-        [?projectName, ?dueLabel].join('  ·  '),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onTap: () => context.go('/task/${task.id}'),
     );
   }
 }

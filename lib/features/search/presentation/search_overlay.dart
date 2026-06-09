@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/widgets/layout_breakpoints.dart';
+import '../../../core/widgets/shell_navigation.dart';
 import '../../../l10n/app_localizations.dart';
 import '../search_controller.dart' as app_search;
 import '../search_providers.dart';
@@ -46,11 +48,13 @@ class _AppSearchOverlayState extends ConsumerState<AppSearchOverlay> {
     // desktop). The popup anchors to this hidden box's top-left.
     final topInset = media.padding.top;
     final isDesktop = screenWidth > _kDesktopBreakpoint;
-    final anchorWidth = isDesktop
-        ? _kDesktopSearchWidth
-        : screenWidth;
+    final isCompact = screenWidth < kCompactBreakpoint;
+    final useFullScreen = _searchFullScreenFlag && isCompact;
+    final anchorWidth = isDesktop ? _kDesktopSearchWidth : screenWidth;
     // Center the capped box on desktop; flush-left (full width) otherwise.
-    final leftOffset = isDesktop ? (screenWidth - _kDesktopSearchWidth) / 2 : 0.0;
+    final leftOffset = isDesktop
+        ? (screenWidth - _kDesktopSearchWidth) / 2
+        : 0.0;
 
     return Stack(
       children: [
@@ -61,8 +65,13 @@ class _AppSearchOverlayState extends ConsumerState<AppSearchOverlay> {
           child: SearchAnchor(
             key: const Key('search-overlay'),
             searchController: widget.searchController,
-            isFullScreen: false,
-            viewConstraints: BoxConstraints(maxWidth: anchorWidth, maxHeight: 480),
+            isFullScreen: useFullScreen,
+            viewConstraints: useFullScreen
+                ? null
+                : BoxConstraints(
+                    maxWidth: anchorWidth,
+                    maxHeight: AppSpacing.searchPopupMaxHeight,
+                  ),
             viewOnOpen: () {
               ref
                   .read(app_search.searchControllerProvider.notifier)
@@ -83,7 +92,7 @@ class _AppSearchOverlayState extends ConsumerState<AppSearchOverlay> {
                   onTaskTap: (taskId) {
                     controller.closeView(controller.text);
                     if (context.mounted) {
-                      context.go('/task/$taskId');
+                      openTaskDetail(context, ref, taskId);
                     }
                   },
                 ),
@@ -101,8 +110,11 @@ class _AppSearchOverlayState extends ConsumerState<AppSearchOverlay> {
   }
 }
 
+bool _searchFullScreenFlag = false;
+
 /// Opens the global search overlay. Used by shell navigation items.
-void openSearchOverlay(SearchController controller) {
+void openSearchOverlay(SearchController controller, {bool fullScreen = false}) {
+  _searchFullScreenFlag = fullScreen;
   controller.openView();
 }
 

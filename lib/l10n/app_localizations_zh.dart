@@ -382,4 +382,117 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get errorEmptyProjectName => '项目名称不能为空';
+
+  @override
+  String get appTitle => 'PlanList';
+
+  @override
+  String get guestAccount => '访客';
+
+  @override
+  String get sidebarCollapse => '折叠侧边栏';
+
+  @override
+  String get selectTaskHint => '选择任务';
+
+  @override
+  String get navTags => '标签';
+
+  @override
+  String get tagsEmpty => '还没有标签';
+
+  @override
+  String get navFilters => '筛选';
+
+  @override
+  String get filterToday => '今天';
+
+  @override
+  String get filterOverdue => '逾期';
+
+  @override
+  String get filterCompleted => '已完成';
+
+  @override
+  String get newTask => '新建任务';
+
+  @override
+  String get taskOverdue => '逾期';
+
+  @override
+  String subtaskCount(int count) {
+    return '$count 个子任务';
+  }
+
+  @override
+  String get priorityHigh => '高';
+
+  @override
+  String get priorityMedium => '中';
+
+  @override
+  String get priorityLow => '低';
+
+  @override
+  String get sortLabel => '排序';
+
+  @override
+  String get filterLabel => '筛选';
+
+  @override
+  String get detailSectionDates => '日期';
+
+  @override
+  String get detailSectionAttributes => '属性';
+
+  @override
+  String get detailSectionSubtasks => '子任务';
+
+  @override
+  String get detailSectionReminders => '提醒';
+
+  @override
+  String get detailSectionRecurrence => '重复';
+
+  @override
+  String get detailSectionNotes => '备注';
+
+  @override
+  String get detailSectionMeta => '信息';
+
+  @override
+  String get remindersComingSoon => '提醒功能即将推出';
+
+  @override
+  String get taskLoading => '加载中…';
+
+  @override
+  String get taskNotFound => '未找到任务';
+
+  @override
+  String get barColorMode => '甘特条配色';
+
+  @override
+  String get barColorPriority => '按优先级';
+
+  @override
+  String get barColorProject => '按项目';
+
+  @override
+  String get defaultCalendarView => '默认日历视图';
+
+  @override
+  String get filterSectionStatus => '状态';
+
+  @override
+  String get filterSectionPriority => '优先级';
+
+  @override
+  String get filterSectionDate => '日期';
+
+  @override
+  String get filterSectionTags => '标签';
+
+  @override
+  String get filterSectionProjects => '项目';
 }

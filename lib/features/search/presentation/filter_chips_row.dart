@@ -30,11 +30,13 @@ class FilterChipsRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
+          _GroupLabel(l10n?.filterSectionStatus ?? 'Status'),
           _StatusMenuChip(
             selected: query.statusFilter,
             onSelected: controller.setStatus,
           ),
           const SizedBox(width: 8),
+          _GroupLabel(l10n?.filterSectionPriority ?? 'Priority'),
           ...Priority.values.map(
             (p) => Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -46,6 +48,7 @@ class FilterChipsRow extends ConsumerWidget {
               ),
             ),
           ),
+          _GroupLabel(l10n?.filterSectionDate ?? 'Date'),
           FilterChip(
             key: const Key('date-filter-chip'),
             label: Text(dateFilterLabel(query.dateFilter, now, l10n)),
@@ -58,6 +61,7 @@ class FilterChipsRow extends ConsumerWidget {
             },
           ),
           const SizedBox(width: 8),
+          _GroupLabel(l10n?.filterSectionTags ?? 'Tags'),
           ...tagsAsync.maybeWhen(
             data: (tags) => tags.map(
               (tag) => Padding(
@@ -72,6 +76,7 @@ class FilterChipsRow extends ConsumerWidget {
             ),
             orElse: () => const <Widget>[],
           ),
+          _GroupLabel(l10n?.filterSectionProjects ?? 'Projects'),
           ...projectsAsync.maybeWhen(
             data: (projects) => projects.map(
               (project) => Padding(
@@ -92,6 +97,25 @@ class FilterChipsRow extends ConsumerWidget {
             onPressed: controller.clear,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _GroupLabel extends StatelessWidget {
+  const _GroupLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }

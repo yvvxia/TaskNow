@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/enums/enums.dart';
-import '../../core/widgets/adaptive_scaffold.dart';
+import '../../core/widgets/shell_navigation.dart';
 import '../../l10n/app_localizations.dart';
-import '../task/presentation/task_detail_body.dart';
 import 'presentation/calendar_view_state_notifier.dart';
 import 'presentation/views/day_view.dart';
 import 'presentation/views/gantt_view.dart';
@@ -75,24 +73,11 @@ class _CalendarBody extends ConsumerWidget {
   final bool forceGantt;
 
   void _onSelect(BuildContext context, WidgetRef ref, String? id) {
-    ref.read(calendarViewStateProvider.notifier).selectTask(id);
-    if (id == null) return;
-
-    final wide = MediaQuery.of(context).size.width >= kExpandedBreakpoint;
-    if (wide) {
-      showDialog<void>(
-        context: context,
-        builder: (_) => Dialog(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420, maxHeight: 640),
-            child: TaskDetailBody(taskId: id),
-          ),
-        ),
-      );
-    } else {
-      final router = GoRouter.maybeOf(context);
-      if (router != null) context.go('/task/$id');
+    if (id == null) {
+      clearTaskDetailSelection(ref);
+      return;
     }
+    openTaskDetail(context, ref, id);
   }
 
   @override

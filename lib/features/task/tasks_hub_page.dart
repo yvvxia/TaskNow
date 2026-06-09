@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../l10n/app_localizations.dart';
 import '../calendar/domain/gantt_layout.dart';
 import '../project/project_providers.dart';
+import '../tag/tag_providers.dart';
 
 /// Mobile/tablet "Tasks hub": overview + expandable project folder listing
 /// every project. Desktop users see the same tree in the sidebar instead.
@@ -25,10 +26,10 @@ class TasksHubPage extends ConsumerWidget {
 
     final l10n = AppLocalizations.of(context);
     final projectsAsync = ref.watch(projectListProvider);
+    final tagsAsync = ref.watch(tagListProvider);
 
     return Scaffold(
       key: const Key('tasks-page'),
-      appBar: AppBar(title: Text(l10n?.navTasks ?? 'Tasks')),
       body: ListView(
         children: [
           ListTile(
@@ -76,6 +77,64 @@ class TasksHubPage extends ConsumerWidget {
                     ),
               ],
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: Text(
+              l10n?.navTags ?? 'Tags',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ),
+          tagsAsync.when(
+            loading: () => const ListTile(title: Text('…')),
+            error: (e, _) => ListTile(title: Text('$e')),
+            data: (tags) {
+              if (tags.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: Text(
+                    l10n?.tagsEmpty ?? 'No tags yet',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                );
+              }
+              return Column(
+                children: [
+                  for (final tag in tags)
+                    ListTile(
+                      key: Key('tasks-hub-tag-${tag.id}'),
+                      leading: const Icon(Icons.label_outline),
+                      title: Text(tag.name),
+                      onTap: () => context.go('/tasks/tag/${tag.id}'),
+                    ),
+                ],
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+            child: Text(
+              l10n?.navFilters ?? 'Filters',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ),
+          ListTile(
+            key: const Key('tasks-hub-filter-today'),
+            leading: const Icon(Icons.today_outlined),
+            title: Text(l10n?.filterToday ?? 'Today'),
+            onTap: () => context.go('/tasks/today'),
+          ),
+          ListTile(
+            key: const Key('tasks-hub-filter-overdue'),
+            leading: const Icon(Icons.warning_amber_outlined),
+            title: Text(l10n?.filterOverdue ?? 'Overdue'),
+            onTap: () => context.go('/tasks/overdue'),
+          ),
+          ListTile(
+            key: const Key('tasks-hub-filter-completed'),
+            leading: const Icon(Icons.check_circle_outline),
+            title: Text(l10n?.filterCompleted ?? 'Completed'),
+            onTap: () => context.go('/tasks/completed'),
           ),
         ],
       ),

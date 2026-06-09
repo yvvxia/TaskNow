@@ -91,6 +91,14 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
     }
   }
 
+  String _readStringSetting(SettingKey<String> key, String fallback) {
+    try {
+      return ref.read(settingsStoreProvider).get(key);
+    } catch (_) {
+      return fallback;
+    }
+  }
+
   String _formatMinutesOfDay(int minutes) {
     final h = minutes ~/ 60;
     final m = minutes % 60;
@@ -119,6 +127,7 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
     Future<void> Function(int) onPicked,
   ) async {
     final controller = TextEditingController(text: current.toString());
+    final l10n = AppLocalizations.of(context);
     final result = await showDialog<int>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -131,14 +140,14 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n?.actionCancel ?? 'Cancel'),
           ),
           TextButton(
             onPressed: () {
               final v = int.tryParse(controller.text);
               if (v != null && v >= 0) Navigator.pop(ctx, v);
             },
-            child: const Text('Save'),
+            child: Text(l10n?.actionSave ?? 'Save'),
           ),
         ],
       ),
@@ -188,6 +197,72 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
                 selected: {settings.themeMode},
                 onSelectionChanged: (set) async {
                   await _setSetting(SettingKeys.themeMode, set.first);
+                },
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n?.barColorMode ?? 'Gantt bar color',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              SegmentedButton<String>(
+                key: const Key('bar-color-segmented-button'),
+                segments: [
+                  ButtonSegment(
+                    value: 'priority',
+                    label: Text(l10n?.barColorPriority ?? 'Priority'),
+                  ),
+                  ButtonSegment(
+                    value: 'project',
+                    label: Text(l10n?.barColorProject ?? 'Project'),
+                  ),
+                ],
+                selected: {
+                  _readStringSetting(SettingKeys.barColorMode, 'priority'),
+                },
+                onSelectionChanged: (set) async {
+                  await _setSetting(SettingKeys.barColorMode, set.first);
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n?.defaultCalendarView ?? 'Default calendar view',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              SegmentedButton<String>(
+                key: const Key('default-calendar-view-button'),
+                segments: [
+                  ButtonSegment(
+                    value: 'week',
+                    label: Text(l10n?.calendarWeek ?? 'Week'),
+                  ),
+                  ButtonSegment(
+                    value: 'month',
+                    label: Text(l10n?.calendarMonth ?? 'Month'),
+                  ),
+                ],
+                selected: {
+                  _readStringSetting(SettingKeys.defaultCalendarView, 'week'),
+                },
+                onSelectionChanged: (set) async {
+                  await _setSetting(SettingKeys.defaultCalendarView, set.first);
+                  setState(() {});
                 },
               ),
             ],

@@ -75,6 +75,17 @@ void main() {
       expect(find.byKey(const Key('theme-segmented-button')), findsOneWidget);
     });
 
+    testWidgets('shows gantt bar color segmented button', (tester) async {
+      await tester.pumpWidget(
+        _buildTestApp(store: _FakeStore(), child: const SettingsPage()),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('bar-color-segmented-button')),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('shows notifications global switch', (tester) async {
       await tester.pumpWidget(
         _buildTestApp(store: _FakeStore(), child: const SettingsPage()),

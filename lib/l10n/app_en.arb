@@ -398,5 +398,124 @@
   "@projectTabGantt": {"description": "Project detail tab: gantt"},
 
   "errorEmptyProjectName": "Project name cannot be empty",
-  "@errorEmptyProjectName": {"description": "Error when a project name is empty"}
+  "@errorEmptyProjectName": {"description": "Error when a project name is empty"},
+
+  "appTitle": "PlanList",
+  "@appTitle": {"description": "Application title shown in the shell header"},
+
+  "guestAccount": "Guest",
+  "@guestAccount": {"description": "Tooltip for the placeholder account avatar"},
+
+  "sidebarCollapse": "Collapse sidebar",
+  "@sidebarCollapse": {"description": "Tooltip for collapsing the desktop sidebar"},
+
+  "selectTaskHint": "Select a task",
+  "@selectTaskHint": {"description": "Placeholder in the desktop detail panel"},
+
+  "navTags": "Tags",
+  "@navTags": {"description": "Sidebar section label for tags"},
+
+  "tagsEmpty": "No tags yet",
+  "@tagsEmpty": {"description": "Empty state when no tags exist"},
+
+  "navFilters": "Filters",
+  "@navFilters": {"description": "Sidebar section label for smart filters"},
+
+  "filterToday": "Today",
+  "@filterToday": {"description": "Smart filter: tasks due today"},
+
+  "filterOverdue": "Overdue",
+  "@filterOverdue": {"description": "Smart filter: overdue tasks"},
+
+  "filterCompleted": "Completed",
+  "@filterCompleted": {"description": "Smart filter: completed tasks"},
+
+  "newTask": "New task",
+  "@newTask": {"description": "Tooltip for the global FAB"},
+
+  "taskOverdue": "Overdue",
+  "@taskOverdue": {"description": "Overdue badge on task rows"},
+
+  "subtaskCount": "{count, plural, =1{1 subtask} other{{count} subtasks}}",
+  "@subtaskCount": {
+    "description": "Subtask count suffix on task rows",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "priorityHigh": "High",
+  "@priorityHigh": {"description": "High priority badge label"},
+
+  "priorityMedium": "Medium",
+  "@priorityMedium": {"description": "Medium priority badge label"},
+
+  "priorityLow": "Low",
+  "@priorityLow": {"description": "Low priority badge label"},
+
+  "sortLabel": "Sort",
+  "@sortLabel": {"description": "List toolbar sort dropdown label"},
+
+  "filterLabel": "Filter",
+  "@filterLabel": {"description": "List toolbar filter dropdown label"},
+
+  "detailSectionDates": "Dates",
+  "@detailSectionDates": {"description": "Task detail section: dates"},
+
+  "detailSectionAttributes": "Attributes",
+  "@detailSectionAttributes": {"description": "Task detail section: priority, project, tags"},
+
+  "detailSectionSubtasks": "Subtasks",
+  "@detailSectionSubtasks": {"description": "Task detail section: subtasks"},
+
+  "detailSectionReminders": "Reminders",
+  "@detailSectionReminders": {"description": "Task detail section: reminders"},
+
+  "detailSectionRecurrence": "Recurrence",
+  "@detailSectionRecurrence": {"description": "Task detail section: recurrence"},
+
+  "detailSectionNotes": "Notes",
+  "@detailSectionNotes": {"description": "Task detail section: notes"},
+
+  "detailSectionMeta": "Info",
+  "@detailSectionMeta": {"description": "Task detail section: created/completed meta"},
+
+  "remindersComingSoon": "Reminders coming soon",
+  "@remindersComingSoon": {"description": "Placeholder for reminders UI"},
+
+  "taskLoading": "Loading…",
+  "@taskLoading": {"description": "Task detail loading state"},
+
+  "taskNotFound": "Task not found",
+  "@taskNotFound": {"description": "Task detail when task is missing"},
+
+  "actionSave": "Save",
+  "@actionSave": {"description": "Generic save button"},
+
+  "barColorMode": "Gantt bar color",
+  "@barColorMode": {"description": "Settings: Gantt bar coloring mode"},
+
+  "barColorPriority": "Priority",
+  "@barColorPriority": {"description": "Gantt bars colored by priority"},
+
+  "barColorProject": "Project",
+  "@barColorProject": {"description": "Gantt bars colored by project"},
+
+  "defaultCalendarView": "Default calendar view",
+  "@defaultCalendarView": {"description": "Settings: default calendar view"},
+
+  "filterSectionStatus": "Status",
+  "@filterSectionStatus": {"description": "Search filter group: status"},
+
+  "filterSectionPriority": "Priority",
+  "@filterSectionPriority": {"description": "Search filter group: priority"},
+
+  "filterSectionDate": "Date",
+  "@filterSectionDate": {"description": "Search filter group: date"},
+
+  "filterSectionTags": "Tags",
+  "@filterSectionTags": {"description": "Search filter group: tags"},
+
+  "filterSectionProjects": "Projects",
+  "@filterSectionProjects": {"description": "Search filter group: projects"}
 }

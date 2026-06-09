@@ -108,8 +108,8 @@ void main() {
       final bars = layout([high, low]);
       final byId = {for (final b in bars) b.task.id: b};
 
-      expect(byId['h']!.color, const Color(0xFFE53935));
-      expect(byId['l']!.color, const Color(0xFF43A047));
+      expect(byId['h']!.color, const Color(0xFFDC2626));
+      expect(byId['l']!.color, const Color(0xFF16A34A));
     });
 
     test('isOverdue is true when due date is before now', () {

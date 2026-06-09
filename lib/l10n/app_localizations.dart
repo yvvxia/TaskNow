@@ -530,7 +530,7 @@ abstract class AppLocalizations {
   /// **'Open Source Licenses'**
   String get aboutOpenSource;
 
-  /// Save action label
+  /// Generic save button
   ///
   /// In en, this message translates to:
   /// **'Save'**
@@ -775,6 +775,228 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Project name cannot be empty'**
   String get errorEmptyProjectName;
+
+  /// Application title shown in the shell header
+  ///
+  /// In en, this message translates to:
+  /// **'PlanList'**
+  String get appTitle;
+
+  /// Tooltip for the placeholder account avatar
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get guestAccount;
+
+  /// Tooltip for collapsing the desktop sidebar
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse sidebar'**
+  String get sidebarCollapse;
+
+  /// Placeholder in the desktop detail panel
+  ///
+  /// In en, this message translates to:
+  /// **'Select a task'**
+  String get selectTaskHint;
+
+  /// Sidebar section label for tags
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get navTags;
+
+  /// Empty state when no tags exist
+  ///
+  /// In en, this message translates to:
+  /// **'No tags yet'**
+  String get tagsEmpty;
+
+  /// Sidebar section label for smart filters
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get navFilters;
+
+  /// Smart filter: tasks due today
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get filterToday;
+
+  /// Smart filter: overdue tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get filterOverdue;
+
+  /// Smart filter: completed tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get filterCompleted;
+
+  /// Tooltip for the global FAB
+  ///
+  /// In en, this message translates to:
+  /// **'New task'**
+  String get newTask;
+
+  /// Overdue badge on task rows
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get taskOverdue;
+
+  /// Subtask count suffix on task rows
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 subtask} other{{count} subtasks}}'**
+  String subtaskCount(int count);
+
+  /// High priority badge label
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get priorityHigh;
+
+  /// Medium priority badge label
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get priorityMedium;
+
+  /// Low priority badge label
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get priorityLow;
+
+  /// List toolbar sort dropdown label
+  ///
+  /// In en, this message translates to:
+  /// **'Sort'**
+  String get sortLabel;
+
+  /// List toolbar filter dropdown label
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filterLabel;
+
+  /// Task detail section: dates
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get detailSectionDates;
+
+  /// Task detail section: priority, project, tags
+  ///
+  /// In en, this message translates to:
+  /// **'Attributes'**
+  String get detailSectionAttributes;
+
+  /// Task detail section: subtasks
+  ///
+  /// In en, this message translates to:
+  /// **'Subtasks'**
+  String get detailSectionSubtasks;
+
+  /// Task detail section: reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get detailSectionReminders;
+
+  /// Task detail section: recurrence
+  ///
+  /// In en, this message translates to:
+  /// **'Recurrence'**
+  String get detailSectionRecurrence;
+
+  /// Task detail section: notes
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get detailSectionNotes;
+
+  /// Task detail section: created/completed meta
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get detailSectionMeta;
+
+  /// Placeholder for reminders UI
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders coming soon'**
+  String get remindersComingSoon;
+
+  /// Task detail loading state
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get taskLoading;
+
+  /// Task detail when task is missing
+  ///
+  /// In en, this message translates to:
+  /// **'Task not found'**
+  String get taskNotFound;
+
+  /// Settings: Gantt bar coloring mode
+  ///
+  /// In en, this message translates to:
+  /// **'Gantt bar color'**
+  String get barColorMode;
+
+  /// Gantt bars colored by priority
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get barColorPriority;
+
+  /// Gantt bars colored by project
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get barColorProject;
+
+  /// Settings: default calendar view
+  ///
+  /// In en, this message translates to:
+  /// **'Default calendar view'**
+  String get defaultCalendarView;
+
+  /// Search filter group: status
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get filterSectionStatus;
+
+  /// Search filter group: priority
+  ///
+  /// In en, this message translates to:
+  /// **'Priority'**
+  String get filterSectionPriority;
+
+  /// Search filter group: date
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get filterSectionDate;
+
+  /// Search filter group: tags
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get filterSectionTags;
+
+  /// Search filter group: projects
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get filterSectionProjects;
 }
 
 class _AppLocalizationsDelegate

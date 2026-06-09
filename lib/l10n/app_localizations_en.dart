@@ -384,4 +384,123 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorEmptyProjectName => 'Project name cannot be empty';
+
+  @override
+  String get appTitle => 'PlanList';
+
+  @override
+  String get guestAccount => 'Guest';
+
+  @override
+  String get sidebarCollapse => 'Collapse sidebar';
+
+  @override
+  String get selectTaskHint => 'Select a task';
+
+  @override
+  String get navTags => 'Tags';
+
+  @override
+  String get tagsEmpty => 'No tags yet';
+
+  @override
+  String get navFilters => 'Filters';
+
+  @override
+  String get filterToday => 'Today';
+
+  @override
+  String get filterOverdue => 'Overdue';
+
+  @override
+  String get filterCompleted => 'Completed';
+
+  @override
+  String get newTask => 'New task';
+
+  @override
+  String get taskOverdue => 'Overdue';
+
+  @override
+  String subtaskCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subtasks',
+      one: '1 subtask',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get priorityHigh => 'High';
+
+  @override
+  String get priorityMedium => 'Medium';
+
+  @override
+  String get priorityLow => 'Low';
+
+  @override
+  String get sortLabel => 'Sort';
+
+  @override
+  String get filterLabel => 'Filter';
+
+  @override
+  String get detailSectionDates => 'Dates';
+
+  @override
+  String get detailSectionAttributes => 'Attributes';
+
+  @override
+  String get detailSectionSubtasks => 'Subtasks';
+
+  @override
+  String get detailSectionReminders => 'Reminders';
+
+  @override
+  String get detailSectionRecurrence => 'Recurrence';
+
+  @override
+  String get detailSectionNotes => 'Notes';
+
+  @override
+  String get detailSectionMeta => 'Info';
+
+  @override
+  String get remindersComingSoon => 'Reminders coming soon';
+
+  @override
+  String get taskLoading => 'Loading…';
+
+  @override
+  String get taskNotFound => 'Task not found';
+
+  @override
+  String get barColorMode => 'Gantt bar color';
+
+  @override
+  String get barColorPriority => 'Priority';
+
+  @override
+  String get barColorProject => 'Project';
+
+  @override
+  String get defaultCalendarView => 'Default calendar view';
+
+  @override
+  String get filterSectionStatus => 'Status';
+
+  @override
+  String get filterSectionPriority => 'Priority';
+
+  @override
+  String get filterSectionDate => 'Date';
+
+  @override
+  String get filterSectionTags => 'Tags';
+
+  @override
+  String get filterSectionProjects => 'Projects';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/enums/enums.dart';
+import '../../../core/theme/semantic_colors.dart';
 import '../../../core/models/task.dart';
 import 'task_bar.dart';
 
@@ -132,11 +133,8 @@ class GanttLayout {
     }
   }
 
-  static Color priorityColor(Priority priority) => switch (priority) {
-    Priority.high => const Color(0xFFE53935),
-    Priority.medium => const Color(0xFFFB8C00),
-    Priority.low => const Color(0xFF43A047),
-  };
+  static Color priorityColor(Priority priority) =>
+      SemanticColors.colorForPriority(priority);
 
   /// Deterministic color derived from a project id (stable hue per project).
   static Color projectColor(String projectId) {

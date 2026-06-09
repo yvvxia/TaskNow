@@ -1,0 +1,175 @@
+import 'package:flutter/material.dart';
+
+import 'app_radius.dart';
+import 'app_spacing.dart';
+import 'semantic_colors.dart';
+
+/// Primary UI font family (CJK + Latin consistent metrics).
+const String kFontFamily = 'Microsoft YaHei UI';
+
+const List<String> kFontFamilyFallback = <String>[
+  'Microsoft YaHei',
+  'PingFang SC',
+  'Noto Sans CJK SC',
+  'Noto Sans SC',
+  'Source Han Sans SC',
+];
+
+/// Single entry point for PlanList visual tokens and [ThemeData] construction.
+abstract final class AppDesignSystem {
+  static ThemeData buildTheme(Brightness brightness) {
+    final palette = SemanticPalette.forBrightness(brightness);
+    final colorScheme = ColorScheme(
+      brightness: brightness,
+      primary: palette.primary,
+      onPrimary: palette.onPrimary,
+      secondary: palette.primary,
+      onSecondary: palette.onPrimary,
+      error: palette.priorityHigh,
+      onError: palette.onPrimary,
+      surface: palette.surface,
+      onSurface: palette.onSurface,
+      surfaceContainerHighest: palette.surfaceContainer,
+      onSurfaceVariant: palette.onSurfaceVariant,
+      outline: palette.outline,
+    );
+
+    final base = ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      fontFamily: kFontFamily,
+      fontFamilyFallback: kFontFamilyFallback,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: palette.surface,
+      canvasColor: palette.surface,
+      dividerColor: palette.outline,
+    );
+
+    return base.copyWith(
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: palette.surface,
+        foregroundColor: palette.onSurface,
+        surfaceTintColor: Colors.transparent,
+        titleTextStyle: TextStyle(
+          fontFamily: kFontFamily,
+          fontFamilyFallback: kFontFamilyFallback,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+          color: palette.onSurface,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        elevation: 0,
+        color: palette.surfaceContainer,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        elevation: 0,
+        height: 64,
+        backgroundColor: palette.surface,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: palette.primary.withValues(alpha: 0.12),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: selected ? palette.primary : palette.onSurfaceVariant,
+          );
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return IconThemeData(
+            color: selected ? palette.primary : palette.onSurfaceVariant,
+            size: 24,
+          );
+        }),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        elevation: 0,
+        backgroundColor: palette.surfaceContainerLow,
+        selectedIconTheme: IconThemeData(color: palette.primary, size: 24),
+        unselectedIconTheme: IconThemeData(
+          color: palette.onSurfaceVariant,
+          size: 24,
+        ),
+        indicatorColor: palette.primary.withValues(alpha: 0.12),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        elevation: 1,
+        backgroundColor: palette.primary,
+        foregroundColor: palette.onPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: palette.surfaceContainer,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: BorderSide(color: palette.outline),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: BorderSide(color: palette.outline),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderSide: BorderSide(color: palette.primary, width: 2),
+        ),
+      ),
+      listTileTheme: ListTileThemeData(
+        minVerticalPadding: AppSpacing.sm,
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        visualDensity: VisualDensity.standard,
+      ),
+      dividerTheme: DividerThemeData(color: palette.outline, thickness: 1),
+      textTheme: _textTheme(palette),
+    );
+  }
+
+  static TextTheme _textTheme(SemanticPalette palette) {
+    return TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: palette.onSurface,
+        height: 1.4,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: palette.onSurface,
+        height: 1.4,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: palette.onSurface,
+        height: 1.5,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: palette.onSurfaceVariant,
+        height: 1.5,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        color: palette.onSurfaceVariant,
+        height: 1.4,
+      ),
+    );
+  }
+}

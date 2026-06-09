@@ -5,6 +5,9 @@ import 'package:plan_list/core/di/providers.dart';
 import 'package:plan_list/core/widgets/adaptive_scaffold.dart';
 
 import '../../fakes/fake_project_repository.dart';
+import '../../helpers/fake_settings_store.dart';
+import '../../fakes/fake_tag_repository.dart';
+import '../../helpers/fakes.dart';
 
 Future<void> _pumpAt(
   WidgetTester tester,
@@ -21,6 +24,8 @@ Future<void> _pumpAt(
     ProviderScope(
       overrides: [
         projectRepositoryProvider.overrideWithValue(FakeProjectRepository()),
+        tagRepositoryProvider.overrideWithValue(FakeTagRepository()),
+        settingsStoreProvider.overrideWithValue(FakeSettingsStore()),
       ],
       child: MaterialApp(
         home: AdaptiveScaffold(
@@ -40,6 +45,8 @@ void main() {
     expect(find.byType(NavigationRail), findsNothing);
     expect(find.byKey(const Key('desktop-sidebar')), findsNothing);
     expect(find.byKey(const Key('content')), findsOneWidget);
+    expect(find.byKey(const Key('shell-fab')), findsOneWidget);
+    expect(find.text('Settings'), findsNothing);
   });
 
   testWidgets('medium (600-1024) renders a NavigationRail', (tester) async {
@@ -71,10 +78,12 @@ void main() {
     expect(selected, '/calendar');
   });
 
-  testWidgets('selected index follows the current location', (tester) async {
+  testWidgets('settings route does not change rail selection index', (
+    tester,
+  ) async {
     await _pumpAt(tester, const Size(800, 800), location: '/settings');
     final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
-    expect(rail.selectedIndex, 3);
+    expect(rail.selectedIndex, 0);
   });
 
   testWidgets('dashboard location highlights the Tasks destination', (

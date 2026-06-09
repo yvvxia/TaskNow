@@ -15,7 +15,7 @@ class CalendarViewStateNotifier extends _$CalendarViewStateNotifier {
   @override
   CalendarViewState build() {
     final now = ref.watch(clockProvider)();
-    const type = CalendarViewType.month;
+    const type = CalendarViewType.week;
     return CalendarViewState(
       type: type,
       anchor: now,

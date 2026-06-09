@@ -72,13 +72,15 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
       ),
     );
 
+    final l10n = AppLocalizations.of(context);
+
     if (task.hasError || task.isLoading) {
-      return const Center(child: Text('Loading…'));
+      return Center(child: Text(l10n?.taskLoading ?? 'Loading…'));
     }
 
     final taskView = task.value;
     if (taskView == null) {
-      return const Center(child: Text('Task not found'));
+      return Center(child: Text(l10n?.taskNotFound ?? 'Task not found'));
     }
 
     _loadTask(taskView.task);
@@ -88,24 +90,36 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title
-          TextField(
-            controller: _titleCtrl,
-            style: Theme.of(context).textTheme.titleLarge,
-            decoration: const InputDecoration(
-              hintText: 'Task title',
-              border: InputBorder.none,
-            ),
-            onChanged: (_) => setState(() => _editing = true),
-            onSubmitted: (_) {
-              _editing = false;
-              _saveTitle();
-            },
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Checkbox(
+                value: taskView.isCompleted,
+                onChanged: (_) async {
+                  await ref
+                      .read(taskListProvider(const AllScope()).notifier)
+                      .toggleComplete(taskView);
+                },
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _titleCtrl,
+                  style: Theme.of(context).textTheme.titleLarge,
+                  decoration: InputDecoration(
+                    hintText: l10n?.newTaskTitle ?? 'Task title',
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (_) => setState(() => _editing = true),
+                  onSubmitted: (_) {
+                    _editing = false;
+                    _saveTitle();
+                  },
+                ),
+              ),
+            ],
           ),
 
-          const Divider(),
-
-          // Dates (optional time-of-day for day-view scheduling)
+          _SectionTitle(l10n?.detailSectionDates ?? 'Dates'),
           _DateTimeRow(
             label: AppLocalizations.of(context)?.taskStartDate ?? 'Start date',
             dateTime: taskView.task.startDate,
@@ -123,16 +137,19 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
             },
           ),
 
-          const Divider(),
-
-          // Priority
+          _SectionTitle(l10n?.detailSectionAttributes ?? 'Attributes'),
           Row(
             children: [
-              const Text('Priority: '),
+              Text('${l10n?.taskPriority ?? 'Priority'}: '),
               DropdownButton<Priority>(
                 value: taskView.task.priority,
                 items: Priority.values
-                    .map((p) => DropdownMenuItem(value: p, child: Text(p.name)))
+                    .map(
+                      (p) => DropdownMenuItem(
+                        value: p,
+                        child: Text(_priorityLabel(l10n, p)),
+                      ),
+                    )
                     .toList(),
                 onChanged: (p) async {
                   if (p == null) return;
@@ -143,10 +160,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
             ],
           ),
 
-          const Divider(),
-
-          // Subtasks
-          Text('Subtasks', style: Theme.of(context).textTheme.titleSmall),
+          _SectionTitle(l10n?.detailSectionSubtasks ?? 'Subtasks'),
           ..._buildSubtasks(context, taskView.task.subtasks),
           _AddSubtaskField(
             onAdd: (title) async {
@@ -159,10 +173,14 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
             },
           ),
 
-          const Divider(),
+          _SectionTitle(l10n?.detailSectionReminders ?? 'Reminders'),
+          ListTile(
+            leading: const Icon(Icons.notifications_outlined),
+            title: Text(l10n?.remindersComingSoon ?? 'Reminders coming soon'),
+            dense: true,
+          ),
 
-          // Recurrence
-          Text('Recurrence', style: Theme.of(context).textTheme.titleSmall),
+          _SectionTitle(l10n?.detailSectionRecurrence ?? 'Recurrence'),
           RecurrencePicker(
             value: taskView.task.recurrence,
             onChanged: (rule) async {
@@ -171,14 +189,12 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
             },
           ),
 
-          const Divider(),
-
-          // Notes
+          _SectionTitle(l10n?.detailSectionNotes ?? 'Notes'),
           TextField(
             controller: _notesCtrl,
             maxLines: null,
-            decoration: const InputDecoration(
-              hintText: 'Add notes…',
+            decoration: InputDecoration(
+              hintText: l10n?.detailSectionNotes ?? 'Notes',
               border: InputBorder.none,
             ),
             onChanged: (_) => setState(() => _editing = true),
@@ -188,9 +204,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
             },
           ),
 
-          const Divider(),
-
-          // Meta
+          _SectionTitle(l10n?.detailSectionMeta ?? 'Info'),
           if (taskView.task.createdAt != null)
             Text(
               'Created: ${taskView.task.createdAt}',
@@ -205,6 +219,12 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
       ),
     );
   }
+
+  String _priorityLabel(AppLocalizations? l10n, Priority p) => switch (p) {
+    Priority.high => l10n?.priorityHigh ?? 'High',
+    Priority.medium => l10n?.priorityMedium ?? 'Medium',
+    Priority.low => l10n?.priorityLow ?? 'Low',
+  };
 
   List<Widget> _buildSubtasks(BuildContext context, List<Subtask> subtasks) {
     return subtasks.map((s) {
@@ -242,6 +262,20 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
   }
 }
 
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, bottom: 8),
+      child: Text(text, style: Theme.of(context).textTheme.titleMedium),
+    );
+  }
+}
+
 /// Date row with an optional time-of-day picker. Stored values are UTC in the
 /// entity; this row displays and edits in local time.
 class _DateTimeRow extends StatelessWidget {
@@ -260,8 +294,9 @@ class _DateTimeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final local = dateTime?.toLocal();
+    final l10n = AppLocalizations.of(context);
     final dateLabel = local == null
-        ? 'None'
+        ? (l10n?.dateNotSet ?? 'Not set')
         : '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
     final timeLabel = local != null && _hasTime(local)
         ? '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}'
@@ -314,12 +349,12 @@ class _DateTimeRow extends StatelessWidget {
                 ),
               );
             },
-            child: Text(timeLabel ?? 'All day'),
+            child: Text(timeLabel ?? (l10n?.allDay ?? 'All day')),
           ),
           if (timeLabel != null)
             IconButton(
-              icon: Icon(Icons.access_time, size: 16),
-              tooltip: 'Clear time (all day)',
+              icon: const Icon(Icons.access_time, size: 16),
+              tooltip: l10n?.clearTime ?? 'Clear time (all day)',
               onPressed: () =>
                   onChanged(DateTime(local.year, local.month, local.day)),
             ),
@@ -327,7 +362,7 @@ class _DateTimeRow extends StatelessWidget {
         if (local != null)
           IconButton(
             icon: const Icon(Icons.clear, size: 16),
-            tooltip: 'Clear date',
+            tooltip: l10n?.dateClear ?? 'Clear',
             onPressed: () => onChanged(null),
           ),
       ],

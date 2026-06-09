@@ -42,4 +42,18 @@ abstract final class SettingKeys {
     'dashboardUpcomingDays',
     7,
   );
+
+  // ── Appearance (extended) ──────────────────────────────────────────────────
+
+  /// 'priority' | 'project' — Gantt bar coloring strategy.
+  static const barColorMode = SettingKey<String>('barColorMode', 'priority');
+
+  /// 'day' | 'week' | 'month' | 'gantt'
+  static const defaultCalendarView = SettingKey<String>(
+    'defaultCalendarView',
+    'week',
+  );
+
+  /// Desktop sidebar collapsed to icon-only rail.
+  static const sidebarCollapsed = SettingKey<bool>('sidebarCollapsed', false);
 }

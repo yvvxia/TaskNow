@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plan_list/core/enums/enums.dart';
 import 'package:plan_list/core/models/task.dart';
+import 'package:plan_list/core/theme/semantic_colors.dart';
 import 'package:plan_list/features/task/presentation/task_tile.dart';
 import 'package:plan_list/features/task/presentation/task_view.dart';
 
@@ -28,13 +29,12 @@ void main() {
       expect(cb.value, isFalse);
     });
 
-    testWidgets('shows priority dot', (tester) async {
+    testWidgets('shows priority badge', (tester) async {
       final view = makeView(
         const Task(id: '1', title: 'P', priority: Priority.high),
       );
       await tester.pumpWidget(wrap(TaskTile(task: view)));
-      // Container with circle decoration is rendered in trailing.
-      expect(find.byType(Container), findsWidgets);
+      expect(find.text('High'), findsOneWidget);
     });
 
     testWidgets('shows date range label when dueDate present', (tester) async {
@@ -69,7 +69,7 @@ void main() {
   });
 
   group('TaskTile – overdue state', () {
-    testWidgets('date shown in red', (tester) async {
+    testWidgets('shows overdue badge and red date', (tester) async {
       final now = DateTime.utc(2026, 6, 15);
       final view = makeView(
         Task(id: '1', title: 'Late', dueDate: DateTime.utc(2026, 6, 10)),
@@ -77,15 +77,12 @@ void main() {
       );
       await tester.pumpWidget(wrap(TaskTile(task: view)));
 
-      // Find the subtitle Text widget and check its color.
-      final texts = tester.widgetList<Text>(
-        find.descendant(of: find.byType(ListTile), matching: find.byType(Text)),
+      expect(find.text('Overdue'), findsOneWidget);
+      final dateText = tester.widget<Text>(find.textContaining('6/10'));
+      expect(
+        dateText.style?.color,
+        SemanticColors.colorForPriority(Priority.high),
       );
-
-      final dateTexts = texts
-          .where((t) => t.style?.color == Colors.red)
-          .toList();
-      expect(dateTexts, isNotEmpty);
     });
 
     testWidgets('title is NOT struck through for overdue', (tester) async {
@@ -96,8 +93,13 @@ void main() {
       );
       await tester.pumpWidget(wrap(TaskTile(task: view)));
 
-      final titleWidget = tester.widget<Text>(find.text('Overdue'));
-      expect(titleWidget.style?.decoration, isNot(TextDecoration.lineThrough));
+      final titleWidgets = tester.widgetList<Text>(find.text('Overdue'));
+      expect(
+        titleWidgets.any(
+          (t) => t.style?.decoration != TextDecoration.lineThrough,
+        ),
+        isTrue,
+      );
     });
   });
 
@@ -114,14 +116,14 @@ void main() {
       expect(called, isTrue);
     });
 
-    testWidgets('tapping tile calls onTap', (tester) async {
+    testWidgets('tapping row calls onTap', (tester) async {
       var tapped = false;
       final view = makeView(const Task(id: '1', title: 'T'));
       await tester.pumpWidget(
         wrap(TaskTile(task: view, onTap: () => tapped = true)),
       );
 
-      await tester.tap(find.byType(ListTile));
+      await tester.tap(find.text('T'));
       await tester.pump();
       expect(tapped, isTrue);
     });

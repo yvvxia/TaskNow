@@ -192,5 +192,49 @@
   "projectTabCalendar": "日历",
   "projectTabGantt": "甘特图",
 
-  "errorEmptyProjectName": "项目名称不能为空"
+  "errorEmptyProjectName": "项目名称不能为空",
+
+  "appTitle": "PlanList",
+  "guestAccount": "访客",
+  "sidebarCollapse": "折叠侧边栏",
+  "selectTaskHint": "选择任务",
+  "navTags": "标签",
+  "tagsEmpty": "还没有标签",
+  "navFilters": "筛选",
+  "filterToday": "今天",
+  "filterOverdue": "逾期",
+  "filterCompleted": "已完成",
+  "newTask": "新建任务",
+  "taskOverdue": "逾期",
+  "subtaskCount": "{count} 个子任务",
+  "@subtaskCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "priorityHigh": "高",
+  "priorityMedium": "中",
+  "priorityLow": "低",
+  "sortLabel": "排序",
+  "filterLabel": "筛选",
+  "detailSectionDates": "日期",
+  "detailSectionAttributes": "属性",
+  "detailSectionSubtasks": "子任务",
+  "detailSectionReminders": "提醒",
+  "detailSectionRecurrence": "重复",
+  "detailSectionNotes": "备注",
+  "detailSectionMeta": "信息",
+  "remindersComingSoon": "提醒功能即将推出",
+  "taskLoading": "加载中…",
+  "taskNotFound": "未找到任务",
+  "actionSave": "保存",
+  "barColorMode": "甘特条配色",
+  "barColorPriority": "按优先级",
+  "barColorProject": "按项目",
+  "defaultCalendarView": "默认日历视图",
+  "filterSectionStatus": "状态",
+  "filterSectionPriority": "优先级",
+  "filterSectionDate": "日期",
+  "filterSectionTags": "标签",
+  "filterSectionProjects": "项目"
 }

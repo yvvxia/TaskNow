@@ -2,6 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/di/clock.dart';
 import '../../../core/di/providers.dart';
+import '../../../core/models/setting_keys.dart';
+import '../../settings/settings_providers.dart';
 import '../../../core/models/task_query.dart';
 import '../../project/project_providers.dart';
 import '../domain/gantt_layout.dart';
@@ -14,7 +16,15 @@ part 'calendar_providers.g.dart';
 /// Active bar-color strategy. Defaults to [BarColorMode.priority]; a future
 /// settings field can drive this without touching consumers.
 @riverpod
-BarColorMode barColorMode(Ref ref) => BarColorMode.priority;
+BarColorMode barColorMode(Ref ref) {
+  ref.watch(settingsNotifierProvider);
+  try {
+    final mode = ref.read(settingsStoreProvider).get(SettingKeys.barColorMode);
+    return mode == 'project' ? BarColorMode.project : BarColorMode.priority;
+  } catch (_) {
+    return BarColorMode.priority;
+  }
+}
 
 /// Map of project id → stored color string, used to color the global calendar
 /// by project.

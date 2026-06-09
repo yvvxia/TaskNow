@@ -21,10 +21,10 @@ void main() {
   }
 
   group('CalendarViewStateNotifier', () {
-    test('initial state is month anchored on today', () {
+    test('initial state is week anchored on today', () {
       final container = makeContainer();
       final state = container.read(calendarViewStateProvider);
-      expect(state.type, CalendarViewType.month);
+      expect(state.type, CalendarViewType.week);
       expect(state.anchor, frozen);
     });
 
@@ -56,22 +56,24 @@ void main() {
       }
     });
 
-    test('next() advances the month anchor', () {
+    test('next() advances the week anchor', () {
       final container = makeContainer();
       final notifier = container.read(calendarViewStateProvider.notifier);
 
+      final before = container.read(calendarViewStateProvider).anchor;
       notifier.next();
-      final state = container.read(calendarViewStateProvider);
-      expect(state.anchor.month, 7);
+      final after = container.read(calendarViewStateProvider).anchor;
+      expect(after.difference(before).inDays, 7);
     });
 
-    test('prev() steps the month anchor back', () {
+    test('prev() steps the week anchor back', () {
       final container = makeContainer();
       final notifier = container.read(calendarViewStateProvider.notifier);
 
+      final before = container.read(calendarViewStateProvider).anchor;
       notifier.prev();
-      final state = container.read(calendarViewStateProvider);
-      expect(state.anchor.month, 5);
+      final after = container.read(calendarViewStateProvider).anchor;
+      expect(before.difference(after).inDays, 7);
     });
 
     test('next() in week view shifts by 7 days', () {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/theme/theme_providers.dart';
 import 'core/widgets/adaptive_scaffold.dart';
 import 'features/calendar/calendar_page.dart';
 import 'features/dashboard/dashboard_page.dart';
@@ -9,53 +10,11 @@ import 'features/project/project_detail_page.dart';
 import 'features/project/projects_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/settings/settings_providers.dart';
+import 'features/task/domain/task_list_scope.dart';
 import 'features/task/task_detail_page.dart';
+import 'features/task/task_list_page.dart';
 import 'features/task/tasks_hub_page.dart';
 import 'l10n/app_localizations.dart';
-
-/// Brand seed color (proposal §5.5 primary `#1976D2`).
-const Color kSeedColor = Color(0xFF1976D2);
-
-/// Primary UI font family.
-///
-/// A single family is used for both Latin and CJK glyphs so mixed
-/// Chinese/English strings render at a consistent visual size. Roboto (the
-/// Flutter default) lacks CJK coverage, so Chinese characters fell back to a
-/// different system font with different metrics — that mismatch is what made
-/// text look like it had inconsistent ("大小字") sizing.
-const String kFontFamily = 'Microsoft YaHei UI';
-
-/// Cross-platform fallbacks for [kFontFamily]. On non-Windows targets the
-/// primary family is absent, so the first available fallback (a full
-/// Latin+CJK family) is used instead.
-const List<String> kFontFamilyFallback = <String>[
-  'Microsoft YaHei',
-  'PingFang SC',
-  'Noto Sans CJK SC',
-  'Noto Sans SC',
-  'Source Han Sans SC',
-];
-
-/// Pre-built light theme. Computed once (rather than on every `build`) because
-/// [ColorScheme.fromSeed] is comparatively expensive and re-running it on each
-/// rebuild contributes to navigation jank.
-final ThemeData kLightTheme = ThemeData(
-  useMaterial3: true,
-  fontFamily: kFontFamily,
-  fontFamilyFallback: kFontFamilyFallback,
-  colorScheme: ColorScheme.fromSeed(seedColor: kSeedColor),
-);
-
-/// Pre-built dark theme. See [kLightTheme].
-final ThemeData kDarkTheme = ThemeData(
-  useMaterial3: true,
-  fontFamily: kFontFamily,
-  fontFamilyFallback: kFontFamilyFallback,
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: kSeedColor,
-    brightness: Brightness.dark,
-  ),
-);
 
 /// Duration of the transition played when switching between shell routes.
 const Duration kRouteTransitionDuration = Duration(milliseconds: 260);
@@ -138,6 +97,28 @@ GoRouter createAppRouter() {
                 _fadePage(state, const TasksHubPage()),
           ),
           GoRoute(
+            path: '/tasks/today',
+            pageBuilder: (context, state) =>
+                _fadePage(state, const TaskListPage(scope: TodayScope())),
+          ),
+          GoRoute(
+            path: '/tasks/overdue',
+            pageBuilder: (context, state) =>
+                _fadePage(state, const TaskListPage(scope: OverdueScope())),
+          ),
+          GoRoute(
+            path: '/tasks/completed',
+            pageBuilder: (context, state) =>
+                _fadePage(state, const TaskListPage(scope: CompletedScope())),
+          ),
+          GoRoute(
+            path: '/tasks/tag/:id',
+            pageBuilder: (context, state) => _fadePage(
+              state,
+              TaskListPage(scope: TagScope(state.pathParameters['id']!)),
+            ),
+          ),
+          GoRoute(
             path: '/settings',
             pageBuilder: (context, state) =>
                 _fadePage(state, const SettingsPage()),
@@ -179,8 +160,8 @@ class PlanListApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'PlanList',
-      theme: kLightTheme,
-      darkTheme: kDarkTheme,
+      theme: ref.watch(appLightThemeProvider),
+      darkTheme: ref.watch(appDarkThemeProvider),
       themeMode: themeMode,
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

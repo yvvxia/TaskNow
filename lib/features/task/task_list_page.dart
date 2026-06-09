@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../core/enums/enums.dart';
+import '../../core/models/project.dart';
 import '../../core/models/task_draft.dart';
+import '../../core/widgets/layout_breakpoints.dart';
+import '../../core/widgets/shell_navigation.dart';
 import '../../l10n/app_localizations.dart';
+import '../project/project_providers.dart';
 import 'domain/delete_task_usecase.dart';
 import 'domain/task_list_scope.dart';
 import 'presentation/add_task_sheet.dart';
@@ -89,12 +93,14 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final tasksState = ref.watch(taskListProvider(widget.scope));
-    final isWide = MediaQuery.of(context).size.width >= 600;
+    final isWide = MediaQuery.of(context).size.width >= kCompactBreakpoint;
+    final isCompact = !isWide;
     final notifier = ref.read(taskListProvider(widget.scope).notifier);
 
     final title = widget.scope is AllScope
         ? (l10n?.tasksTitle ?? widget.scope.label)
         : widget.scope.label;
+    final projects = ref.watch(projectListProvider).asData?.value ?? const [];
 
     // Embedded inside a project tab: an always-present quick-add row plus the
     // list, with no Scaffold/AppBar of its own.
@@ -114,8 +120,17 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
     ];
 
     final showQuickAdd = isWide || widget.embedded;
+    final showListToolbar = isCompact && !widget.embedded;
     final body = Column(
       children: [
+        if (showListToolbar)
+          _ListToolbar(
+            scope: widget.scope,
+            projects: projects,
+            onScopeChanged: (newScope) {
+              // Scope is fixed per route; toolbar filters sort only for now.
+            },
+          ),
         if (widget.embedded && selectionActions.isNotEmpty)
           Align(
             alignment: Alignment.centerRight,
@@ -140,7 +155,8 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
           ),
         Expanded(
           child: tasksState.when(
-            data: (tasks) => _TaskListView(tasks: tasks, notifier: notifier),
+            data: (tasks) =>
+                _TaskListView(tasks: tasks, notifier: notifier, ref: ref),
             loading: () => const SizedBox.shrink(),
             error: (err, _) => const SizedBox.shrink(),
           ),
@@ -148,26 +164,94 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
       ],
     );
 
-    if (widget.embedded) return body;
+    if (widget.embedded || isCompact) return body;
 
     return Scaffold(
       appBar: AppBar(title: Text(title), actions: selectionActions),
       body: body,
-      floatingActionButton: isWide
-          ? null
-          : FloatingActionButton(
-              onPressed: () => _openAddSheet(context),
-              child: const Icon(Icons.add),
+    );
+  }
+}
+
+class _ListToolbar extends ConsumerWidget {
+  const _ListToolbar({
+    required this.scope,
+    required this.projects,
+    required this.onScopeChanged,
+  });
+
+  final TaskListScope scope;
+  final List<Project> projects;
+  final ValueChanged<TaskListScope> onScopeChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final showProject = scope is! ProjectScope;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        children: [
+          if (showProject)
+            Expanded(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: scope is ProjectScope
+                      ? (scope as ProjectScope).projectId
+                      : null,
+                  hint: Text(l10n?.projectLabel ?? 'Project'),
+                  items: [
+                    DropdownMenuItem<String>(
+                      value: null,
+                      child: Text(l10n?.tasksTitle ?? 'All tasks'),
+                    ),
+                    for (final p in projects)
+                      DropdownMenuItem(value: p.id, child: Text(p.name)),
+                  ],
+                  onChanged: (_) {},
+                ),
+              ),
             ),
+          PopupMenuButton<TaskSort>(
+            tooltip: l10n?.sortLabel ?? 'Sort',
+            icon: const Icon(Icons.sort),
+            onSelected: (_) {},
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: TaskSort.dueAsc,
+                child: Text(l10n?.sortLabel ?? 'Sort'),
+              ),
+            ],
+          ),
+          PopupMenuButton<String>(
+            tooltip: l10n?.filterLabel ?? 'Filter',
+            icon: const Icon(Icons.filter_list),
+            onSelected: (_) {},
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'all',
+                child: Text(l10n?.filterLabel ?? 'Filter'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _TaskListView extends StatelessWidget {
-  const _TaskListView({required this.tasks, required this.notifier});
+  const _TaskListView({
+    required this.tasks,
+    required this.notifier,
+    required this.ref,
+  });
 
   final List<TaskView> tasks;
   final TaskListNotifier notifier;
+  final WidgetRef ref;
 
   Future<void> _confirmDelete(BuildContext context, TaskView task) async {
     final l10n = AppLocalizations.of(context);
@@ -211,7 +295,7 @@ class _TaskListView extends StatelessWidget {
           key: Key('task-tile-${task.id}'),
           task: task,
           isSelected: isSelected,
-          onTap: () => context.go('/task/${task.id}'),
+          onTap: () => openTaskDetail(context, ref, task.id),
           onComplete: () => notifier.toggleComplete(task),
           onDelete: () => _confirmDelete(context, task),
           onLongPress: () => notifier.toggleSelect(task.id),

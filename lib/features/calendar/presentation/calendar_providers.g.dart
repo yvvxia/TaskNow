@@ -55,7 +55,7 @@ final class BarColorModeProvider
   }
 }
 
-String _$barColorModeHash() => r'41ae508da1ae79c12513bb1fdff5c868323796a3';
+String _$barColorModeHash() => r'aab10b6b0d273fd4be790440de26b3ab6a981882';
 
 /// Map of project id → stored color string, used to color the global calendar
 /// by project.
@@ -110,7 +110,7 @@ final class ProjectColorsProvider
   }
 }
 
-String _$projectColorsHash() => r'651cd3fe2908f11554fa67a0834b6c1673ee75b6';
+String _$projectColorsHash() => r'4e11a83199ba0eadcbad96ac8d370ed0716080a7';
 
 /// Streams the laid-out task bars for the current visible range, optionally
 /// scoped to a single [projectId] (null = all projects / global calendar).

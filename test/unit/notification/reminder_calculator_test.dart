@@ -79,7 +79,7 @@ void main() {
 
   group('custom', () {
     test('keeps user absolute triggerAt', () {
-      final custom = DateTime.utc(2026, 6, 9, 8);
+      final custom = DateTime.utc(2026, 12, 9, 8);
       final result = calc.compute(
         task(due: DateTime.utc(2026, 6, 10)),
         settings,

@@ -52,6 +52,11 @@ void main() {
     await tester.pumpWidget(wrap(const FilterChipsRow()));
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('clear-filters-chip')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.byKey(const Key('clear-filters-chip')));
     await tester.pumpAndSettle();
 
