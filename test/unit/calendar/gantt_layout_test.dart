@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show Color, DateTimeRange;
+import 'package:flutter/material.dart' show Color, DateTimeRange, HSLColor;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plan_list/core/enums/enums.dart';
 import 'package:plan_list/core/models/task.dart';
@@ -12,7 +12,8 @@ void main() {
   );
   final now = DateTime.utc(2026, 6, 7);
 
-  List<TaskBar> layout(List<Task> tasks, {DateTime? clock}) => GanttLayout.assign(
+  List<TaskBar> layout(List<Task> tasks, {DateTime? clock}) =>
+      GanttLayout.assign(
         tasks,
         range: june,
         now: clock ?? now,
@@ -58,27 +59,32 @@ void main() {
       expect(bars.every((x) => x.rowIndex == 0), isTrue);
     });
 
-    test('single-day fallback: dueDate only → barStart == barEnd == dueDate', () {
-      final due = DateTime.utc(2026, 6, 8);
-      final t = Task(id: 't', title: 'Due only', dueDate: due);
+    test(
+      'single-day fallback: dueDate only → barStart == barEnd == dueDate',
+      () {
+        final due = DateTime.utc(2026, 6, 8);
+        final t = Task(id: 't', title: 'Due only', dueDate: due);
 
-      final bars = layout([t]);
+        final bars = layout([t]);
 
-      expect(bars, hasLength(1));
-      expect(bars.first.barStart, due);
-      expect(bars.first.barEnd, due);
-    });
+        expect(bars, hasLength(1));
+        expect(bars.first.barStart, due);
+        expect(bars.first.barEnd, due);
+      },
+    );
 
-    test('single-day fallback: startDate only → barStart == barEnd == startDate',
-        () {
-      final start = DateTime.utc(2026, 6, 9);
-      final t = Task(id: 't', title: 'Start only', startDate: start);
+    test(
+      'single-day fallback: startDate only → barStart == barEnd == startDate',
+      () {
+        final start = DateTime.utc(2026, 6, 9);
+        final t = Task(id: 't', title: 'Start only', startDate: start);
 
-      final bars = layout([t]);
+        final bars = layout([t]);
 
-      expect(bars.first.barStart, start);
-      expect(bars.first.barEnd, start);
-    });
+        expect(bars.first.barStart, start);
+        expect(bars.first.barEnd, start);
+      },
+    );
 
     test('task with neither start nor due is dropped', () {
       final t = const Task(id: 't', title: 'No dates');
@@ -136,6 +142,134 @@ void main() {
 
       // Both fit in lane 0 (non-overlapping) regardless of input order.
       expect(bars.every((b) => b.rowIndex == 0), isTrue);
+    });
+  });
+
+  group('GanttLayout.assignOneRowPerTask', () {
+    List<TaskBar> oneRow(List<Task> tasks) => GanttLayout.assignOneRowPerTask(
+      tasks,
+      now: now,
+      colorMode: BarColorMode.priority,
+    );
+
+    test('every dated task gets its own consecutive row', () {
+      final bars = oneRow([
+        Task(
+          id: 'a',
+          title: 'A',
+          createdAt: DateTime.utc(2026, 6, 1),
+          dueDate: DateTime.utc(2026, 6, 5),
+        ),
+        Task(
+          id: 'b',
+          title: 'B',
+          createdAt: DateTime.utc(2026, 6, 2),
+          dueDate: DateTime.utc(2026, 6, 5),
+        ),
+      ]);
+
+      expect(bars.map((b) => b.rowIndex).toList(), [0, 1]);
+    });
+
+    test('manual ganttOrder takes priority over creation time', () {
+      final bars = oneRow([
+        Task(
+          id: 'first-created',
+          title: 'first',
+          createdAt: DateTime.utc(2026, 6, 1),
+          dueDate: DateTime.utc(2026, 6, 5),
+          ganttOrder: 1,
+        ),
+        Task(
+          id: 'later-created',
+          title: 'later',
+          createdAt: DateTime.utc(2026, 6, 9),
+          dueDate: DateTime.utc(2026, 6, 5),
+          ganttOrder: 0,
+        ),
+      ]);
+
+      expect(bars.map((b) => b.task.id).toList(), [
+        'later-created',
+        'first-created',
+      ]);
+    });
+
+    test('manually ordered rows sort before unordered ones', () {
+      final bars = oneRow([
+        Task(
+          id: 'unordered',
+          title: 'u',
+          createdAt: DateTime.utc(2026, 6, 1),
+          dueDate: DateTime.utc(2026, 6, 5),
+        ),
+        Task(
+          id: 'ordered',
+          title: 'o',
+          createdAt: DateTime.utc(2026, 6, 9),
+          dueDate: DateTime.utc(2026, 6, 5),
+          ganttOrder: 0,
+        ),
+      ]);
+
+      expect(bars.first.task.id, 'ordered');
+    });
+
+    test('dateless tasks are dropped', () {
+      final bars = oneRow([const Task(id: 'x', title: 'No dates')]);
+      expect(bars, isEmpty);
+    });
+  });
+
+  group('color helpers', () {
+    test('parseColor accepts #RRGGBB, #AARRGGBB and raw hex', () {
+      expect(GanttLayout.parseColor('#FF0000'), const Color(0xFFFF0000));
+      expect(GanttLayout.parseColor('#80FF0000'), const Color(0x80FF0000));
+      expect(GanttLayout.parseColor('00FF00'), const Color(0xFF00FF00));
+    });
+
+    test('parseColor returns null for null/empty/garbage', () {
+      expect(GanttLayout.parseColor(null), isNull);
+      expect(GanttLayout.parseColor('   '), isNull);
+      expect(GanttLayout.parseColor('nope'), isNull);
+    });
+
+    test('project color mode uses the project hue, saturation by priority', () {
+      final high = Task(
+        id: 'h',
+        title: 'H',
+        projectId: 'p1',
+        priority: Priority.high,
+        dueDate: DateTime.utc(2026, 6, 8),
+      );
+      final low = high.copyWith(id: 'l', priority: Priority.low);
+
+      final bars = GanttLayout.assignOneRowPerTask(
+        [high, low],
+        now: now,
+        colorMode: BarColorMode.project,
+        projectColors: const {'p1': '#3366CC'},
+      );
+      final byId = {for (final b in bars) b.task.id: b.color};
+
+      // Same project → same hue; differing priority → differing saturation.
+      final hHsl = HSLColor.fromColor(byId['h']!);
+      final lHsl = HSLColor.fromColor(byId['l']!);
+      expect(hHsl.hue, closeTo(lHsl.hue, 0.5));
+      expect(hHsl.saturation, greaterThan(lHsl.saturation));
+    });
+
+    test('project mode without dates/color falls back deterministically', () {
+      final t = Task(
+        id: 't',
+        title: 'T',
+        projectId: 'pX',
+        dueDate: DateTime.utc(2026, 6, 8),
+      );
+
+      final a = GanttLayout.resolveColor(t, BarColorMode.project);
+      final b = GanttLayout.resolveColor(t, BarColorMode.project);
+      expect(a, b); // stable per project id
     });
   });
 }

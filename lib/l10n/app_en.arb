@@ -4,6 +4,12 @@
   "navTasks": "Tasks",
   "@navTasks": {"description": "Navigation label for Tasks tab"},
 
+  "navDashboard": "Dashboard",
+  "@navDashboard": {"description": "Navigation label for the Dashboard tab"},
+
+  "navProjects": "Projects",
+  "@navProjects": {"description": "Navigation label for the Projects tab"},
+
   "navCalendar": "Calendar",
   "@navCalendar": {"description": "Navigation label for Calendar tab"},
 
@@ -33,6 +39,15 @@
 
   "dateClear": "Clear",
   "@dateClear": {"description": "Button to clear a chosen date"},
+
+  "allDay": "All day",
+  "@allDay": {"description": "Shown when a date has no specific time"},
+
+  "clearTime": "Clear time (all day)",
+  "@clearTime": {"description": "Tooltip to clear a date's time component"},
+
+  "newTaskWithTime": "New task with date & time",
+  "@newTaskWithTime": {"description": "Desktop button to open the full create-task sheet"},
 
   "emptyTaskList": "No tasks here",
   "@emptyTaskList": {"description": "Empty state for the task list"},
@@ -296,5 +311,92 @@
   "@minutesDialog": {"description": "Dialog title for setting reminder minutes"},
 
   "hoursDialog": "Set overdue repeat interval (hours)",
-  "@hoursDialog": {"description": "Dialog title for setting overdue repeat hours"}
+  "@hoursDialog": {"description": "Dialog title for setting overdue repeat hours"},
+
+  "projectLabel": "Project",
+  "@projectLabel": {"description": "Label for the project picker"},
+
+  "calendarCreateTaskHere": "Create task",
+  "@calendarCreateTaskHere": {"description": "Context-menu action to create a task on the selected day"},
+
+  "calendarOpenDay": "Open day",
+  "@calendarOpenDay": {"description": "Context-menu action to open the day view"},
+
+  "dashboardEmpty": "Nothing due. You are all clear!",
+  "@dashboardEmpty": {"description": "Dashboard empty state when there are no relevant tasks"},
+
+  "dashboardSectionEmpty": "Nothing here",
+  "@dashboardSectionEmpty": {"description": "Empty state for an individual dashboard section"},
+
+  "dashboardOverdue": "Overdue",
+  "@dashboardOverdue": {"description": "Dashboard section header for overdue tasks"},
+
+  "dashboardToday": "Today",
+  "@dashboardToday": {"description": "Dashboard section header for today's tasks"},
+
+  "dashboardUpcoming": "Upcoming ({days} days)",
+  "@dashboardUpcoming": {
+    "description": "Dashboard section header for upcoming tasks within N days",
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+
+  "dashboardUpcomingDaysSetting": "Upcoming window",
+  "@dashboardUpcomingDaysSetting": {"description": "Settings label for the dashboard upcoming window length"},
+
+  "dashboardUpcomingDaysValue": "{days, plural, =1{1 day} other{{days} days}}",
+  "@dashboardUpcomingDaysValue": {
+    "description": "Value label for the dashboard upcoming window length",
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+
+  "dashboardUpcomingDaysDialog": "Upcoming window (days)",
+  "@dashboardUpcomingDaysDialog": {"description": "Dialog title for setting the dashboard upcoming window length"},
+
+  "projectsEmpty": "No projects yet. Tap + to create one.",
+  "@projectsEmpty": {"description": "Empty state for the projects list"},
+
+  "projectCreateTitle": "New project",
+  "@projectCreateTitle": {"description": "Title of the create-project dialog"},
+
+  "projectEditTitle": "Edit project",
+  "@projectEditTitle": {"description": "Title of the edit-project dialog"},
+
+  "projectNameLabel": "Project name",
+  "@projectNameLabel": {"description": "Label for the project name field"},
+
+  "projectColorLabel": "Color",
+  "@projectColorLabel": {"description": "Label for the project color picker"},
+
+  "projectDeleteTitle": "Delete project?",
+  "@projectDeleteTitle": {"description": "Title of the delete-project dialog"},
+
+  "projectDeleteMessage": "What should happen to the tasks in \"{name}\"?",
+  "@projectDeleteMessage": {
+    "description": "Body of the delete-project dialog",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+
+  "projectDeleteMoveInbox": "Move to Inbox",
+  "@projectDeleteMoveInbox": {"description": "Delete-project option: move tasks to inbox"},
+
+  "projectDeleteWithTasks": "Delete tasks",
+  "@projectDeleteWithTasks": {"description": "Delete-project option: delete tasks too"},
+
+  "projectTabList": "List",
+  "@projectTabList": {"description": "Project detail tab: task list"},
+
+  "projectTabCalendar": "Calendar",
+  "@projectTabCalendar": {"description": "Project detail tab: calendar"},
+
+  "projectTabGantt": "Gantt",
+  "@projectTabGantt": {"description": "Project detail tab: gantt"},
+
+  "errorEmptyProjectName": "Project name cannot be empty",
+  "@errorEmptyProjectName": {"description": "Error when a project name is empty"}
 }

@@ -152,7 +152,10 @@ void main() {
     );
 
     test('returns draft with same title, notes, project, priority', () {
-      final draft = engine.nextInstance(weeklyTask, after: DateTime.utc(2026, 6, 7));
+      final draft = engine.nextInstance(
+        weeklyTask,
+        after: DateTime.utc(2026, 6, 7),
+      );
       expect(draft, isNotNull);
       expect(draft!.title, 'Weekly review');
       expect(draft.notes, 'Review notes');
@@ -161,14 +164,20 @@ void main() {
     });
 
     test('resets subtask isDone to false', () {
-      final draft = engine.nextInstance(weeklyTask, after: DateTime.utc(2026, 6, 7));
+      final draft = engine.nextInstance(
+        weeklyTask,
+        after: DateTime.utc(2026, 6, 7),
+      );
       expect(draft!.subtasks.length, 2);
       expect(draft.subtasks.every((s) => !s.isDone), isTrue);
     });
 
     test('preserves recurrence rule and tag IDs', () {
       final taskWithTags = weeklyTask.copyWith(tagIds: ['tag-1', 'tag-2']);
-      final draft = engine.nextInstance(taskWithTags, after: DateTime.utc(2026, 6, 7));
+      final draft = engine.nextInstance(
+        taskWithTags,
+        after: DateTime.utc(2026, 6, 7),
+      );
       expect(draft!.recurrence, rule);
       expect(draft.tagIds, ['tag-1', 'tag-2']);
     });
@@ -195,7 +204,10 @@ void main() {
     });
 
     test('preserves start→due delta', () {
-      final draft = engine.nextInstance(weeklyTask, after: DateTime.utc(2026, 6, 7));
+      final draft = engine.nextInstance(
+        weeklyTask,
+        after: DateTime.utc(2026, 6, 7),
+      );
       if (draft!.startDate != null && draft.dueDate != null) {
         final delta = draft.dueDate!.difference(draft.startDate!);
         // Original: Sat→Sun = 1 day

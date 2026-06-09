@@ -9,7 +9,12 @@ void main() {
 
   ProviderContainer makeContainer() {
     final container = ProviderContainer(
-      overrides: [clockProvider.overrideWith((ref) => () => frozen)],
+      overrides: [
+        clockProvider.overrideWith(
+          (ref) =>
+              () => frozen,
+        ),
+      ],
     );
     addTearDown(container.dispose);
     return container;
@@ -97,7 +102,10 @@ void main() {
       final notifier = container.read(calendarViewStateProvider.notifier);
 
       notifier.selectTask('task-1');
-      expect(container.read(calendarViewStateProvider).selectedTaskId, 'task-1');
+      expect(
+        container.read(calendarViewStateProvider).selectedTaskId,
+        'task-1',
+      );
 
       notifier.selectTask(null);
       expect(container.read(calendarViewStateProvider).selectedTaskId, isNull);

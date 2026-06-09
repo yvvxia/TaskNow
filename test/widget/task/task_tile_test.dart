@@ -54,10 +54,7 @@ void main() {
       await tester.pumpWidget(wrap(TaskTile(task: view)));
 
       final titleWidget = tester.widget<Text>(find.text('Done'));
-      expect(
-        titleWidget.style?.decoration,
-        TextDecoration.lineThrough,
-      );
+      expect(titleWidget.style?.decoration, TextDecoration.lineThrough);
     });
 
     testWidgets('checkbox is checked', (tester) async {

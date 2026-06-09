@@ -51,7 +51,7 @@ final class CalendarViewStateNotifierProvider
 }
 
 String _$calendarViewStateNotifierHash() =>
-    r'f5559177466b51f35298942060d03e8a8fcbb386';
+    r'e026629cc38279f04c1986dcdfabee717b739cc3';
 
 /// Owns the shared calendar window: view type, anchor date, derived visible
 /// range, and the currently selected task. Switching the view preserves the

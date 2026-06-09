@@ -36,10 +36,8 @@ abstract class TaskQuery with _$TaskQuery {
   }) = _TaskQuery;
 
   /// Range-overlap query for calendar & Gantt views.
-  factory TaskQuery.rangeOverlap(DateTimeRange range) => TaskQuery(
-        dateFilter: DateFilter.overlap(range),
-        includeCompleted: true,
-      );
+  factory TaskQuery.rangeOverlap(DateTimeRange range) =>
+      TaskQuery(dateFilter: DateFilter.overlap(range), includeCompleted: true);
 
   /// Keyword for FTS, preferring [keyword] then legacy [text].
   String? get effectiveKeyword {

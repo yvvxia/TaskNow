@@ -45,7 +45,10 @@ void main() {
         notificationServiceProvider.overrideWithValue(notif),
         settingsStoreProvider.overrideWithValue(settings),
         projectRepositoryProvider.overrideWithValue(projects),
-        clockProvider.overrideWith((ref) => () => anchor),
+        clockProvider.overrideWith(
+          (ref) =>
+              () => anchor,
+        ),
       ],
     );
   });
@@ -57,9 +60,10 @@ void main() {
     await db.close();
   });
 
-  test('create task → schedules reminder → appears in calendar range',
-      () async {
-    final result = await container.read(createTaskUseCaseProvider).call(
+  test('create task → schedules reminder → appears in calendar range', () async {
+    final result = await container
+        .read(createTaskUseCaseProvider)
+        .call(
           TaskDraft(
             title: 'Write design doc',
             startDate: DateTime.utc(2099, 6, 12),
@@ -71,7 +75,10 @@ void main() {
     // A reminder was scheduled 15 minutes (default advance) before the due
     // date, recorded by the spy notification service.
     expect(notif.scheduled, hasLength(1));
-    expect(notif.scheduled.single.scheduledAt, DateTime.utc(2099, 6, 15, 16, 45));
+    expect(
+      notif.scheduled.single.scheduledAt,
+      DateTime.utc(2099, 6, 15, 16, 45),
+    );
 
     // The task is also persisted in the reminder repository.
     final stored = await reminders.dueBefore(DateTime.utc(2100));
@@ -80,15 +87,17 @@ void main() {
     // And it surfaces as a bar in the calendar's current (month) window.
     // Keep the stream provider alive while we await its first value, otherwise
     // Riverpod auto-disposes it before the future resolves.
-    final sub = container.listen(visibleBarsProvider, (_, _) {});
+    final sub = container.listen(visibleBarsProvider(null), (_, _) {});
     addTearDown(sub.close);
-    final bars = await container.read(visibleBarsProvider.future);
+    final bars = await container.read(visibleBarsProvider(null).future);
     expect(bars, hasLength(1));
     expect(bars.single.task.title, 'Write design doc');
   });
 
   test('completing the task cancels its scheduled reminder', () async {
-    final created = await container.read(createTaskUseCaseProvider).call(
+    final created = await container
+        .read(createTaskUseCaseProvider)
+        .call(
           TaskDraft(
             title: 'Submit report',
             dueDate: DateTime.utc(2099, 6, 20, 12),

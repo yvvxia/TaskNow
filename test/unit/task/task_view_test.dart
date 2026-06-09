@@ -14,11 +14,7 @@ void main() {
     });
 
     test('incomplete past dueDate → TaskStatus.overdue', () {
-      final task = Task(
-        id: '1',
-        title: 'T',
-        dueDate: DateTime.utc(2026, 6, 6),
-      );
+      final task = Task(id: '1', title: 'T', dueDate: DateTime.utc(2026, 6, 6));
       expect(task.statusAt(fixedNow), TaskStatus.overdue);
     });
 
@@ -138,11 +134,7 @@ void main() {
     });
 
     test('statusLabel for overdue shows "Overdue"', () {
-      final task = Task(
-        id: '1',
-        title: 'T',
-        dueDate: DateTime.utc(2026, 6, 1),
-      );
+      final task = Task(id: '1', title: 'T', dueDate: DateTime.utc(2026, 6, 1));
       final view = TaskView.from(task, fixedNow);
       expect(view.statusLabel, 'Overdue');
     });

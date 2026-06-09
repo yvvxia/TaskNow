@@ -47,12 +47,11 @@ class _QuickAddBarState extends State<QuickAddBar> {
         child: TextField(
           controller: _ctrl,
           decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)?.addTaskHint ??
+            hintText:
+                AppLocalizations.of(context)?.addTaskHint ??
                 'Add a task… (press Enter)',
             prefixIcon: const Icon(Icons.add),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             isDense: true,
             suffixIcon: IconButton(
               icon: const Icon(Icons.send),

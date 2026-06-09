@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/calendar/domain/gantt_layout.dart';
+import '../../features/project/project_providers.dart';
+import '../../features/search/presentation/search_overlay.dart' as search_ui;
 import '../../l10n/app_localizations.dart';
 
 /// A navigation destination shown in the adaptive shell.
@@ -23,7 +27,7 @@ class AdaptiveDestination {
         return l10n.navTasks;
       case '/calendar':
         return l10n.navCalendar;
-      case '/search':
+      case search_ui.kSearchOverlayRoute:
         return l10n.navSearch;
       case '/settings':
         return l10n.navSettings;
@@ -35,9 +39,9 @@ class AdaptiveDestination {
 
 /// Top-level navigation destinations, shared across all layout sizes.
 const List<AdaptiveDestination> kAdaptiveDestinations = <AdaptiveDestination>[
-  AdaptiveDestination('/tasks', Icons.checklist, 'Tasks'),
+  AdaptiveDestination('/tasks', Icons.task_alt_outlined, 'Tasks'),
   AdaptiveDestination('/calendar', Icons.calendar_month, 'Calendar'),
-  AdaptiveDestination('/search', Icons.search, 'Search'),
+  AdaptiveDestination(search_ui.kSearchOverlayRoute, Icons.search, 'Search'),
   AdaptiveDestination('/settings', Icons.settings, 'Settings'),
 ];
 
@@ -47,16 +51,23 @@ const double kCompactBreakpoint = 600;
 /// Width above which the expanded (desktop) layout is used.
 const double kExpandedBreakpoint = 1024;
 
+/// Whether [location] belongs to the Tasks group (overview, hub, projects).
+bool isTasksGroupLocation(String location) {
+  return location.startsWith('/dashboard') ||
+      location.startsWith('/projects') ||
+      location.startsWith('/tasks') ||
+      location.startsWith('/task/');
+}
+
 /// Responsive application shell.
 ///
 /// * `< 600dp`  → compact: bottom [NavigationBar].
 /// * `600–1024dp` → medium: [NavigationRail] + content.
-/// * `> 1024dp` → expanded: sidebar + content + right detail panel.
+/// * `> 1024dp` → expanded: sidebar tree + content + right detail panel.
 ///
-/// This widget is intentionally router-agnostic: the current [location] and the
-/// [onDestinationSelected] callback are injected by the caller (the
-/// `go_router` `ShellRoute`), which keeps it trivially testable in isolation.
-class AdaptiveScaffold extends StatelessWidget {
+/// Search is an overlay (not a route). The Tasks group nests Overview and
+/// Projects on desktop (sidebar tree) and on mobile/tablet ([/tasks] hub).
+class AdaptiveScaffold extends ConsumerStatefulWidget {
   const AdaptiveScaffold({
     super.key,
     required this.child,
@@ -70,37 +81,63 @@ class AdaptiveScaffold extends StatelessWidget {
   /// The current router location, used to highlight the active destination.
   final String location;
 
-  /// Invoked with the target route when a destination is selected.
+  /// Invoked with the target route when a routable destination is selected.
   final ValueChanged<String> onDestinationSelected;
 
+  @override
+  ConsumerState<AdaptiveScaffold> createState() => _AdaptiveScaffoldState();
+}
+
+class _AdaptiveScaffoldState extends ConsumerState<AdaptiveScaffold> {
+  final SearchController _searchController = SearchController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   int get _selectedIndex {
-    final index = kAdaptiveDestinations
-        .indexWhere((d) => location.startsWith(d.route));
+    if (widget.location.startsWith('/calendar')) return 1;
+    if (widget.location.startsWith('/settings')) return 3;
+    if (isTasksGroupLocation(widget.location)) return 0;
+    final index = kAdaptiveDestinations.indexWhere(
+      (d) => widget.location.startsWith(d.route),
+    );
     return index < 0 ? 0 : index;
   }
 
-  void _selectIndex(int index) =>
-      onDestinationSelected(kAdaptiveDestinations[index].route);
+  void _selectIndex(int index) {
+    final dest = kAdaptiveDestinations[index];
+    if (dest.route == search_ui.kSearchOverlayRoute) {
+      search_ui.openSearchOverlay(_searchController);
+      return;
+    }
+    widget.onDestinationSelected(dest.route);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        if (width < kCompactBreakpoint) {
-          return _buildCompact(context);
-        }
-        if (width <= kExpandedBreakpoint) {
-          return _buildMedium(context);
-        }
-        return _buildExpanded(context);
-      },
+    return search_ui.AppSearchOverlay(
+      searchController: _searchController,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
+          if (width < kCompactBreakpoint) {
+            return _buildCompact(context);
+          }
+          if (width <= kExpandedBreakpoint) {
+            return _buildMedium(context);
+          }
+          return _buildExpanded(context);
+        },
+      ),
     );
   }
 
   Widget _buildCompact(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: child),
+      body: SafeArea(child: widget.child),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _selectIndex,
@@ -132,7 +169,7 @@ class AdaptiveScaffold extends StatelessWidget {
             ],
           ),
           const VerticalDivider(width: 1),
-          Expanded(child: child),
+          Expanded(child: widget.child),
         ],
       ),
     );
@@ -143,11 +180,12 @@ class AdaptiveScaffold extends StatelessWidget {
       body: Row(
         children: <Widget>[
           _DesktopSidebar(
-            selectedIndex: _selectedIndex,
-            onSelect: _selectIndex,
+            location: widget.location,
+            onNavigate: widget.onDestinationSelected,
+            onOpenSearch: () => search_ui.openSearchOverlay(_searchController),
           ),
           const VerticalDivider(width: 1),
-          Expanded(flex: 2, child: child),
+          Expanded(flex: 2, child: widget.child),
           const VerticalDivider(width: 1),
           const _DetailPanel(),
         ],
@@ -156,17 +194,30 @@ class AdaptiveScaffold extends StatelessWidget {
   }
 }
 
-class _DesktopSidebar extends StatelessWidget {
-  const _DesktopSidebar({required this.selectedIndex, required this.onSelect});
+class _DesktopSidebar extends ConsumerWidget {
+  const _DesktopSidebar({
+    required this.location,
+    required this.onNavigate,
+    required this.onOpenSearch,
+  });
 
-  final int selectedIndex;
-  final ValueChanged<int> onSelect;
+  final String location;
+  final ValueChanged<String> onNavigate;
+  final VoidCallback onOpenSearch;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final projectsAsync = ref.watch(projectListProvider);
+    final tasksActive = isTasksGroupLocation(location);
+    final calendarActive = location.startsWith('/calendar');
+    final settingsActive = location.startsWith('/settings');
+    final overviewActive = location.startsWith('/dashboard');
+    final projectsActive = location.startsWith('/projects');
+
     return SizedBox(
       key: const Key('desktop-sidebar'),
-      width: 240,
+      width: 260,
       child: ListView(
         children: <Widget>[
           const DrawerHeader(
@@ -175,13 +226,95 @@ class _DesktopSidebar extends StatelessWidget {
               child: Text('PlanList'),
             ),
           ),
-          for (var i = 0; i < kAdaptiveDestinations.length; i++)
-            ListTile(
-              leading: Icon(kAdaptiveDestinations[i].icon),
-              title: Text(kAdaptiveDestinations[i].localizedLabel(context)),
-              selected: i == selectedIndex,
-              onTap: () => onSelect(i),
-            ),
+          ExpansionTile(
+            key: const Key('sidebar-tasks'),
+            initiallyExpanded: true,
+            leading: const Icon(Icons.task_alt_outlined),
+            title: Text(l10n?.navTasks ?? 'Tasks'),
+            iconColor: tasksActive
+                ? Theme.of(context).colorScheme.primary
+                : null,
+            children: [
+              ListTile(
+                key: const Key('sidebar-overview'),
+                contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                leading: const Icon(Icons.dashboard_outlined, size: 20),
+                title: Text(l10n?.navDashboard ?? 'Dashboard'),
+                selected: overviewActive,
+                onTap: () => onNavigate('/dashboard'),
+              ),
+              projectsAsync.when(
+                loading: () => const ListTile(
+                  contentPadding: EdgeInsets.only(left: 32),
+                  title: Text('…'),
+                ),
+                error: (e, _) => ListTile(
+                  contentPadding: const EdgeInsets.only(left: 32),
+                  title: Text('$e'),
+                ),
+                data: (projects) => ExpansionTile(
+                  key: const Key('sidebar-projects'),
+                  initiallyExpanded: true,
+                  // Same left indent as the Overview tile so Projects and
+                  // Overview read as siblings (both second-level under Tasks).
+                  tilePadding: const EdgeInsets.only(left: 32, right: 16),
+                  childrenPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.folder_outlined, size: 20),
+                  title: Text(l10n?.navProjects ?? 'Projects'),
+                  iconColor: projectsActive
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
+                  children: [
+                    if (projects.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(48, 0, 16, 8),
+                        child: Text(
+                          l10n?.projectsEmpty ?? 'No projects yet',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      )
+                    else
+                      for (final p in projects)
+                        ListTile(
+                          key: Key('sidebar-project-${p.id}'),
+                          contentPadding: const EdgeInsets.only(
+                            left: 48,
+                            right: 16,
+                          ),
+                          dense: true,
+                          leading: CircleAvatar(
+                            radius: 8,
+                            backgroundColor:
+                                GanttLayout.parseColor(p.color) ??
+                                GanttLayout.projectColor(p.id),
+                          ),
+                          title: Text(p.name),
+                          selected: location.startsWith('/projects/${p.id}'),
+                          onTap: () => onNavigate('/projects/${p.id}'),
+                        ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          ListTile(
+            leading: const Icon(Icons.calendar_month),
+            title: Text(l10n?.navCalendar ?? 'Calendar'),
+            selected: calendarActive,
+            onTap: () => onNavigate('/calendar'),
+          ),
+          ListTile(
+            key: const Key('sidebar-search'),
+            leading: const Icon(Icons.search),
+            title: Text(l10n?.navSearch ?? 'Search'),
+            onTap: onOpenSearch,
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: Text(l10n?.navSettings ?? 'Settings'),
+            selected: settingsActive,
+            onTap: () => onNavigate('/settings'),
+          ),
         ],
       ),
     );

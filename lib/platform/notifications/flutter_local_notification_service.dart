@@ -13,9 +13,8 @@ import '../../features/notification/domain/notification_action_type.dart';
 
 /// Android / iOS / Windows local notification implementation.
 class FlutterLocalNotificationService implements INotificationService {
-  FlutterLocalNotificationService({
-    FlutterLocalNotificationsPlugin? plugin,
-  }) : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationService({FlutterLocalNotificationsPlugin? plugin})
+    : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
   final _actionController = StreamController<NotificationAction>.broadcast();
@@ -62,8 +61,10 @@ class FlutterLocalNotificationService implements INotificationService {
     }
 
     if (!kIsWeb && Platform.isAndroid) {
-      final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+      final androidPlugin = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       _exactAlarmsAllowed =
           await androidPlugin?.requestExactAlarmsPermission() ?? false;
     }
@@ -94,19 +95,23 @@ class FlutterLocalNotificationService implements INotificationService {
     if (kIsWeb) return false;
 
     if (Platform.isAndroid) {
-      final android = _plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      final granted =
-          await android?.requestNotificationsPermission() ?? false;
+      final android = _plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      final granted = await android?.requestNotificationsPermission() ?? false;
       _exactAlarmsAllowed =
           await android?.requestExactAlarmsPermission() ?? false;
       return granted;
     }
 
     if (Platform.isIOS) {
-      final ios = _plugin.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>();
-      final granted = await ios?.requestPermissions(
+      final ios = _plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      final granted =
+          await ios?.requestPermissions(
             alert: true,
             badge: true,
             sound: true,

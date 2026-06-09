@@ -74,10 +74,16 @@ void main() {
   });
 
   test('findInRange returns only intersecting tasks', () async {
-    final inside =
-        await create('inside', start: DateTime.utc(2026, 6, 3), due: DateTime.utc(2026, 6, 4));
-    await create('outside',
-        start: DateTime.utc(2026, 7, 1), due: DateTime.utc(2026, 7, 2));
+    final inside = await create(
+      'inside',
+      start: DateTime.utc(2026, 6, 3),
+      due: DateTime.utc(2026, 6, 4),
+    );
+    await create(
+      'outside',
+      start: DateTime.utc(2026, 7, 1),
+      due: DateTime.utc(2026, 7, 2),
+    );
 
     final res = await repo.findInRange(
       DateTimeRange(

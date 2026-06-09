@@ -36,7 +36,8 @@ class EmptyState extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    message ?? l10n?.searchNoResults ??
+                    message ??
+                        l10n?.searchNoResults ??
                         'No tasks match your search',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleMedium,

@@ -77,7 +77,7 @@ final class TaskListNotifierProvider
   }
 }
 
-String _$taskListNotifierHash() => r'e1597ec69ed7719afc18754ceadd1bde43027d7d';
+String _$taskListNotifierHash() => r'94576857931a3745429033ac2f8a69e0a459d10f';
 
 /// Riverpod-backed list notifier. Streams [TaskView] items for a given
 /// [TaskListScope]. Exposes [complete], [toggleSubtask], and [delete] actions.

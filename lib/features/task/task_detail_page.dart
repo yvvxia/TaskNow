@@ -79,8 +79,7 @@ class TaskDetailPage extends ConsumerWidget {
             ),
         ],
       ),
-      body:
-          hasScope ? TaskDetailBody(taskId: taskId) : const SizedBox.shrink(),
+      body: hasScope ? TaskDetailBody(taskId: taskId) : const SizedBox.shrink(),
     );
   }
 }

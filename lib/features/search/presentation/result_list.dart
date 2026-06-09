@@ -33,8 +33,7 @@ class ResultList extends StatelessWidget {
           task: task,
           keyword: keyword,
           onTap: onTaskTap == null ? null : () => onTaskTap!(task.id),
-          onComplete:
-              onComplete == null ? null : () => onComplete!(task.id),
+          onComplete: onComplete == null ? null : () => onComplete!(task.id),
         );
       },
     );
@@ -111,10 +110,7 @@ class _SearchResultTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (task.subtaskBadge.isNotEmpty)
-              Text(
-                task.subtaskBadge,
-                style: theme.textTheme.labelSmall,
-              ),
+              Text(task.subtaskBadge, style: theme.textTheme.labelSmall),
             const SizedBox(width: 6),
             _PriorityDot(priority: task.priority),
           ],
@@ -127,10 +123,7 @@ class _SearchResultTile extends StatelessWidget {
     if (task.dateRangeLabel.isEmpty) return null;
     return Text(
       task.dateRangeLabel,
-      style: TextStyle(
-        color: isOverdue ? Colors.red : null,
-        fontSize: 12,
-      ),
+      style: TextStyle(color: isOverdue ? Colors.red : null, fontSize: 12),
     );
   }
 }
@@ -187,10 +180,8 @@ class HighlightedTitle extends StatelessWidget {
         children: buildHighlightSpans(
           text,
           keyword,
-          spanBuilder: (segment, {required isMatch}) => TextSpan(
-            text: segment,
-            style: isMatch ? highlightStyle : null,
-          ),
+          spanBuilder: (segment, {required isMatch}) =>
+              TextSpan(text: segment, style: isMatch ? highlightStyle : null),
         ),
       ),
     );

@@ -41,11 +41,7 @@ void main() {
 
   Task futureTask() {
     final due = DateTime.now().toUtc().add(const Duration(days: 2));
-    return Task(
-      id: 'task-1',
-      title: 'Future task',
-      dueDate: due,
-    );
+    return Task(id: 'task-1', title: 'Future task', dueDate: due);
   }
 
   test('sync cancels old notifications before scheduling', () async {

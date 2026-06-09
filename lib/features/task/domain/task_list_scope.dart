@@ -20,7 +20,8 @@ final class ProjectScope extends TaskListScope {
   final String name;
 
   @override
-  TaskQuery toQuery() => TaskQuery(projectId: projectId, sort: TaskSort.dueDate);
+  TaskQuery toQuery() =>
+      TaskQuery(projectId: projectId, sort: TaskSort.dueDate);
 
   @override
   String get label => name;
@@ -47,8 +48,7 @@ final class TagScope extends TaskListScope {
   String get label => name;
 
   @override
-  bool operator ==(Object other) =>
-      other is TagScope && other.tagId == tagId;
+  bool operator ==(Object other) => other is TagScope && other.tagId == tagId;
 
   @override
   int get hashCode => tagId.hashCode;

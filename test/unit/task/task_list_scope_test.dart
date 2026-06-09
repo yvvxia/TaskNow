@@ -47,17 +47,11 @@ void main() {
 
   group('TaskListScope equality', () {
     test('same ProjectScope instances are equal', () {
-      expect(
-        const ProjectScope('p1'),
-        equals(const ProjectScope('p1')),
-      );
+      expect(const ProjectScope('p1'), equals(const ProjectScope('p1')));
     });
 
     test('different ProjectScope projectIds are not equal', () {
-      expect(
-        const ProjectScope('p1'),
-        isNot(equals(const ProjectScope('p2'))),
-      );
+      expect(const ProjectScope('p1'), isNot(equals(const ProjectScope('p2'))));
     });
 
     test('same TagScope instances are equal', () {

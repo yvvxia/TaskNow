@@ -99,7 +99,15 @@ final class RecurrenceEngine {
     final lastDayOfMonth = DateTime(year, month + 1, 0).day;
     final day = targetDay.clamp(1, lastDayOfMonth);
 
-    return DateTime.utc(year, month, day, from.hour, from.minute, from.second,
-        from.millisecond, from.microsecond);
+    return DateTime.utc(
+      year,
+      month,
+      day,
+      from.hour,
+      from.minute,
+      from.second,
+      from.millisecond,
+      from.microsecond,
+    );
   }
 }

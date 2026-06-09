@@ -2,43 +2,20 @@
 // `doc/proposal.md` §4.2 so they stay stable for persistence and sync.
 
 /// Task priority. Lower index = higher priority (matches proposal: HIGH = 0).
-enum Priority {
-  high,
-  medium,
-  low,
-}
+enum Priority { high, medium, low }
 
 /// Task lifecycle status. `overdue` is a derived state computed by the
 /// scheduler when a task is past due and still incomplete.
-enum TaskStatus {
-  incomplete,
-  complete,
-  overdue,
-}
+enum TaskStatus { incomplete, complete, overdue }
 
 /// Type of a reminder, controlling how its trigger time is computed.
-enum ReminderType {
-  beforeDue,
-  atStart,
-  custom,
-  overdue,
-}
+enum ReminderType { beforeDue, atStart, custom, overdue }
 
 /// Recurrence frequency for repeating tasks.
-enum RecurrenceFrequency {
-  daily,
-  weekly,
-  monthly,
-  custom,
-}
+enum RecurrenceFrequency { daily, weekly, monthly, custom }
 
 /// Calendar / Gantt view granularity.
-enum CalendarViewType {
-  day,
-  week,
-  month,
-  gantt,
-}
+enum CalendarViewType { day, week, month, gantt }
 
 /// Sort order options for task lists (proposal §3.1.4).
 /// Legacy values (`dueDate`, `priority`, `createdAt`) remain for module 02;
@@ -64,9 +41,4 @@ enum ProjectDeleteMode {
 }
 
 /// Status emitted by the (Phase 2) sync engine.
-enum SyncStatus {
-  idle,
-  syncing,
-  success,
-  error,
-}
+enum SyncStatus { idle, syncing, success, error }

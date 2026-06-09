@@ -31,6 +31,17 @@ class CalendarViewStateNotifier extends _$CalendarViewStateNotifier {
     );
   }
 
+  /// Opens the day view anchored on [day] (used when a calendar cell is
+  /// tapped). Anchors on local midnight of the tapped day.
+  void openDay(DateTime day) {
+    final anchor = DateTime(day.year, day.month, day.day);
+    state = state.copyWith(
+      type: CalendarViewType.day,
+      anchor: anchor,
+      visibleRange: CalendarWindow.rangeFor(CalendarViewType.day, anchor),
+    );
+  }
+
   /// Advances to the next day/week/month/window.
   void next() => _shift(1);
 

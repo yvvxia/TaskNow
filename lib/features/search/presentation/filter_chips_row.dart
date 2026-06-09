@@ -98,10 +98,7 @@ class FilterChipsRow extends ConsumerWidget {
 }
 
 class _StatusMenuChip extends StatelessWidget {
-  const _StatusMenuChip({
-    required this.selected,
-    required this.onSelected,
-  });
+  const _StatusMenuChip({required this.selected, required this.onSelected});
 
   final StatusFilter selected;
   final ValueChanged<StatusFilter> onSelected;

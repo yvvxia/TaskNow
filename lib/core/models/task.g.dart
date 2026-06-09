@@ -30,6 +30,7 @@ _Task _$TaskFromJson(Map<String, dynamic> json) => _Task(
       $enumDecodeNullable(_$TaskStatusEnumMap, json['status']) ??
       TaskStatus.incomplete,
   sortOrder: (json['sortOrder'] as num?)?.toInt() ?? 0,
+  ganttOrder: (json['ganttOrder'] as num?)?.toInt(),
   recurrenceRuleId: json['recurrenceRuleId'] as String?,
   recurrenceParent: json['recurrenceParent'] as String?,
   autoCompleteOnSubtasks: json['autoCompleteOnSubtasks'] as bool? ?? false,
@@ -66,6 +67,7 @@ Map<String, dynamic> _$TaskToJson(_Task instance) => <String, dynamic>{
   'priority': _$PriorityEnumMap[instance.priority]!,
   'status': _$TaskStatusEnumMap[instance.status]!,
   'sortOrder': instance.sortOrder,
+  'ganttOrder': instance.ganttOrder,
   'recurrenceRuleId': instance.recurrenceRuleId,
   'recurrenceParent': instance.recurrenceParent,
   'autoCompleteOnSubtasks': instance.autoCompleteOnSubtasks,

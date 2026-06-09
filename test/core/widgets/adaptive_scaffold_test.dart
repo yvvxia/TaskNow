@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:plan_list/core/di/providers.dart';
 import 'package:plan_list/core/widgets/adaptive_scaffold.dart';
+
+import '../../fakes/fake_project_repository.dart';
 
 Future<void> _pumpAt(
   WidgetTester tester,
@@ -14,11 +18,16 @@ Future<void> _pumpAt(
   addTearDown(tester.view.resetDevicePixelRatio);
 
   await tester.pumpWidget(
-    MaterialApp(
-      home: AdaptiveScaffold(
-        location: location,
-        onDestinationSelected: onSelect ?? (_) {},
-        child: const Text('content', key: Key('content')),
+    ProviderScope(
+      overrides: [
+        projectRepositoryProvider.overrideWithValue(FakeProjectRepository()),
+      ],
+      child: MaterialApp(
+        home: AdaptiveScaffold(
+          location: location,
+          onDestinationSelected: onSelect ?? (_) {},
+          child: const Text('content', key: Key('content')),
+        ),
       ),
     ),
   );
@@ -41,8 +50,9 @@ void main() {
     expect(find.byKey(const Key('content')), findsOneWidget);
   });
 
-  testWidgets('expanded (>1024) renders sidebar + detail panel',
-      (tester) async {
+  testWidgets('expanded (>1024) renders sidebar + detail panel', (
+    tester,
+  ) async {
     await _pumpAt(tester, const Size(1400, 900));
     expect(find.byKey(const Key('desktop-sidebar')), findsOneWidget);
     expect(find.byKey(const Key('detail-panel')), findsOneWidget);
@@ -51,8 +61,9 @@ void main() {
     expect(find.byKey(const Key('content')), findsOneWidget);
   });
 
-  testWidgets('selecting a destination in compact invokes the callback',
-      (tester) async {
+  testWidgets('selecting a destination in compact invokes the callback', (
+    tester,
+  ) async {
     String? selected;
     await _pumpAt(tester, const Size(400, 800), onSelect: (r) => selected = r);
     await tester.tap(find.text('Calendar'));
@@ -66,19 +77,40 @@ void main() {
     expect(rail.selectedIndex, 3);
   });
 
-  testWidgets('unknown location falls back to the first destination',
-      (tester) async {
+  testWidgets('dashboard location highlights the Tasks destination', (
+    tester,
+  ) async {
+    await _pumpAt(tester, const Size(800, 800), location: '/dashboard');
+    final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
+    expect(rail.selectedIndex, 0);
+  });
+
+  testWidgets('unknown location falls back to the first destination', (
+    tester,
+  ) async {
     await _pumpAt(tester, const Size(800, 800), location: '/unknown');
     final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
     expect(rail.selectedIndex, 0);
   });
 
-  testWidgets('tapping a sidebar item in expanded invokes the callback',
-      (tester) async {
+  testWidgets('tapping Search opens overlay instead of navigating', (
+    tester,
+  ) async {
     String? selected;
-    await _pumpAt(tester, const Size(1400, 900), onSelect: (r) => selected = r);
+    await _pumpAt(tester, const Size(400, 800), onSelect: (r) => selected = r);
     await tester.tap(find.text('Search'));
     await tester.pumpAndSettle();
-    expect(selected, '/search');
+    expect(selected, isNull);
+    expect(find.byKey(const Key('search-overlay')), findsOneWidget);
+  });
+
+  testWidgets('expanded sidebar shows tasks tree with overview and projects', (
+    tester,
+  ) async {
+    await _pumpAt(tester, const Size(1400, 900));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('sidebar-tasks')), findsOneWidget);
+    expect(find.byKey(const Key('sidebar-overview')), findsOneWidget);
+    expect(find.byKey(const Key('sidebar-projects')), findsOneWidget);
   });
 }

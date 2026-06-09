@@ -39,9 +39,7 @@ void main() {
   test('reconcileOnLaunch reschedules missing pending notifications', () async {
     final due = DateTime.now().toUtc().add(const Duration(days: 1));
     const taskId = 'reconcile-task';
-    tasks.seed([
-      Task(id: taskId, title: 'Reconcile me', dueDate: due),
-    ]);
+    tasks.seed([Task(id: taskId, title: 'Reconcile me', dueDate: due)]);
     await reminders.replaceForTask(taskId, [
       Reminder(
         id: 'r1',

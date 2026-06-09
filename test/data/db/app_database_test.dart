@@ -16,8 +16,8 @@ void main() {
     return rows.map((r) => r.read<String>('name')).toSet();
   }
 
-  test('schemaVersion is 1', () {
-    expect(db.schemaVersion, 1);
+  test('schemaVersion is 2', () {
+    expect(db.schemaVersion, 2);
   });
 
   test('first run seeds the default Inbox project', () async {
@@ -57,7 +57,9 @@ void main() {
 
   test('start_date <= due_date check constraint is enforced', () async {
     final nowMs = DateTime.utc(2026).millisecondsSinceEpoch;
-    Future<void> insertBad() => db.into(db.tasks).insert(
+    Future<void> insertBad() => db
+        .into(db.tasks)
+        .insert(
           TasksCompanion.insert(
             id: 'bad',
             title: 'invalid range',
@@ -70,13 +72,19 @@ void main() {
     await expectLater(insertBad(), throwsA(isA<SqliteException>()));
   });
 
-  test('migration placeholder: a fresh database opens at version 1', () async {
-    // Until schemaVersion > 1 there are no upgrade steps; opening the database
-    // must succeed and run onCreate (verified by the seed/index tests above).
+  test('a fresh database runs onCreate at the current schema version', () async {
+    // A fresh database goes straight through onCreate (no upgrade steps), so it
+    // must open and expose the latest schema, including the v2 gantt_order
+    // column on tasks.
     final fresh = newTestDb();
     addTearDown(fresh.close);
-    final result =
-        await fresh.customSelect('SELECT 1 AS ok').getSingle();
+    final result = await fresh.customSelect('SELECT 1 AS ok').getSingle();
     expect(result.read<int>('ok'), 1);
+
+    final cols = await fresh
+        .customSelect("SELECT name FROM pragma_table_info('tasks')")
+        .get();
+    final names = cols.map((r) => r.read<String>('name')).toSet();
+    expect(names, contains('gantt_order'));
   });
 }

@@ -68,9 +68,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
     final task = allState.whenData(
       (list) => list.firstWhere(
         (v) => v.id == widget.taskId,
-        orElse: () => list.isEmpty
-            ? throw StateError('not found')
-            : list.first,
+        orElse: () => list.isEmpty ? throw StateError('not found') : list.first,
       ),
     );
 
@@ -107,19 +105,19 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
 
           const Divider(),
 
-          // Dates
-          _DateRow(
+          // Dates (optional time-of-day for day-view scheduling)
+          _DateTimeRow(
             label: AppLocalizations.of(context)?.taskStartDate ?? 'Start date',
-            date: taskView.task.startDate,
-            onPicked: (d) async {
+            dateTime: taskView.task.startDate,
+            onChanged: (d) async {
               final updated = _task!.copyWith(startDate: d);
               await ref.read(updateTaskUseCaseProvider).call(updated);
             },
           ),
-          _DateRow(
+          _DateTimeRow(
             label: AppLocalizations.of(context)?.taskDueDate ?? 'Due date',
-            date: taskView.task.dueDate,
-            onPicked: (d) async {
+            dateTime: taskView.task.dueDate,
+            onChanged: (d) async {
               final updated = _task!.copyWith(dueDate: d);
               await ref.read(updateTaskUseCaseProvider).call(updated);
             },
@@ -134,12 +132,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
               DropdownButton<Priority>(
                 value: taskView.task.priority,
                 items: Priority.values
-                    .map(
-                      (p) => DropdownMenuItem(
-                        value: p,
-                        child: Text(p.name),
-                      ),
-                    )
+                    .map((p) => DropdownMenuItem(value: p, child: Text(p.name)))
                     .toList(),
                 onChanged: (p) async {
                   if (p == null) return;
@@ -153,10 +146,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
           const Divider(),
 
           // Subtasks
-          Text(
-            'Subtasks',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+          Text('Subtasks', style: Theme.of(context).textTheme.titleSmall),
           ..._buildSubtasks(context, taskView.task.subtasks),
           _AddSubtaskField(
             onAdd: (title) async {
@@ -172,10 +162,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
           const Divider(),
 
           // Recurrence
-          Text(
-            'Recurrence',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+          Text('Recurrence', style: Theme.of(context).textTheme.titleSmall),
           RecurrencePicker(
             value: taskView.task.recurrence,
             onChanged: (rule) async {
@@ -255,19 +242,31 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
   }
 }
 
-class _DateRow extends StatelessWidget {
-  const _DateRow({
+/// Date row with an optional time-of-day picker. Stored values are UTC in the
+/// entity; this row displays and edits in local time.
+class _DateTimeRow extends StatelessWidget {
+  const _DateTimeRow({
     required this.label,
-    required this.date,
-    required this.onPicked,
+    required this.dateTime,
+    required this.onChanged,
   });
 
   final String label;
-  final DateTime? date;
-  final ValueChanged<DateTime?> onPicked;
+  final DateTime? dateTime;
+  final ValueChanged<DateTime?> onChanged;
+
+  bool _hasTime(DateTime local) => local.hour != 0 || local.minute != 0;
 
   @override
   Widget build(BuildContext context) {
+    final local = dateTime?.toLocal();
+    final dateLabel = local == null
+        ? 'None'
+        : '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+    final timeLabel = local != null && _hasTime(local)
+        ? '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}'
+        : null;
+
     return Row(
       children: [
         Text('$label: '),
@@ -275,22 +274,61 @@ class _DateRow extends StatelessWidget {
           onPressed: () async {
             final picked = await showDatePicker(
               context: context,
-              initialDate: date ?? DateTime.now(),
+              initialDate: local ?? DateTime.now(),
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
             );
-            onPicked(picked);
+            if (picked == null) return;
+            if (local == null) {
+              onChanged(picked);
+              return;
+            }
+            // Keep existing time, swap the calendar day.
+            onChanged(
+              DateTime(
+                picked.year,
+                picked.month,
+                picked.day,
+                local.hour,
+                local.minute,
+              ),
+            );
           },
-          child: Text(
-            date == null
-                ? 'None'
-                : '${date!.year}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}',
-          ),
+          child: Text(dateLabel),
         ),
-        if (date != null)
+        if (local != null) ...[
+          TextButton(
+            onPressed: () async {
+              final picked = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(local),
+              );
+              if (picked == null) return;
+              onChanged(
+                DateTime(
+                  local.year,
+                  local.month,
+                  local.day,
+                  picked.hour,
+                  picked.minute,
+                ),
+              );
+            },
+            child: Text(timeLabel ?? 'All day'),
+          ),
+          if (timeLabel != null)
+            IconButton(
+              icon: Icon(Icons.access_time, size: 16),
+              tooltip: 'Clear time (all day)',
+              onPressed: () =>
+                  onChanged(DateTime(local.year, local.month, local.day)),
+            ),
+        ],
+        if (local != null)
           IconButton(
             icon: const Icon(Icons.clear, size: 16),
-            onPressed: () => onPicked(null),
+            tooltip: 'Clear date',
+            onPressed: () => onChanged(null),
           ),
       ],
     );

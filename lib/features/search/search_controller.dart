@@ -70,10 +70,7 @@ class SearchController extends _$SearchController {
   }
 
   void setProjects(Set<String> projectIds) {
-    state = state.copyWith(
-      projectIds: projectIds,
-      projectId: null,
-    );
+    state = state.copyWith(projectIds: projectIds, projectId: null);
   }
 
   void toggleProject(String projectId) {

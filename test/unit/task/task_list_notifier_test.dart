@@ -33,7 +33,10 @@ void main() {
         taskRepositoryProvider.overrideWithValue(repo),
         reminderRepositoryProvider.overrideWithValue(reminders),
         notificationServiceProvider.overrideWithValue(notif),
-        clockProvider.overrideWith((ref) => () => clock),
+        clockProvider.overrideWith(
+          (ref) =>
+              () => clock,
+        ),
       ],
     );
   }
@@ -47,16 +50,16 @@ void main() {
     final container = makeContainer();
     addTearDown(container.dispose);
 
-    final sub = container.listen(
-      taskListProvider(const AllScope()),
-      (_, _) {},
-    );
+    final sub = container.listen(taskListProvider(const AllScope()), (_, _) {});
 
     // Wait for stream to emit.
     await Future<void>.delayed(const Duration(milliseconds: 50));
 
     final state = container.read(taskListProvider(const AllScope()));
-    expect(state.value?.map((v) => v.title), containsAll(['Task One', 'Task Two']));
+    expect(
+      state.value?.map((v) => v.title),
+      containsAll(['Task One', 'Task Two']),
+    );
 
     sub.close();
   });
@@ -64,11 +67,7 @@ void main() {
   test('isOverdue derived correctly when clock is past dueDate', () async {
     final overdueClock = DateTime.utc(2026, 6, 15);
     repo.seed([
-      Task(
-        id: 't1',
-        title: 'Overdue task',
-        dueDate: DateTime.utc(2026, 6, 10),
-      ),
+      Task(id: 't1', title: 'Overdue task', dueDate: DateTime.utc(2026, 6, 10)),
     ]);
 
     final container = makeContainer(frozenClock: overdueClock);
@@ -84,11 +83,7 @@ void main() {
   test('isOverdue false when clock is before dueDate', () async {
     final earlyNow = DateTime.utc(2026, 6, 5);
     repo.seed([
-      Task(
-        id: 't1',
-        title: 'Future task',
-        dueDate: DateTime.utc(2026, 6, 10),
-      ),
+      Task(id: 't1', title: 'Future task', dueDate: DateTime.utc(2026, 6, 10)),
     ]);
 
     final container = makeContainer(frozenClock: earlyNow);
@@ -106,12 +101,9 @@ void main() {
     addTearDown(container.dispose);
 
     final emitted = <int>[];
-    final sub = container.listen(
-      taskListProvider(const AllScope()),
-      (_, next) {
-        if (next.value != null) emitted.add(next.value!.length);
-      },
-    );
+    final sub = container.listen(taskListProvider(const AllScope()), (_, next) {
+      if (next.value != null) emitted.add(next.value!.length);
+    });
 
     await repo.create(const TaskDraft(title: 'Seed'));
     repo.seed([const Task(id: 't1', title: 'Seeded')]);

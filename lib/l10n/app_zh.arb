@@ -2,6 +2,8 @@
   "@@locale": "zh",
 
   "navTasks": "任务",
+  "navDashboard": "概览",
+  "navProjects": "项目",
   "navCalendar": "日历",
   "navSearch": "搜索",
   "navSettings": "设置",
@@ -13,6 +15,9 @@
   "taskDueDate": "截止日期",
   "dateNotSet": "未设置",
   "dateClear": "清除",
+  "allDay": "全天",
+  "clearTime": "清除时间（全天）",
+  "newTaskWithTime": "新建任务（含日期时间）",
   "emptyTaskList": "暂无任务",
   "createAction": "创建",
   "taskPriority": "优先级",
@@ -143,5 +148,49 @@
   "errorPermission": "权限被拒绝",
 
   "minutesDialog": "设置提醒提前时间（分钟）",
-  "hoursDialog": "设置逾期重复间隔（小时）"
+  "hoursDialog": "设置逾期重复间隔（小时）",
+
+  "projectLabel": "项目",
+  "calendarCreateTaskHere": "创建任务",
+  "calendarOpenDay": "打开当天",
+
+  "dashboardEmpty": "没有待办，一切就绪！",
+  "dashboardSectionEmpty": "暂无内容",
+  "dashboardOverdue": "已逾期",
+  "dashboardToday": "今天",
+  "dashboardUpcoming": "即将截止（{days} 天内）",
+  "@dashboardUpcoming": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "dashboardUpcomingDaysSetting": "即将截止范围",
+  "dashboardUpcomingDaysValue": "{days, plural, =1{1 天} other{{days} 天}}",
+  "@dashboardUpcomingDaysValue": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "dashboardUpcomingDaysDialog": "即将截止范围（天）",
+
+  "projectsEmpty": "还没有项目，点击 + 新建。",
+  "projectCreateTitle": "新建项目",
+  "projectEditTitle": "编辑项目",
+  "projectNameLabel": "项目名称",
+  "projectColorLabel": "颜色",
+  "projectDeleteTitle": "删除项目？",
+  "projectDeleteMessage": "“{name}”中的任务如何处理？",
+  "@projectDeleteMessage": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "projectDeleteMoveInbox": "移至收件箱",
+  "projectDeleteWithTasks": "连同任务删除",
+
+  "projectTabList": "列表",
+  "projectTabCalendar": "日历",
+  "projectTabGantt": "甘特图",
+
+  "errorEmptyProjectName": "项目名称不能为空"
 }

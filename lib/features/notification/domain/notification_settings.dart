@@ -34,7 +34,7 @@ class NotificationSettings {
 
   /// Minimal [AppSettings] view for [ReminderCalculator.compute].
   AppSettings toAppSettings() => AppSettings(
-        notificationsEnabled: notificationsEnabled,
-        defaultReminderMinutes: defaultAdvanceMin,
-      );
+    notificationsEnabled: notificationsEnabled,
+    defaultReminderMinutes: defaultAdvanceMin,
+  );
 }

@@ -21,12 +21,14 @@ void main() {
     expect(all.valueOrNull!.map((t) => t.name), contains('urgent'));
   });
 
-  test('duplicate tag name violates UNIQUE and yields a persistence error',
-      () async {
-    await repo.create('dup');
-    final res = await repo.create('dup');
-    expect(res.errorOrNull, isA<PersistenceException>());
-  });
+  test(
+    'duplicate tag name violates UNIQUE and yields a persistence error',
+    () async {
+      await repo.create('dup');
+      final res = await repo.create('dup');
+      expect(res.errorOrNull, isA<PersistenceException>());
+    },
+  );
 
   test('delete removes the tag', () async {
     final tag = (await repo.create('temp')).valueOrNull!;

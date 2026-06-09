@@ -20,8 +20,14 @@ void main() {
       parseNotificationActionType('markDone'),
       NotificationActionType.markDone,
     );
-    expect(parseNotificationActionType('done'), NotificationActionType.markDone);
-    expect(parseNotificationActionType('snooze'), NotificationActionType.snooze);
+    expect(
+      parseNotificationActionType('done'),
+      NotificationActionType.markDone,
+    );
+    expect(
+      parseNotificationActionType('snooze'),
+      NotificationActionType.snooze,
+    );
     expect(parseNotificationActionType('open'), NotificationActionType.open);
     expect(parseNotificationActionType('unknown'), isNull);
   });
@@ -48,7 +54,8 @@ void main() {
     final taskId = repo.items.single.id;
 
     await NotificationActionHandler(
-      completeTask: (id) => container.read(completeTaskUseCaseProvider).call(id),
+      completeTask: (id) =>
+          container.read(completeTaskUseCaseProvider).call(id),
       snooze: container.read(snoozeReminderUseCaseProvider),
       router: router,
     ).handle(taskId, NotificationActionType.markDone);
@@ -73,7 +80,8 @@ void main() {
     final taskId = repo.items.single.id;
 
     await NotificationActionHandler(
-      completeTask: (id) => container.read(completeTaskUseCaseProvider).call(id),
+      completeTask: (id) =>
+          container.read(completeTaskUseCaseProvider).call(id),
       snooze: container.read(snoozeReminderUseCaseProvider),
       router: container.read(routerProvider),
     ).handle(taskId, NotificationActionType.snooze);

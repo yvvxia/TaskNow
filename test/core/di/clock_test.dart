@@ -19,9 +19,7 @@ void main() {
   test('clockProvider can be overridden with a fixed clock', () {
     final fixed = DateTime.utc(2026, 6, 7, 2, 28);
     final container = ProviderContainer(
-      overrides: [
-        clockProvider.overrideWithValue(() => fixed),
-      ],
+      overrides: [clockProvider.overrideWithValue(() => fixed)],
     );
     addTearDown(container.dispose);
 

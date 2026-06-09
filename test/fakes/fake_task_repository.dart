@@ -121,6 +121,18 @@ class FakeTaskRepository implements ITaskRepository {
     });
   }
 
+  @override
+  Future<Result<void>> setGanttOrder(Map<String, int> orderByTaskId) async {
+    for (final entry in orderByTaskId.entries) {
+      final idx = _items.indexWhere((t) => t.id == entry.key);
+      if (idx != -1) {
+        _items[idx] = _items[idx].copyWith(ganttOrder: entry.value);
+      }
+    }
+    _emit();
+    return const Ok<void>(null);
+  }
+
   List<Task> _applyQuery(List<Task> tasks, TaskQuery query) {
     return tasks.where((t) {
       if (query.status != null && t.status != query.status) return false;

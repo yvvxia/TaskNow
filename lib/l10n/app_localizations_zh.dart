@@ -12,6 +12,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navTasks => '任务';
 
   @override
+  String get navDashboard => '概览';
+
+  @override
+  String get navProjects => '项目';
+
+  @override
   String get navCalendar => '日历';
 
   @override
@@ -40,6 +46,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dateClear => '清除';
+
+  @override
+  String get allDay => '全天';
+
+  @override
+  String get clearTime => '清除时间（全天）';
+
+  @override
+  String get newTaskWithTime => '新建任务（含日期时间）';
 
   @override
   String get emptyTaskList => '暂无任务';
@@ -283,4 +298,88 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hoursDialog => '设置逾期重复间隔（小时）';
+
+  @override
+  String get projectLabel => '项目';
+
+  @override
+  String get calendarCreateTaskHere => '创建任务';
+
+  @override
+  String get calendarOpenDay => '打开当天';
+
+  @override
+  String get dashboardEmpty => '没有待办，一切就绪！';
+
+  @override
+  String get dashboardSectionEmpty => '暂无内容';
+
+  @override
+  String get dashboardOverdue => '已逾期';
+
+  @override
+  String get dashboardToday => '今天';
+
+  @override
+  String dashboardUpcoming(int days) {
+    return '即将截止（$days 天内）';
+  }
+
+  @override
+  String get dashboardUpcomingDaysSetting => '即将截止范围';
+
+  @override
+  String dashboardUpcomingDaysValue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days 天',
+      one: '1 天',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dashboardUpcomingDaysDialog => '即将截止范围（天）';
+
+  @override
+  String get projectsEmpty => '还没有项目，点击 + 新建。';
+
+  @override
+  String get projectCreateTitle => '新建项目';
+
+  @override
+  String get projectEditTitle => '编辑项目';
+
+  @override
+  String get projectNameLabel => '项目名称';
+
+  @override
+  String get projectColorLabel => '颜色';
+
+  @override
+  String get projectDeleteTitle => '删除项目？';
+
+  @override
+  String projectDeleteMessage(String name) {
+    return '“$name”中的任务如何处理？';
+  }
+
+  @override
+  String get projectDeleteMoveInbox => '移至收件箱';
+
+  @override
+  String get projectDeleteWithTasks => '连同任务删除';
+
+  @override
+  String get projectTabList => '列表';
+
+  @override
+  String get projectTabCalendar => '日历';
+
+  @override
+  String get projectTabGantt => '甘特图';
+
+  @override
+  String get errorEmptyProjectName => '项目名称不能为空';
 }

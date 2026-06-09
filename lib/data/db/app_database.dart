@@ -64,24 +64,30 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async {
-          await m.createAll();
-          for (final sql in _indexStatements) {
-            await customStatement(sql);
-          }
-          for (final sql in _ftsStatements) {
-            await customStatement(sql);
-          }
-          await _seedDefaultProject();
-        },
-        beforeOpen: (details) async {
-          await customStatement('PRAGMA foreign_keys = ON');
-        },
-      );
+    onCreate: (m) async {
+      await m.createAll();
+      for (final sql in _indexStatements) {
+        await customStatement(sql);
+      }
+      for (final sql in _ftsStatements) {
+        await customStatement(sql);
+      }
+      await _seedDefaultProject();
+    },
+    onUpgrade: (m, from, to) async {
+      // v1 -> v2: per-Gantt-row manual ordering column.
+      if (from < 2) {
+        await m.addColumn(tasks, tasks.ganttOrder);
+      }
+    },
+    beforeOpen: (details) async {
+      await customStatement('PRAGMA foreign_keys = ON');
+    },
+  );
 
   /// Seeds the default `Inbox / 收件箱` project on first run.
   Future<void> _seedDefaultProject() async {

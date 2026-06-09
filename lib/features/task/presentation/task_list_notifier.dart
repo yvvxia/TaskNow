@@ -28,9 +28,9 @@ class TaskListNotifier extends _$TaskListNotifier {
   Stream<List<TaskView>> build(TaskListScope scope) {
     final repo = ref.watch(taskRepositoryProvider);
     final clock = ref.watch(clockProvider);
-    return repo.watch(scope.toQuery()).map(
-          (tasks) => tasks.map((t) => TaskView.from(t, clock())).toList(),
-        );
+    return repo
+        .watch(scope.toQuery())
+        .map((tasks) => tasks.map((t) => TaskView.from(t, clock())).toList());
   }
 
   Future<void> complete(String id) async {

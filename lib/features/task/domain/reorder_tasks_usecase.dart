@@ -16,10 +16,12 @@ final class ReorderTasksUseCase {
         case Err(:final error):
           return Err(error);
         case Ok(:final value) when value == null:
-          return Err(NotFoundException(
-            code: 'not_found_${orderedIds[i]}',
-            messageKey: 'error.notFound',
-          ));
+          return Err(
+            NotFoundException(
+              code: 'not_found_${orderedIds[i]}',
+              messageKey: 'error.notFound',
+            ),
+          );
         case Ok(:final value):
           final updated = await _tasks.update(value!.copyWith(sortOrder: i));
           if (updated case Err(:final error)) return Err(error);

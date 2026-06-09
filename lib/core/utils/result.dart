@@ -14,21 +14,18 @@ sealed class Result<T> {
 
   /// The success value, or `null` when this is an [Err].
   T? get valueOrNull => switch (this) {
-        Ok<T>(:final value) => value,
-        Err<T>() => null,
-      };
+    Ok<T>(:final value) => value,
+    Err<T>() => null,
+  };
 
   /// The failure, or `null` when this is an [Ok].
   AppException? get errorOrNull => switch (this) {
-        Ok<T>() => null,
-        Err<T>(:final error) => error,
-      };
+    Ok<T>() => null,
+    Err<T>(:final error) => error,
+  };
 
   /// Collapses both branches into a single value of type [R].
-  R fold<R>(
-    R Function(T value) onOk,
-    R Function(AppException error) onErr,
-  ) =>
+  R fold<R>(R Function(T value) onOk, R Function(AppException error) onErr) =>
       switch (this) {
         Ok<T>(:final value) => onOk(value),
         Err<T>(:final error) => onErr(error),

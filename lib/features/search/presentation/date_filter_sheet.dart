@@ -7,11 +7,7 @@ import '../../../l10n/app_localizations.dart';
 
 /// Bottom sheet for picking a date filter preset or custom range.
 class DateFilterSheet extends StatelessWidget {
-  const DateFilterSheet({
-    super.key,
-    required this.now,
-    this.onSelected,
-  });
+  const DateFilterSheet({super.key, required this.now, this.onSelected});
 
   final DateTime now;
   final ValueChanged<DateFilter?>? onSelected;
@@ -61,15 +57,13 @@ class DateFilterSheet extends StatelessWidget {
             key: const Key('date-filter-week'),
             leading: const Icon(Icons.date_range),
             title: Text(l10n?.searchDateThisWeek ?? 'This week'),
-            onTap: () =>
-                Navigator.pop(context, DateFilter.range(_thisWeek())),
+            onTap: () => Navigator.pop(context, DateFilter.range(_thisWeek())),
           ),
           ListTile(
             key: const Key('date-filter-month'),
             leading: const Icon(Icons.calendar_month),
             title: Text(l10n?.searchDateThisMonth ?? 'This month'),
-            onTap: () =>
-                Navigator.pop(context, DateFilter.range(_thisMonth())),
+            onTap: () => Navigator.pop(context, DateFilter.range(_thisMonth())),
           ),
           ListTile(
             key: const Key('date-filter-custom'),
@@ -117,15 +111,17 @@ String dateFilterLabel(
     DateOn(:final day) when _sameDay(day, now) =>
       l10n?.searchDateToday ?? 'Today',
     DateOn(:final day) => '${day.month}/${day.day}',
-    DateRange(:final range) => '${range.start.month}/${range.start.day}'
-        '–${range.end.month}/${range.end.day}',
-    DateOverlap(:final range) => l10n?.searchDateOverlap(
-          '${range.start.month}/${range.start.day}'
+    DateRange(:final range) =>
+      '${range.start.month}/${range.start.day}'
           '–${range.end.month}/${range.end.day}',
-        ) ??
-        'Overlap '
+    DateOverlap(:final range) =>
+      l10n?.searchDateOverlap(
             '${range.start.month}/${range.start.day}'
             '–${range.end.month}/${range.end.day}',
+          ) ??
+          'Overlap '
+              '${range.start.month}/${range.start.day}'
+              '–${range.end.month}/${range.end.day}',
   };
 }
 

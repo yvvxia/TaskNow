@@ -30,7 +30,7 @@ final class GanttInteractionControllerProvider
         argument: null,
         retry: null,
         name: r'ganttInteractionControllerProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -52,7 +52,7 @@ final class GanttInteractionControllerProvider
 }
 
 String _$ganttInteractionControllerHash() =>
-    r'11d627353506031927ce150db174fd2404c2c7c3';
+    r'b6b564e4f202b4a9794deaf7b56893b59deb3fe2';
 
 /// Applies [GanttDragIntent]s against the task repository via the module-02
 /// create/update use cases. Invalid intents (`start > due`) are dropped so the

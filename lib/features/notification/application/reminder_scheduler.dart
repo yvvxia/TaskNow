@@ -54,8 +54,7 @@ class ReminderScheduler {
     await _reminders.replaceForTask(task.id, reminders);
 
     for (final r in reminders) {
-      if (_isInDnd(r.triggerAt, settings) &&
-          r.type != ReminderType.overdue) {
+      if (_isInDnd(r.triggerAt, settings) && r.type != ReminderType.overdue) {
         continue;
       }
       await _scheduleOne(task, r);
@@ -86,8 +85,7 @@ class ReminderScheduler {
 
       final notifId = r.notifId ?? stableId(r.id);
       if (!pending.contains(notifId)) {
-        if (_isInDnd(r.triggerAt, settings) &&
-            r.type != ReminderType.overdue) {
+        if (_isInDnd(r.triggerAt, settings) && r.type != ReminderType.overdue) {
           continue;
         }
         await _scheduleOne(task, r);
@@ -135,8 +133,10 @@ class ReminderScheduler {
     if (!settings.dndEnabled) return false;
     final local = utc.toLocal();
     final minutes = local.hour * 60 + local.minute;
-    return TimeRange(settings.dndStartMinutes, settings.dndEndMinutes)
-        .containsMinutes(minutes);
+    return TimeRange(
+      settings.dndStartMinutes,
+      settings.dndEndMinutes,
+    ).containsMinutes(minutes);
   }
 }
 

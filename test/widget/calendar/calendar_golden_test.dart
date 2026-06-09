@@ -37,7 +37,10 @@ void main() {
     return ProviderScope(
       overrides: [
         taskRepositoryProvider.overrideWithValue(repo),
-        clockProvider.overrideWith((ref) => () => frozen),
+        clockProvider.overrideWith(
+          (ref) =>
+              () => frozen,
+        ),
         calendarViewStateProvider.overrideWithValue(stateFor(type, anchor)),
       ],
       child: MaterialApp(

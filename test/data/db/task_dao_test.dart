@@ -91,10 +91,7 @@ void main() {
         taskRow('hi', priority: Priority.high.index, completed: false),
         const [],
       );
-      await dao.upsertTask(
-        taskRow('done', completed: true),
-        const [],
-      );
+      await dao.upsertTask(taskRow('done', completed: true), const []);
       await dao.upsertTask(
         taskRow('overdue', due: ms(2026, 6, 1), completed: false),
         const [],
@@ -103,24 +100,27 @@ void main() {
 
     test('status incomplete excludes completed tasks', () async {
       final rows = await dao
-          .buildQuery(const TaskQuery(status: TaskStatus.incomplete),
-              nowMs: nowMs)
+          .buildQuery(
+            const TaskQuery(status: TaskStatus.incomplete),
+            nowMs: nowMs,
+          )
           .get();
       expect(rows.map((r) => r.id), isNot(contains('done')));
     });
 
     test('status complete returns only completed tasks', () async {
       final rows = await dao
-          .buildQuery(const TaskQuery(status: TaskStatus.complete),
-              nowMs: nowMs)
+          .buildQuery(
+            const TaskQuery(status: TaskStatus.complete),
+            nowMs: nowMs,
+          )
           .get();
       expect(rows.map((r) => r.id).toSet(), {'done'});
     });
 
     test('status overdue returns past-due incomplete tasks', () async {
       final rows = await dao
-          .buildQuery(const TaskQuery(status: TaskStatus.overdue),
-              nowMs: nowMs)
+          .buildQuery(const TaskQuery(status: TaskStatus.overdue), nowMs: nowMs)
           .get();
       expect(rows.map((r) => r.id).toSet(), {'overdue'});
     });
@@ -133,9 +133,7 @@ void main() {
     });
 
     test('tag filter via join', () async {
-      await db
-          .into(db.tags)
-          .insert(const TagRow(id: 'tag1', name: 'urgent'));
+      await db.into(db.tags).insert(const TagRow(id: 'tag1', name: 'urgent'));
       await dao.upsertTask(taskRow('tagged'), const ['tag1']);
       final rows = await dao
           .buildQuery(const TaskQuery(tagIds: ['tag1']), nowMs: nowMs)
@@ -203,13 +201,15 @@ void main() {
 
     test('softDeleteSeries soft-deletes all tasks sharing a parent', () async {
       await dao.upsertTask(taskRow('p'), const []);
-      await db.into(db.tasks).insert(
-            taskRow('child1')
-                .copyWith(recurrenceParent: const Value('series')),
+      await db
+          .into(db.tasks)
+          .insert(
+            taskRow('child1').copyWith(recurrenceParent: const Value('series')),
           );
-      await db.into(db.tasks).insert(
-            taskRow('child2')
-                .copyWith(recurrenceParent: const Value('series')),
+      await db
+          .into(db.tasks)
+          .insert(
+            taskRow('child2').copyWith(recurrenceParent: const Value('series')),
           );
       await dao.softDeleteSeries('series', ms(2026, 6, 1));
       expect(await dao.findById('child1'), isNull);

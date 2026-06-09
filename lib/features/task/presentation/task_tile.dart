@@ -90,10 +90,7 @@ class TaskTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (task.subtaskBadge.isNotEmpty)
-              Text(
-                task.subtaskBadge,
-                style: theme.textTheme.labelSmall,
-              ),
+              Text(task.subtaskBadge, style: theme.textTheme.labelSmall),
             const SizedBox(width: 6),
             _PriorityDot(priority: task.priority),
             if (onDelete != null)
@@ -114,10 +111,7 @@ class TaskTile extends StatelessWidget {
     if (task.dateRangeLabel.isEmpty) return null;
     return Text(
       task.dateRangeLabel,
-      style: TextStyle(
-        color: isOverdue ? Colors.red : null,
-        fontSize: 12,
-      ),
+      style: TextStyle(color: isOverdue ? Colors.red : null, fontSize: 12),
     );
   }
 }

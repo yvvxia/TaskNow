@@ -52,9 +52,9 @@ class TaskQueryCompiler {
   }
 
   Future<Set<String>> _cjkFallbackIds(String keyword) async {
-    final rows = await (_db.select(_db.tasks)
-          ..where((t) => t.deletedAt.isNull()))
-        .get();
+    final rows = await (_db.select(
+      _db.tasks,
+    )..where((t) => t.deletedAt.isNull())).get();
     return rows
         .where((row) => _rowMatchesCjk(row.title, row.notes, keyword))
         .map((r) => r.id)
@@ -102,10 +102,12 @@ class TaskQueryCompiler {
       case StatusFilter.complete:
         query.where((t) => t.isCompleted.equals(true));
       case StatusFilter.overdue:
-        query.where((t) =>
-            t.isCompleted.equals(false) &
-            t.dueDate.isNotNull() &
-            t.dueDate.isSmallerThanValue(nowMs));
+        query.where(
+          (t) =>
+              t.isCompleted.equals(false) &
+              t.dueDate.isNotNull() &
+              t.dueDate.isSmallerThanValue(nowMs),
+        );
       case StatusFilter.all:
         if (!q.includeCompleted) {
           query.where((t) => t.isCompleted.equals(false));
@@ -114,9 +116,7 @@ class TaskQueryCompiler {
 
     final priorities = q.effectivePriorities;
     if (priorities != null && priorities.isNotEmpty) {
-      query.where(
-        (t) => t.priority.isIn(priorities.map((p) => p.index)),
-      );
+      query.where((t) => t.priority.isIn(priorities.map((p) => p.index)));
     }
 
     final projectIds = q.effectiveProjectIds;
@@ -156,10 +156,7 @@ class TaskQueryCompiler {
       case TaskSort.createdAt:
       case TaskSort.createdDesc:
         query.orderBy([
-          (t) => OrderingTerm(
-                expression: t.createdAt,
-                mode: OrderingMode.desc,
-              ),
+          (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
         ]);
       case TaskSort.manual:
         query.orderBy([(t) => OrderingTerm(expression: t.sortOrder)]);
@@ -177,22 +174,36 @@ class TaskQueryCompiler {
 
     switch (filter) {
       case DateOn(:final day):
-        final startMs =
-            DateTime.utc(day.year, day.month, day.day).millisecondsSinceEpoch;
-        final endMs = DateTime.utc(day.year, day.month, day.day, 23, 59, 59, 999)
-            .millisecondsSinceEpoch;
-        query.where((t) =>
-            (t.dueDate.isBiggerOrEqualValue(startMs) &
-                t.dueDate.isSmallerOrEqualValue(endMs)) |
-            (t.startDate.isBiggerOrEqualValue(startMs) &
-                t.startDate.isSmallerOrEqualValue(endMs)));
+        final startMs = DateTime.utc(
+          day.year,
+          day.month,
+          day.day,
+        ).millisecondsSinceEpoch;
+        final endMs = DateTime.utc(
+          day.year,
+          day.month,
+          day.day,
+          23,
+          59,
+          59,
+          999,
+        ).millisecondsSinceEpoch;
+        query.where(
+          (t) =>
+              (t.dueDate.isBiggerOrEqualValue(startMs) &
+                  t.dueDate.isSmallerOrEqualValue(endMs)) |
+              (t.startDate.isBiggerOrEqualValue(startMs) &
+                  t.startDate.isSmallerOrEqualValue(endMs)),
+        );
       case DateRange(:final range):
         final fromMs = range.start.toUtc().millisecondsSinceEpoch;
         final toMs = range.end.toUtc().millisecondsSinceEpoch;
-        query.where((t) =>
-            t.dueDate.isNotNull() &
-            t.dueDate.isBiggerOrEqualValue(fromMs) &
-            t.dueDate.isSmallerOrEqualValue(toMs));
+        query.where(
+          (t) =>
+              t.dueDate.isNotNull() &
+              t.dueDate.isBiggerOrEqualValue(fromMs) &
+              t.dueDate.isSmallerOrEqualValue(toMs),
+        );
       case DateOverlap(:final range):
         final fromMs = range.start.toUtc().millisecondsSinceEpoch;
         final toMs = range.end.toUtc().millisecondsSinceEpoch;

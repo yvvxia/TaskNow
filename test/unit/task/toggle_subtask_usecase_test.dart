@@ -48,9 +48,7 @@ void main() {
       Task(
         id: 'task-1',
         title: 'Task with subtask',
-        subtasks: const [
-          Subtask(id: 'sub-1', title: 'Step 1', isDone: false),
-        ],
+        subtasks: const [Subtask(id: 'sub-1', title: 'Step 1', isDone: false)],
       ),
     ]);
 
@@ -65,9 +63,7 @@ void main() {
       Task(
         id: 'task-1',
         title: 'Task',
-        subtasks: const [
-          Subtask(id: 'sub-1', title: 'Step', isDone: true),
-        ],
+        subtasks: const [Subtask(id: 'sub-1', title: 'Step', isDone: true)],
       ),
     ]);
 
@@ -77,33 +73,26 @@ void main() {
     expect(updated.subtasks.first.isDone, isFalse);
   });
 
-  test(
-    'all subtasks done with autoComplete=true → parent completed',
-    () async {
-      repo.seed([
-        Task(
-          id: 'task-1',
-          title: 'Auto task',
-          autoCompleteOnSubtasks: true,
-          subtasks: const [
-            Subtask(id: 'sub-1', title: 'A', isDone: true),
-            Subtask(id: 'sub-2', title: 'B', isDone: false),
-          ],
-        ),
-      ]);
+  test('all subtasks done with autoComplete=true → parent completed', () async {
+    repo.seed([
+      Task(
+        id: 'task-1',
+        title: 'Auto task',
+        autoCompleteOnSubtasks: true,
+        subtasks: const [
+          Subtask(id: 'sub-1', title: 'A', isDone: true),
+          Subtask(id: 'sub-2', title: 'B', isDone: false),
+        ],
+      ),
+    ]);
 
-      // Toggle the last remaining incomplete subtask.
-      await toggleUseCase(
-        'task-1',
-        'sub-2',
-        at: DateTime.utc(2026, 6, 7),
-      );
+    // Toggle the last remaining incomplete subtask.
+    await toggleUseCase('task-1', 'sub-2', at: DateTime.utc(2026, 6, 7));
 
-      final parent = repo.items.first;
-      expect(parent.status, TaskStatus.complete);
-      expect(notif.cancelledTaskIds, contains('task-1'));
-    },
-  );
+    final parent = repo.items.first;
+    expect(parent.status, TaskStatus.complete);
+    expect(notif.cancelledTaskIds, contains('task-1'));
+  });
 
   test(
     'all subtasks done but autoComplete=false → parent NOT completed',

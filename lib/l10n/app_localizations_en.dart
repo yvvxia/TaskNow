@@ -12,6 +12,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTasks => 'Tasks';
 
   @override
+  String get navDashboard => 'Dashboard';
+
+  @override
+  String get navProjects => 'Projects';
+
+  @override
   String get navCalendar => 'Calendar';
 
   @override
@@ -40,6 +46,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dateClear => 'Clear';
+
+  @override
+  String get allDay => 'All day';
+
+  @override
+  String get clearTime => 'Clear time (all day)';
+
+  @override
+  String get newTaskWithTime => 'New task with date & time';
 
   @override
   String get emptyTaskList => 'No tasks here';
@@ -285,4 +300,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hoursDialog => 'Set overdue repeat interval (hours)';
+
+  @override
+  String get projectLabel => 'Project';
+
+  @override
+  String get calendarCreateTaskHere => 'Create task';
+
+  @override
+  String get calendarOpenDay => 'Open day';
+
+  @override
+  String get dashboardEmpty => 'Nothing due. You are all clear!';
+
+  @override
+  String get dashboardSectionEmpty => 'Nothing here';
+
+  @override
+  String get dashboardOverdue => 'Overdue';
+
+  @override
+  String get dashboardToday => 'Today';
+
+  @override
+  String dashboardUpcoming(int days) {
+    return 'Upcoming ($days days)';
+  }
+
+  @override
+  String get dashboardUpcomingDaysSetting => 'Upcoming window';
+
+  @override
+  String dashboardUpcomingDaysValue(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dashboardUpcomingDaysDialog => 'Upcoming window (days)';
+
+  @override
+  String get projectsEmpty => 'No projects yet. Tap + to create one.';
+
+  @override
+  String get projectCreateTitle => 'New project';
+
+  @override
+  String get projectEditTitle => 'Edit project';
+
+  @override
+  String get projectNameLabel => 'Project name';
+
+  @override
+  String get projectColorLabel => 'Color';
+
+  @override
+  String get projectDeleteTitle => 'Delete project?';
+
+  @override
+  String projectDeleteMessage(String name) {
+    return 'What should happen to the tasks in \"$name\"?';
+  }
+
+  @override
+  String get projectDeleteMoveInbox => 'Move to Inbox';
+
+  @override
+  String get projectDeleteWithTasks => 'Delete tasks';
+
+  @override
+  String get projectTabList => 'List';
+
+  @override
+  String get projectTabCalendar => 'Calendar';
+
+  @override
+  String get projectTabGantt => 'Gantt';
+
+  @override
+  String get errorEmptyProjectName => 'Project name cannot be empty';
 }

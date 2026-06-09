@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettings {
 
- bool get notificationsEnabled; int get defaultReminderMinutes; String get themeMode; String get locale;
+ bool get notificationsEnabled; int get defaultReminderMinutes; String get themeMode; String get locale; int get dashboardUpcomingDays;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.defaultReminderMinutes, defaultReminderMinutes) || other.defaultReminderMinutes == defaultReminderMinutes)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.locale, locale) || other.locale == locale));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.defaultReminderMinutes, defaultReminderMinutes) || other.defaultReminderMinutes == defaultReminderMinutes)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.dashboardUpcomingDays, dashboardUpcomingDays) || other.dashboardUpcomingDays == dashboardUpcomingDays));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,notificationsEnabled,defaultReminderMinutes,themeMode,locale);
+int get hashCode => Object.hash(runtimeType,notificationsEnabled,defaultReminderMinutes,themeMode,locale,dashboardUpcomingDays);
 
 @override
 String toString() {
-  return 'AppSettings(notificationsEnabled: $notificationsEnabled, defaultReminderMinutes: $defaultReminderMinutes, themeMode: $themeMode, locale: $locale)';
+  return 'AppSettings(notificationsEnabled: $notificationsEnabled, defaultReminderMinutes: $defaultReminderMinutes, themeMode: $themeMode, locale: $locale, dashboardUpcomingDays: $dashboardUpcomingDays)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- bool notificationsEnabled, int defaultReminderMinutes, String themeMode, String locale
+ bool notificationsEnabled, int defaultReminderMinutes, String themeMode, String locale, int dashboardUpcomingDays
 });
 
 
@@ -65,13 +65,14 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? notificationsEnabled = null,Object? defaultReminderMinutes = null,Object? themeMode = null,Object? locale = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? notificationsEnabled = null,Object? defaultReminderMinutes = null,Object? themeMode = null,Object? locale = null,Object? dashboardUpcomingDays = null,}) {
   return _then(_self.copyWith(
 notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,defaultReminderMinutes: null == defaultReminderMinutes ? _self.defaultReminderMinutes : defaultReminderMinutes // ignore: cast_nullable_to_non_nullable
 as int,themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as String,locale: null == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
-as String,
+as String,dashboardUpcomingDays: null == dashboardUpcomingDays ? _self.dashboardUpcomingDays : dashboardUpcomingDays // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool notificationsEnabled,  int defaultReminderMinutes,  String themeMode,  String locale)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool notificationsEnabled,  int defaultReminderMinutes,  String themeMode,  String locale,  int dashboardUpcomingDays)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.themeMode,_that.locale);case _:
+return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.themeMode,_that.locale,_that.dashboardUpcomingDays);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool notificationsEnabled,  int defaultReminderMinutes,  String themeMode,  String locale)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool notificationsEnabled,  int defaultReminderMinutes,  String themeMode,  String locale,  int dashboardUpcomingDays)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.themeMode,_that.locale);case _:
+return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.themeMode,_that.locale,_that.dashboardUpcomingDays);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool notificationsEnabled,  int defaultReminderMinutes,  String themeMode,  String locale)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool notificationsEnabled,  int defaultReminderMinutes,  String themeMode,  String locale,  int dashboardUpcomingDays)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.themeMode,_that.locale);case _:
+return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.themeMode,_that.locale,_that.dashboardUpcomingDays);case _:
   return null;
 
 }
@@ -212,13 +213,14 @@ return $default(_that.notificationsEnabled,_that.defaultReminderMinutes,_that.th
 @JsonSerializable()
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.notificationsEnabled = true, this.defaultReminderMinutes = 15, this.themeMode = 'system', this.locale = 'en'});
+  const _AppSettings({this.notificationsEnabled = true, this.defaultReminderMinutes = 15, this.themeMode = 'system', this.locale = 'en', this.dashboardUpcomingDays = 7});
   factory _AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
 
 @override@JsonKey() final  bool notificationsEnabled;
 @override@JsonKey() final  int defaultReminderMinutes;
 @override@JsonKey() final  String themeMode;
 @override@JsonKey() final  String locale;
+@override@JsonKey() final  int dashboardUpcomingDays;
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.defaultReminderMinutes, defaultReminderMinutes) || other.defaultReminderMinutes == defaultReminderMinutes)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.locale, locale) || other.locale == locale));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.notificationsEnabled, notificationsEnabled) || other.notificationsEnabled == notificationsEnabled)&&(identical(other.defaultReminderMinutes, defaultReminderMinutes) || other.defaultReminderMinutes == defaultReminderMinutes)&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&(identical(other.locale, locale) || other.locale == locale)&&(identical(other.dashboardUpcomingDays, dashboardUpcomingDays) || other.dashboardUpcomingDays == dashboardUpcomingDays));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,notificationsEnabled,defaultReminderMinutes,themeMode,locale);
+int get hashCode => Object.hash(runtimeType,notificationsEnabled,defaultReminderMinutes,themeMode,locale,dashboardUpcomingDays);
 
 @override
 String toString() {
-  return 'AppSettings(notificationsEnabled: $notificationsEnabled, defaultReminderMinutes: $defaultReminderMinutes, themeMode: $themeMode, locale: $locale)';
+  return 'AppSettings(notificationsEnabled: $notificationsEnabled, defaultReminderMinutes: $defaultReminderMinutes, themeMode: $themeMode, locale: $locale, dashboardUpcomingDays: $dashboardUpcomingDays)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- bool notificationsEnabled, int defaultReminderMinutes, String themeMode, String locale
+ bool notificationsEnabled, int defaultReminderMinutes, String themeMode, String locale, int dashboardUpcomingDays
 });
 
 
@@ -270,13 +272,14 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? notificationsEnabled = null,Object? defaultReminderMinutes = null,Object? themeMode = null,Object? locale = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? notificationsEnabled = null,Object? defaultReminderMinutes = null,Object? themeMode = null,Object? locale = null,Object? dashboardUpcomingDays = null,}) {
   return _then(_AppSettings(
 notificationsEnabled: null == notificationsEnabled ? _self.notificationsEnabled : notificationsEnabled // ignore: cast_nullable_to_non_nullable
 as bool,defaultReminderMinutes: null == defaultReminderMinutes ? _self.defaultReminderMinutes : defaultReminderMinutes // ignore: cast_nullable_to_non_nullable
 as int,themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as String,locale: null == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
-as String,
+as String,dashboardUpcomingDays: null == dashboardUpcomingDays ? _self.dashboardUpcomingDays : dashboardUpcomingDays // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

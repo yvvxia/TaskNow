@@ -4,10 +4,7 @@ import 'package:plan_list/core/utils/fts_tokenizer.dart';
 void main() {
   group('buildFtsMatch', () {
     test('CJK text becomes adjacent 2-gram quoted tokens joined with AND', () {
-      expect(
-        buildFtsMatch('需求文档'),
-        '"需求" AND "求文" AND "文档"',
-      );
+      expect(buildFtsMatch('需求文档'), '"需求" AND "求文" AND "文档"');
     });
 
     test('single CJK character is quoted once', () {
@@ -19,10 +16,7 @@ void main() {
     });
 
     test('mixed English and Chinese segments', () {
-      expect(
-        buildFtsMatch('report 需求'),
-        'report* AND "需求"',
-      );
+      expect(buildFtsMatch('report 需求'), 'report* AND "需求"');
     });
   });
 

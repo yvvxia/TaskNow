@@ -10,17 +10,8 @@ void main() {
   const calc = ReminderCalculator();
   const settings = AppSettings(defaultReminderMinutes: 15);
 
-  Task task({
-    DateTime? start,
-    DateTime? due,
-    String id = 't1',
-  }) =>
-      Task(
-        id: id,
-        title: 'Test',
-        startDate: start,
-        dueDate: due,
-      );
+  Task task({DateTime? start, DateTime? due, String id = 't1'}) =>
+      Task(id: id, title: 'Test', startDate: start, dueDate: due);
 
   group('beforeDue', () {
     test('triggerAt is dueDate minus offsetMin', () {
@@ -38,7 +29,10 @@ void main() {
           ),
         ],
       );
-      expect(result.single.triggerAt, due.subtract(const Duration(minutes: 30)));
+      expect(
+        result.single.triggerAt,
+        due.subtract(const Duration(minutes: 30)),
+      );
     });
 
     test('uses defaultReminderMinutes when offsetMin is null', () {
@@ -55,15 +49,20 @@ void main() {
           ),
         ],
       );
-      expect(result.single.triggerAt, due.subtract(const Duration(minutes: 15)));
+      expect(
+        result.single.triggerAt,
+        due.subtract(const Duration(minutes: 15)),
+      );
     });
   });
 
   group('atStart', () {
     test('triggerAt equals startDate', () {
-      final start = DateTime.utc(2026, 6, 8, 9);
+      // Future-dated so the calculator's "drop past non-overdue triggers"
+      // filter (relative to DateTime.now()) keeps it regardless of run date.
+      final start = DateTime.utc(2027, 6, 8, 9);
       final result = calc.compute(
-        task(start: start, due: DateTime.utc(2026, 6, 10)),
+        task(start: start, due: DateTime.utc(2027, 6, 10)),
         settings,
         configs: [
           Reminder(

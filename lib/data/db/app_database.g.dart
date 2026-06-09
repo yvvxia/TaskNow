@@ -1164,6 +1164,17 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskRow> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _ganttOrderMeta = const VerificationMeta(
+    'ganttOrder',
+  );
+  @override
+  late final GeneratedColumn<int> ganttOrder = GeneratedColumn<int>(
+    'gantt_order',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _recurrenceRuleIdMeta = const VerificationMeta(
     'recurrenceRuleId',
   );
@@ -1262,6 +1273,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskRow> {
     priority,
     isCompleted,
     sortOrder,
+    ganttOrder,
     recurrenceRuleId,
     recurrenceParent,
     autoCompleteOnSubtasks,
@@ -1355,6 +1367,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskRow> {
       context.handle(
         _sortOrderMeta,
         sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('gantt_order')) {
+      context.handle(
+        _ganttOrderMeta,
+        ganttOrder.isAcceptableOrUnknown(data['gantt_order']!, _ganttOrderMeta),
       );
     }
     if (data.containsKey('recurrence_rule_id')) {
@@ -1466,6 +1484,10 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, TaskRow> {
         DriftSqlType.int,
         data['${effectivePrefix}sort_order'],
       )!,
+      ganttOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}gantt_order'],
+      ),
       recurrenceRuleId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}recurrence_rule_id'],
@@ -1515,6 +1537,11 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
   final int priority;
   final bool isCompleted;
   final int sortOrder;
+
+  /// Manual ordering of this task's row in the Gantt view, independent of the
+  /// task list's [sortOrder]. Null means "not manually ordered" — the Gantt
+  /// falls back to creation time. Scoped per project in practice.
+  final int? ganttOrder;
   final String? recurrenceRuleId;
   final String? recurrenceParent;
   final bool autoCompleteOnSubtasks;
@@ -1534,6 +1561,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
     required this.priority,
     required this.isCompleted,
     required this.sortOrder,
+    this.ganttOrder,
     this.recurrenceRuleId,
     this.recurrenceParent,
     required this.autoCompleteOnSubtasks,
@@ -1566,6 +1594,9 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
     map['priority'] = Variable<int>(priority);
     map['is_completed'] = Variable<bool>(isCompleted);
     map['sort_order'] = Variable<int>(sortOrder);
+    if (!nullToAbsent || ganttOrder != null) {
+      map['gantt_order'] = Variable<int>(ganttOrder);
+    }
     if (!nullToAbsent || recurrenceRuleId != null) {
       map['recurrence_rule_id'] = Variable<String>(recurrenceRuleId);
     }
@@ -1607,6 +1638,9 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       priority: Value(priority),
       isCompleted: Value(isCompleted),
       sortOrder: Value(sortOrder),
+      ganttOrder: ganttOrder == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ganttOrder),
       recurrenceRuleId: recurrenceRuleId == null && nullToAbsent
           ? const Value.absent()
           : Value(recurrenceRuleId),
@@ -1642,6 +1676,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       priority: serializer.fromJson<int>(json['priority']),
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      ganttOrder: serializer.fromJson<int?>(json['ganttOrder']),
       recurrenceRuleId: serializer.fromJson<String?>(json['recurrenceRuleId']),
       recurrenceParent: serializer.fromJson<String?>(json['recurrenceParent']),
       autoCompleteOnSubtasks: serializer.fromJson<bool>(
@@ -1668,6 +1703,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       'priority': serializer.toJson<int>(priority),
       'isCompleted': serializer.toJson<bool>(isCompleted),
       'sortOrder': serializer.toJson<int>(sortOrder),
+      'ganttOrder': serializer.toJson<int?>(ganttOrder),
       'recurrenceRuleId': serializer.toJson<String?>(recurrenceRuleId),
       'recurrenceParent': serializer.toJson<String?>(recurrenceParent),
       'autoCompleteOnSubtasks': serializer.toJson<bool>(autoCompleteOnSubtasks),
@@ -1690,6 +1726,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
     int? priority,
     bool? isCompleted,
     int? sortOrder,
+    Value<int?> ganttOrder = const Value.absent(),
     Value<String?> recurrenceRuleId = const Value.absent(),
     Value<String?> recurrenceParent = const Value.absent(),
     bool? autoCompleteOnSubtasks,
@@ -1709,6 +1746,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
     priority: priority ?? this.priority,
     isCompleted: isCompleted ?? this.isCompleted,
     sortOrder: sortOrder ?? this.sortOrder,
+    ganttOrder: ganttOrder.present ? ganttOrder.value : this.ganttOrder,
     recurrenceRuleId: recurrenceRuleId.present
         ? recurrenceRuleId.value
         : this.recurrenceRuleId,
@@ -1739,6 +1777,9 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           ? data.isCompleted.value
           : this.isCompleted,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      ganttOrder: data.ganttOrder.present
+          ? data.ganttOrder.value
+          : this.ganttOrder,
       recurrenceRuleId: data.recurrenceRuleId.present
           ? data.recurrenceRuleId.value
           : this.recurrenceRuleId,
@@ -1771,6 +1812,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           ..write('priority: $priority, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('ganttOrder: $ganttOrder, ')
           ..write('recurrenceRuleId: $recurrenceRuleId, ')
           ..write('recurrenceParent: $recurrenceParent, ')
           ..write('autoCompleteOnSubtasks: $autoCompleteOnSubtasks, ')
@@ -1795,6 +1837,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
     priority,
     isCompleted,
     sortOrder,
+    ganttOrder,
     recurrenceRuleId,
     recurrenceParent,
     autoCompleteOnSubtasks,
@@ -1818,6 +1861,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           other.priority == this.priority &&
           other.isCompleted == this.isCompleted &&
           other.sortOrder == this.sortOrder &&
+          other.ganttOrder == this.ganttOrder &&
           other.recurrenceRuleId == this.recurrenceRuleId &&
           other.recurrenceParent == this.recurrenceParent &&
           other.autoCompleteOnSubtasks == this.autoCompleteOnSubtasks &&
@@ -1839,6 +1883,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
   final Value<int> priority;
   final Value<bool> isCompleted;
   final Value<int> sortOrder;
+  final Value<int?> ganttOrder;
   final Value<String?> recurrenceRuleId;
   final Value<String?> recurrenceParent;
   final Value<bool> autoCompleteOnSubtasks;
@@ -1859,6 +1904,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
     this.priority = const Value.absent(),
     this.isCompleted = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.ganttOrder = const Value.absent(),
     this.recurrenceRuleId = const Value.absent(),
     this.recurrenceParent = const Value.absent(),
     this.autoCompleteOnSubtasks = const Value.absent(),
@@ -1880,6 +1926,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
     this.priority = const Value.absent(),
     this.isCompleted = const Value.absent(),
     this.sortOrder = const Value.absent(),
+    this.ganttOrder = const Value.absent(),
     this.recurrenceRuleId = const Value.absent(),
     this.recurrenceParent = const Value.absent(),
     this.autoCompleteOnSubtasks = const Value.absent(),
@@ -1904,6 +1951,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
     Expression<int>? priority,
     Expression<bool>? isCompleted,
     Expression<int>? sortOrder,
+    Expression<int>? ganttOrder,
     Expression<String>? recurrenceRuleId,
     Expression<String>? recurrenceParent,
     Expression<bool>? autoCompleteOnSubtasks,
@@ -1925,6 +1973,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
       if (priority != null) 'priority': priority,
       if (isCompleted != null) 'is_completed': isCompleted,
       if (sortOrder != null) 'sort_order': sortOrder,
+      if (ganttOrder != null) 'gantt_order': ganttOrder,
       if (recurrenceRuleId != null) 'recurrence_rule_id': recurrenceRuleId,
       if (recurrenceParent != null) 'recurrence_parent': recurrenceParent,
       if (autoCompleteOnSubtasks != null)
@@ -1949,6 +1998,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
     Value<int>? priority,
     Value<bool>? isCompleted,
     Value<int>? sortOrder,
+    Value<int?>? ganttOrder,
     Value<String?>? recurrenceRuleId,
     Value<String?>? recurrenceParent,
     Value<bool>? autoCompleteOnSubtasks,
@@ -1970,6 +2020,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
       priority: priority ?? this.priority,
       isCompleted: isCompleted ?? this.isCompleted,
       sortOrder: sortOrder ?? this.sortOrder,
+      ganttOrder: ganttOrder ?? this.ganttOrder,
       recurrenceRuleId: recurrenceRuleId ?? this.recurrenceRuleId,
       recurrenceParent: recurrenceParent ?? this.recurrenceParent,
       autoCompleteOnSubtasks:
@@ -2018,6 +2069,9 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
     if (sortOrder.present) {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
+    if (ganttOrder.present) {
+      map['gantt_order'] = Variable<int>(ganttOrder.value);
+    }
     if (recurrenceRuleId.present) {
       map['recurrence_rule_id'] = Variable<String>(recurrenceRuleId.value);
     }
@@ -2061,6 +2115,7 @@ class TasksCompanion extends UpdateCompanion<TaskRow> {
           ..write('priority: $priority, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('sortOrder: $sortOrder, ')
+          ..write('ganttOrder: $ganttOrder, ')
           ..write('recurrenceRuleId: $recurrenceRuleId, ')
           ..write('recurrenceParent: $recurrenceParent, ')
           ..write('autoCompleteOnSubtasks: $autoCompleteOnSubtasks, ')
@@ -4178,6 +4233,7 @@ typedef $$TasksTableCreateCompanionBuilder =
       Value<int> priority,
       Value<bool> isCompleted,
       Value<int> sortOrder,
+      Value<int?> ganttOrder,
       Value<String?> recurrenceRuleId,
       Value<String?> recurrenceParent,
       Value<bool> autoCompleteOnSubtasks,
@@ -4200,6 +4256,7 @@ typedef $$TasksTableUpdateCompanionBuilder =
       Value<int> priority,
       Value<bool> isCompleted,
       Value<int> sortOrder,
+      Value<int?> ganttOrder,
       Value<String?> recurrenceRuleId,
       Value<String?> recurrenceParent,
       Value<bool> autoCompleteOnSubtasks,
@@ -4360,6 +4417,11 @@ class $$TasksTableFilterComposer extends Composer<_$AppDatabase, $TasksTable> {
 
   ColumnFilters<int> get sortOrder => $composableBuilder(
     column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ganttOrder => $composableBuilder(
+    column: $table.ganttOrder,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4574,6 +4636,11 @@ class $$TasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get ganttOrder => $composableBuilder(
+    column: $table.ganttOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get recurrenceParent => $composableBuilder(
     column: $table.recurrenceParent,
     builder: (column) => ColumnOrderings(column),
@@ -4693,6 +4760,11 @@ class $$TasksTableAnnotationComposer
 
   GeneratedColumn<int> get sortOrder =>
       $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<int> get ganttOrder => $composableBuilder(
+    column: $table.ganttOrder,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get recurrenceParent => $composableBuilder(
     column: $table.recurrenceParent,
@@ -4885,6 +4957,7 @@ class $$TasksTableTableManager
                 Value<int> priority = const Value.absent(),
                 Value<bool> isCompleted = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> ganttOrder = const Value.absent(),
                 Value<String?> recurrenceRuleId = const Value.absent(),
                 Value<String?> recurrenceParent = const Value.absent(),
                 Value<bool> autoCompleteOnSubtasks = const Value.absent(),
@@ -4905,6 +4978,7 @@ class $$TasksTableTableManager
                 priority: priority,
                 isCompleted: isCompleted,
                 sortOrder: sortOrder,
+                ganttOrder: ganttOrder,
                 recurrenceRuleId: recurrenceRuleId,
                 recurrenceParent: recurrenceParent,
                 autoCompleteOnSubtasks: autoCompleteOnSubtasks,
@@ -4927,6 +5001,7 @@ class $$TasksTableTableManager
                 Value<int> priority = const Value.absent(),
                 Value<bool> isCompleted = const Value.absent(),
                 Value<int> sortOrder = const Value.absent(),
+                Value<int?> ganttOrder = const Value.absent(),
                 Value<String?> recurrenceRuleId = const Value.absent(),
                 Value<String?> recurrenceParent = const Value.absent(),
                 Value<bool> autoCompleteOnSubtasks = const Value.absent(),
@@ -4947,6 +5022,7 @@ class $$TasksTableTableManager
                 priority: priority,
                 isCompleted: isCompleted,
                 sortOrder: sortOrder,
+                ganttOrder: ganttOrder,
                 recurrenceRuleId: recurrenceRuleId,
                 recurrenceParent: recurrenceParent,
                 autoCompleteOnSubtasks: autoCompleteOnSubtasks,

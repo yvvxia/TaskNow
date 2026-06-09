@@ -3,30 +3,43 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../task/presentation/add_task_sheet.dart';
+import '../../../task/task_providers.dart';
 import '../../domain/task_bar.dart';
-import '../../domain/time_axis.dart';
 import '../calendar_providers.dart';
 import '../calendar_view_state_notifier.dart';
-import 'timeline_grid_painter.dart';
 
-/// Week view: 7 day columns with a top "all-day" swimlane where multi-day
-/// task bars span across columns in greedy lanes (design §4).
+/// Week view: 7 day columns, each a scrollable cell listing that day's tasks.
+///
+/// Tapping a column opens the day view for that day; right-clicking (or
+/// long-pressing on touch) offers "Create task". Each column scrolls
+/// independently so all tasks remain reachable when a day is busy.
 class WeekView extends ConsumerWidget {
-  const WeekView({super.key, required this.onSelect});
+  const WeekView({super.key, required this.onSelect, this.projectId});
 
   final ValueChanged<String?> onSelect;
-
-  static const double laneHeight = 34;
+  final String? projectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final view = ref.watch(calendarViewStateProvider);
-    final barsAsync = ref.watch(visibleBarsProvider);
+    final barsAsync = ref.watch(visibleBarsProvider(projectId));
     final origin = DateTime(
       view.visibleRange.start.year,
       view.visibleRange.start.month,
       view.visibleRange.start.day,
     );
+    final isDesktop = MediaQuery.of(context).size.width >= 600;
+
+    void onCreateInDay(DateTime day) => showAddTaskSheet(
+      context,
+      onCreate: (draft) => ref.read(createTaskUseCaseProvider).call(draft),
+      initialStart: day,
+      initialDue: day,
+      projectId: projectId,
+    );
+    void onOpenDay(DateTime day) =>
+        ref.read(calendarViewStateProvider.notifier).openDay(day);
 
     return barsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -37,153 +50,174 @@ class WeekView extends ConsumerWidget {
         ),
       ),
       data: (bars) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            const dayCount = 7;
-            final colWidth = constraints.maxWidth / dayCount;
-            final axis = TimeAxis(origin: origin, pxPerDay: colWidth);
-            final laneCount = bars.isEmpty
-                ? 1
-                : (bars
-                        .map((b) => b.rowIndex)
-                        .reduce((a, b) => a > b ? a : b) +
-                    1);
-            final scheme = Theme.of(context).colorScheme;
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _WeekHeader(origin: origin, colWidth: colWidth),
-                SizedBox(
-                  height: laneCount * laneHeight + 8,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: TimelineGridPainter(
-                            dayCount: dayCount,
-                            pxPerDay: colWidth,
-                            lineColor: scheme.outlineVariant,
-                            weekendShade: scheme.surfaceContainerHighest
-                                .withValues(alpha: 0.4),
-                          ),
-                        ),
-                      ),
-                      for (final bar in bars)
-                        _WeekBar(
-                          bar: bar,
-                          axis: axis,
-                          colWidth: colWidth,
-                          selected: bar.task.id == view.selectedTaskId,
-                          onTap: () => onSelect(bar.task.id),
-                        ),
-                    ],
-                  ),
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < 7; i++)
+              Expanded(
+                child: _DayColumn(
+                  day: origin.add(Duration(days: i)),
+                  bars: bars
+                      .where(
+                        (b) => _overlapsDay(b, origin.add(Duration(days: i))),
+                      )
+                      .toList(),
+                  isDesktop: isDesktop,
+                  isLast: i == 6,
+                  onSelect: onSelect,
+                  onCreateInDay: onCreateInDay,
+                  onOpenDay: onOpenDay,
                 ),
-                const Divider(height: 1),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => onSelect(null),
-                    behavior: HitTestBehavior.opaque,
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)
-                                ?.calendarWeekTaskCount(bars.length) ??
-                            '${bars.length} task(s) this week',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+              ),
+          ],
         );
       },
     );
   }
+
+  static bool _overlapsDay(TaskBar bar, DateTime day) {
+    final dayStart = DateTime(day.year, day.month, day.day);
+    final dayEnd = dayStart.add(const Duration(days: 1));
+    return bar.barStart.isBefore(dayEnd) && !bar.barEnd.isBefore(dayStart);
+  }
 }
 
-class _WeekHeader extends StatelessWidget {
-  const _WeekHeader({required this.origin, required this.colWidth});
+class _DayColumn extends StatelessWidget {
+  const _DayColumn({
+    required this.day,
+    required this.bars,
+    required this.isDesktop,
+    required this.isLast,
+    required this.onSelect,
+    required this.onCreateInDay,
+    required this.onOpenDay,
+  });
 
-  final DateTime origin;
-  final double colWidth;
+  final DateTime day;
+  final List<TaskBar> bars;
+  final bool isDesktop;
+  final bool isLast;
+  final ValueChanged<String?> onSelect;
+  final ValueChanged<DateTime> onCreateInDay;
+  final ValueChanged<DateTime> onOpenDay;
+
+  Future<void> _showContextMenu(BuildContext context, Offset position) async {
+    final l10n = AppLocalizations.of(context);
+    final overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox?;
+    if (overlay == null) return;
+    final selected = await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        position.dx,
+        position.dy,
+        overlay.size.width - position.dx,
+        overlay.size.height - position.dy,
+      ),
+      items: [
+        PopupMenuItem(
+          value: 'create',
+          child: Text(l10n?.calendarCreateTaskHere ?? 'Create task'),
+        ),
+        PopupMenuItem(
+          value: 'open',
+          child: Text(l10n?.calendarOpenDay ?? 'Open day'),
+        ),
+      ],
+    );
+    if (selected == 'create') {
+      onCreateInDay(DateTime(day.year, day.month, day.day));
+    } else if (selected == 'open') {
+      onOpenDay(day);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
-    final fmt = DateFormat('E d', l10n?.localeName);
-    return SizedBox(
-      height: 28,
-      child: Row(
-        children: [
-          for (var i = 0; i < 7; i++)
-            SizedBox(
-              width: colWidth,
-              child: Center(
-                child: Text(
-                  fmt.format(origin.add(Duration(days: i))),
-                  style: Theme.of(context).textTheme.labelMedium,
+    final headerFmt = DateFormat('E\nd', l10n?.localeName);
+    final now = DateTime.now();
+    final isToday =
+        day.year == now.year && day.month == now.month && day.day == now.day;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          right: isLast
+              ? BorderSide.none
+              : BorderSide(color: scheme.outlineVariant, width: 0.5),
+        ),
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => onOpenDay(day),
+        onSecondaryTapDown: (d) => _showContextMenu(context, d.globalPosition),
+        onLongPressStart: isDesktop
+            ? null
+            : (d) => _showContextMenu(context, d.globalPosition),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              color: isToday
+                  ? scheme.primary.withValues(alpha: 0.12)
+                  : scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              child: Text(
+                headerFmt.format(day),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                  color: isToday ? scheme.primary : null,
                 ),
               ),
             ),
-        ],
+            const Divider(height: 1),
+            Expanded(
+              child: bars.isEmpty
+                  ? const SizedBox.expand()
+                  : ListView(
+                      padding: const EdgeInsets.all(3),
+                      children: [
+                        for (final bar in bars)
+                          _WeekChip(
+                            bar: bar,
+                            onTap: () => onSelect(bar.task.id),
+                          ),
+                      ],
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _WeekBar extends StatelessWidget {
-  const _WeekBar({
-    required this.bar,
-    required this.axis,
-    required this.colWidth,
-    required this.selected,
-    required this.onTap,
-  });
+class _WeekChip extends StatelessWidget {
+  const _WeekChip({required this.bar, required this.onTap});
 
   final TaskBar bar;
-  final TimeAxis axis;
-  final double colWidth;
-  final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final left = axis.dateToDx(bar.barStart).clamp(0.0, 7 * colWidth);
-    final rawRight = axis.dateToDx(bar.barEnd) + colWidth;
-    final right = rawRight.clamp(0.0, 7 * colWidth);
-    final width = (right - left).clamp(colWidth * 0.5, 7 * colWidth);
-    final top = bar.rowIndex * WeekView.laneHeight + 4;
-
-    return Positioned(
-      left: left + 1,
-      top: top,
-      width: width - 2,
-      height: WeekView.laneHeight - 6,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          key: Key('week-bar-${bar.task.id}'),
-          decoration: BoxDecoration(
-            color: bar.isOverdue ? bar.color.withValues(alpha: 0.55) : bar.color,
-            borderRadius: BorderRadius.circular(6),
-            border: selected
-                ? Border.all(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    width: 2,
-                  )
-                : null,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            bar.task.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        key: Key('week-bar-${bar.task.id}'),
+        margin: const EdgeInsets.only(bottom: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color: bar.isOverdue ? bar.color.withValues(alpha: 0.55) : bar.color,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          bar.task.title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Colors.white, fontSize: 11),
         ),
       ),
     );

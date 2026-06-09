@@ -27,9 +27,9 @@ final appDatabaseProvider = Provider<AppDatabase>(
 /// runApp(ProviderScope(overrides: driftDataLayerOverrides(db), child: ...));
 /// ```
 List<Override> driftDataLayerOverrides(AppDatabase db) => <Override>[
-      appDatabaseProvider.overrideWithValue(db),
-      taskRepositoryProvider.overrideWithValue(DriftTaskRepository(db)),
-      projectRepositoryProvider.overrideWithValue(DriftProjectRepository(db)),
-      tagRepositoryProvider.overrideWithValue(DriftTagRepository(db)),
-      reminderRepositoryProvider.overrideWithValue(DriftReminderRepository(db)),
-    ];
+  appDatabaseProvider.overrideWithValue(db),
+  taskRepositoryProvider.overrideWithValue(DriftTaskRepository(db)),
+  projectRepositoryProvider.overrideWithValue(DriftProjectRepository(db)),
+  tagRepositoryProvider.overrideWithValue(DriftTagRepository(db)),
+  reminderRepositoryProvider.overrideWithValue(DriftReminderRepository(db)),
+];

@@ -159,7 +159,9 @@ void main() {
 
   group('project filter', () {
     setUp(() async {
-      await db.into(db.projects).insert(
+      await db
+          .into(db.projects)
+          .insert(
             ProjectRow(
               id: 'p1',
               name: 'P1',
@@ -169,7 +171,9 @@ void main() {
               syncVersion: 0,
             ),
           );
-      await db.into(db.projects).insert(
+      await db
+          .into(db.projects)
+          .insert(
             ProjectRow(
               id: 'p2',
               name: 'P2',
@@ -221,18 +225,9 @@ void main() {
 
   group('date filter', () {
     setUp(() async {
-      await dao.upsertTask(
-        taskRow('today', due: ms(2026, 6, 15)),
-        const [],
-      );
-      await dao.upsertTask(
-        taskRow('week', due: ms(2026, 6, 17)),
-        const [],
-      );
-      await dao.upsertTask(
-        taskRow('outside', due: ms(2026, 7, 1)),
-        const [],
-      );
+      await dao.upsertTask(taskRow('today', due: ms(2026, 6, 15)), const []);
+      await dao.upsertTask(taskRow('week', due: ms(2026, 6, 17)), const []);
+      await dao.upsertTask(taskRow('outside', due: ms(2026, 7, 1)), const []);
       await dao.upsertTask(
         taskRow('span', start: ms(2026, 6, 10), due: ms(2026, 6, 20)),
         const [],
@@ -300,10 +295,7 @@ void main() {
       );
 
       final rows = await compiler.query(
-        TaskQuery(
-          keyword: '报告',
-          statusFilter: StatusFilter.overdue,
-        ),
+        TaskQuery(keyword: '报告', statusFilter: StatusFilter.overdue),
         nowMs: nowMs,
       );
       expect(rows.map((r) => r.id), ['match']);
@@ -311,18 +303,9 @@ void main() {
 
     test('keyword + tag combine with AND', () async {
       await db.into(db.tags).insert(const TagRow(id: 't1', name: 'urgent'));
-      await dao.upsertTask(
-        taskRow('match', title: 'Buy milk'),
-        const ['t1'],
-      );
-      await dao.upsertTask(
-        taskRow('no-tag', title: 'Buy milk'),
-        const [],
-      );
-      await dao.upsertTask(
-        taskRow('wrong-word', title: 'Bread'),
-        const ['t1'],
-      );
+      await dao.upsertTask(taskRow('match', title: 'Buy milk'), const ['t1']);
+      await dao.upsertTask(taskRow('no-tag', title: 'Buy milk'), const []);
+      await dao.upsertTask(taskRow('wrong-word', title: 'Bread'), const ['t1']);
 
       final rows = await compiler.query(
         const TaskQuery(keyword: 'milk', tagIds: ['t1']),

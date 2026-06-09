@@ -52,14 +52,13 @@ Future<void> main() async {
         syncEngineProvider.overrideWithValue(const NoOpSyncEngine()),
         routerProvider.overrideWithValue(appRouter),
       ],
-      child: const NotificationBootstrap(
-        child: PlanListApp(),
-      ),
+      child: const NotificationBootstrap(child: PlanListApp()),
     ),
   );
 }
 
 /// `true` when executed by the Flutter test harness, which sets the
 /// `FLUTTER_TEST` environment variable.
-final bool _isRunningUnderTest =
-    Platform.environment.containsKey('FLUTTER_TEST');
+final bool _isRunningUnderTest = Platform.environment.containsKey(
+  'FLUTTER_TEST',
+);

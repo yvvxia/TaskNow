@@ -11,8 +11,8 @@ import '../mappers/time_mapper.dart';
 /// Drift-backed implementation of [IProjectRepository].
 class DriftProjectRepository implements IProjectRepository {
   DriftProjectRepository(AppDatabase db, {DateTime Function()? now})
-      : _dao = db.projectDao,
-        _now = now ?? DateTime.now;
+    : _dao = db.projectDao,
+      _now = now ?? DateTime.now;
 
   final ProjectDao _dao;
   final DateTime Function() _now;
@@ -70,8 +70,9 @@ class DriftProjectRepository implements IProjectRepository {
         id,
         _now().msUtc,
         deleteTasks: mode == ProjectDeleteMode.deleteTasks,
-        reassignTasksTo:
-            mode == ProjectDeleteMode.moveToInbox ? kInboxProjectId : null,
+        reassignTasksTo: mode == ProjectDeleteMode.moveToInbox
+            ? kInboxProjectId
+            : null,
       );
       return const Ok<void>(null);
     } on Object catch (_) {
@@ -82,7 +83,7 @@ class DriftProjectRepository implements IProjectRepository {
   @override
   Stream<List<Project>> watchAll() {
     return _dao.watchAll().map(
-          (rows) => rows.map(ProjectMapper.toEntity).toList(),
-        );
+      (rows) => rows.map(ProjectMapper.toEntity).toList(),
+    );
   }
 }

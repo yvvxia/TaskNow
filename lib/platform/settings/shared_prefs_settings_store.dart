@@ -34,6 +34,7 @@ class SharedPrefsSettingsStore implements ISettingsStore {
       defaultReminderMinutes: get(SettingKeys.defaultReminderMinutes),
       themeMode: get(SettingKeys.themeMode),
       locale: get(SettingKeys.locale),
+      dashboardUpcomingDays: get(SettingKeys.dashboardUpcomingDays),
     );
   }
 

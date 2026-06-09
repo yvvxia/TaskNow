@@ -17,6 +17,7 @@ class GanttLayout {
     required DateTimeRange range,
     required DateTime now,
     required BarColorMode colorMode,
+    Map<String, String?> projectColors = const {},
   }) {
     final normalized = <_NormalizedTask>[];
     for (final task in tasks) {
@@ -44,40 +45,128 @@ class GanttLayout {
           barEnd: n.end,
           rowIndex: lane,
           isOverdue: n.task.statusAt(now) == TaskStatus.overdue,
-          color: resolveColor(n.task, colorMode),
+          color: resolveColor(n.task, colorMode, projectColors: projectColors),
         ),
       );
     }
     return bars;
   }
 
-  /// Number of lanes required to render [bars] (max rowIndex + 1).
-  static int laneCount(List<TaskBar> bars) =>
-      bars.isEmpty ? 0 : bars.map((b) => b.rowIndex).reduce((a, b) => a > b ? a : b) + 1;
+  /// One-task-per-row layout for the Gantt view. Each task gets a dedicated
+  /// row (no lane packing), ordered by manual [Task.ganttOrder] when present,
+  /// otherwise by creation time. The resulting [TaskBar.rowIndex] is the task's
+  /// position in that order.
+  static List<TaskBar> assignOneRowPerTask(
+    List<Task> tasks, {
+    required DateTime now,
+    required BarColorMode colorMode,
+    Map<String, String?> projectColors = const {},
+  }) {
+    final dated = <_NormalizedTask>[];
+    for (final task in tasks) {
+      final start = task.startDate ?? task.dueDate;
+      final end = task.dueDate ?? task.startDate;
+      if (start == null || end == null) continue;
+      dated.add(_NormalizedTask(task, start, end));
+    }
+    dated.sort(_byManualThenCreated);
 
-  /// Resolves the bar color for [task] under [mode], falling back to priority
-  /// color when project mode has no project to derive from.
-  static Color resolveColor(Task task, BarColorMode mode) {
+    final bars = <TaskBar>[];
+    for (var i = 0; i < dated.length; i++) {
+      final n = dated[i];
+      bars.add(
+        TaskBar(
+          task: n.task,
+          barStart: n.start,
+          barEnd: n.end,
+          rowIndex: i,
+          isOverdue: n.task.statusAt(now) == TaskStatus.overdue,
+          color: resolveColor(n.task, colorMode, projectColors: projectColors),
+        ),
+      );
+    }
+    return bars;
+  }
+
+  /// Orders tasks by manual [Task.ganttOrder] (nulls last) then creation time.
+  static int _byManualThenCreated(_NormalizedTask a, _NormalizedTask b) {
+    final ga = a.task.ganttOrder;
+    final gb = b.task.ganttOrder;
+    if (ga != null && gb != null && ga != gb) return ga.compareTo(gb);
+    if (ga != null && gb == null) return -1;
+    if (ga == null && gb != null) return 1;
+    final ca = a.task.createdAt;
+    final cb = b.task.createdAt;
+    if (ca == null && cb == null) return 0;
+    if (ca == null) return 1;
+    if (cb == null) return -1;
+    return ca.compareTo(cb);
+  }
+
+  /// Number of lanes required to render [bars] (max rowIndex + 1).
+  static int laneCount(List<TaskBar> bars) => bars.isEmpty
+      ? 0
+      : bars.map((b) => b.rowIndex).reduce((a, b) => a > b ? a : b) + 1;
+
+  /// Resolves the bar color for [task] under [mode].
+  ///
+  /// In [BarColorMode.project] the hue comes from the owning project (its
+  /// user-chosen [projectColors] entry, or a deterministic hue when unset) and
+  /// the saturation encodes priority (high = vivid, low = muted) so the global
+  /// calendar shows project by hue and priority by saturation.
+  static Color resolveColor(
+    Task task,
+    BarColorMode mode, {
+    Map<String, String?> projectColors = const {},
+  }) {
     switch (mode) {
       case BarColorMode.priority:
         return priorityColor(task.priority);
       case BarColorMode.project:
         final projectId = task.projectId;
         if (projectId == null) return priorityColor(task.priority);
-        return projectColor(projectId);
+        final base = projectColors.containsKey(projectId)
+            ? parseColor(projectColors[projectId]) ?? projectColor(projectId)
+            : projectColor(projectId);
+        return applyPrioritySaturation(base, task.priority);
     }
   }
 
   static Color priorityColor(Priority priority) => switch (priority) {
-        Priority.high => const Color(0xFFE53935),
-        Priority.medium => const Color(0xFFFB8C00),
-        Priority.low => const Color(0xFF43A047),
-      };
+    Priority.high => const Color(0xFFE53935),
+    Priority.medium => const Color(0xFFFB8C00),
+    Priority.low => const Color(0xFF43A047),
+  };
 
   /// Deterministic color derived from a project id (stable hue per project).
   static Color projectColor(String projectId) {
     final hue = (projectId.hashCode % 360).abs().toDouble();
     return HSLColor.fromAHSL(1, hue, 0.55, 0.5).toColor();
+  }
+
+  /// Re-saturates [base] according to [priority]: high stays vivid, low is
+  /// muted. Hue and lightness are preserved so the project stays recognizable.
+  static Color applyPrioritySaturation(Color base, Priority priority) {
+    final hsl = HSLColor.fromColor(base);
+    final saturation = switch (priority) {
+      Priority.high => 0.85,
+      Priority.medium => 0.55,
+      Priority.low => 0.28,
+    };
+    return hsl.withSaturation(saturation.clamp(0.0, 1.0)).toColor();
+  }
+
+  /// Parses a stored project color string. Accepts `#RRGGBB`, `#AARRGGBB`, or a
+  /// raw ARGB integer string. Returns null when unparseable.
+  static Color? parseColor(String? raw) {
+    if (raw == null) return null;
+    var value = raw.trim();
+    if (value.isEmpty) return null;
+    if (value.startsWith('#')) value = value.substring(1);
+    if (value.length == 6) value = 'FF$value';
+    final parsed = int.tryParse(value, radix: 16);
+    if (parsed == null) return null;
+    return Color(parsed);
   }
 }
 

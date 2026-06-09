@@ -39,28 +39,32 @@ void main() {
   });
 
   List<Override> baseOverrides() => [
-        taskRepositoryProvider.overrideWithValue(repo),
-        reminderRepositoryProvider.overrideWithValue(reminders),
-        notificationServiceProvider.overrideWithValue(notif),
-        settingsStoreProvider.overrideWithValue(settings),
-        projectRepositoryProvider.overrideWithValue(projects),
-        clockProvider.overrideWith((ref) => () => frozen),
-      ];
+    taskRepositoryProvider.overrideWithValue(repo),
+    reminderRepositoryProvider.overrideWithValue(reminders),
+    notificationServiceProvider.overrideWithValue(notif),
+    settingsStoreProvider.overrideWithValue(settings),
+    projectRepositoryProvider.overrideWithValue(projects),
+    clockProvider.overrideWith(
+      (ref) =>
+          () => frozen,
+    ),
+  ];
 
   Widget wrap(GoRouter router) => ProviderScope(
-        overrides: baseOverrides(),
-        child: PlanListApp(router: router),
-      );
+    overrides: baseOverrides(),
+    child: PlanListApp(router: router),
+  );
 
-  testWidgets('router starts on the tasks page', (tester) async {
+  testWidgets('router starts on the dashboard page', (tester) async {
     final router = createAppRouter();
     await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('tasks-page')), findsOneWidget);
+    expect(find.byKey(const Key('dashboard-page')), findsOneWidget);
   });
 
-  testWidgets('router navigates between top-level destinations',
-      (tester) async {
+  testWidgets('router navigates between top-level destinations', (
+    tester,
+  ) async {
     final router = createAppRouter();
     await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
@@ -69,17 +73,16 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('calendar-page')), findsOneWidget);
 
-    router.go('/search');
+    router.go('/tasks');
     await tester.pumpAndSettle();
-    expect(find.byKey(const Key('search-page')), findsOneWidget);
+    expect(find.byKey(const Key('tasks-page')), findsOneWidget);
 
     router.go('/settings');
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('settings-page')), findsOneWidget);
   });
 
-  testWidgets('task detail route passes the id path parameter',
-      (tester) async {
+  testWidgets('task detail route passes the id path parameter', (tester) async {
     final router = createAppRouter();
     await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
@@ -90,8 +93,9 @@ void main() {
     expect(find.text('Task abc-123'), findsOneWidget);
   });
 
-  testWidgets('tapping a shell destination navigates via go_router',
-      (tester) async {
+  testWidgets('tapping a shell destination navigates via go_router', (
+    tester,
+  ) async {
     final router = createAppRouter();
     await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
@@ -101,12 +105,24 @@ void main() {
     expect(find.byKey(const Key('calendar-page')), findsOneWidget);
   });
 
+  testWidgets('tapping Search opens overlay instead of a page', (tester) async {
+    final router = createAppRouter();
+    await tester.pumpWidget(wrap(router));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Search'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('search-overlay')), findsOneWidget);
+    expect(find.byKey(const Key('search-page')), findsNothing);
+  });
+
   testWidgets('main() boots the app inside a ProviderScope', (tester) async {
     await app_main.main();
     await tester.pumpAndSettle();
     expect(find.byType(ProviderScope), findsOneWidget);
     expect(find.byType(PlanListApp), findsOneWidget);
-    expect(find.byKey(const Key('tasks-page')), findsOneWidget);
+    expect(find.byKey(const Key('dashboard-page')), findsOneWidget);
 
     // Tear down within the test body so the real Drift data layer's
     // stream-close timer fires before the framework's pending-timer

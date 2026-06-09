@@ -12,10 +12,7 @@ final class TaskValidator {
   Result<void> validate(TaskDraft draft) {
     if (draft.title.trim().isEmpty) {
       return const Err(
-        ValidationException(
-          code: 'emptyTitle',
-          messageKey: 'error.emptyTitle',
-        ),
+        ValidationException(code: 'emptyTitle', messageKey: 'error.emptyTitle'),
       );
     }
 

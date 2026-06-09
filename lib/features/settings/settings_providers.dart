@@ -17,21 +17,25 @@ final settingsNotifierProvider = StreamProvider<AppSettings>((ref) {
 /// Derived [ThemeMode] from the current [AppSettings.themeMode] string.
 /// Falls back to [ThemeMode.system] on loading or error.
 final themeProvider = Provider<ThemeMode>((ref) {
-  return ref.watch(settingsNotifierProvider).when(
-    data: (s) => _parseThemeMode(s.themeMode),
-    loading: () => ThemeMode.system,
-    error: (_, _) => ThemeMode.system,
-  );
+  return ref
+      .watch(settingsNotifierProvider)
+      .when(
+        data: (s) => _parseThemeMode(s.themeMode),
+        loading: () => ThemeMode.system,
+        error: (_, _) => ThemeMode.system,
+      );
 });
 
 /// Derived locale from the current [AppSettings.locale] string.
 /// Falls back to `Locale('en')` on loading or error.
 final localeProvider = Provider<Locale>((ref) {
-  return ref.watch(settingsNotifierProvider).when(
-    data: (s) => _parseLocale(s.locale),
-    loading: () => const Locale('en'),
-    error: (_, _) => const Locale('en'),
-  );
+  return ref
+      .watch(settingsNotifierProvider)
+      .when(
+        data: (s) => _parseLocale(s.locale),
+        loading: () => const Locale('en'),
+        error: (_, _) => const Locale('en'),
+      );
 });
 
 ThemeMode _parseThemeMode(String raw) {

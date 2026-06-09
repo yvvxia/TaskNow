@@ -12,13 +12,15 @@ class TagDao extends DatabaseAccessor<AppDatabase> with _$TagDaoMixin {
   TagDao(super.db);
 
   Future<List<TagRow>> getAll() {
-    return (select(tags)..orderBy([(t) => OrderingTerm(expression: t.name)]))
-        .get();
+    return (select(
+      tags,
+    )..orderBy([(t) => OrderingTerm(expression: t.name)])).get();
   }
 
   Stream<List<TagRow>> watchAll() {
-    return (select(tags)..orderBy([(t) => OrderingTerm(expression: t.name)]))
-        .watch();
+    return (select(
+      tags,
+    )..orderBy([(t) => OrderingTerm(expression: t.name)])).watch();
   }
 
   Future<TagRow?> findById(String id) {

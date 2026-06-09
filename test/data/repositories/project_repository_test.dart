@@ -38,9 +38,9 @@ void main() {
     final created = (await repo.create('Old')).valueOrNull!;
     final res = await repo.update(created.copyWith(name: 'New'));
     expect(res.isOk, isTrue);
-    final reloaded = (await repo.getAll())
-        .valueOrNull!
-        .firstWhere((p) => p.id == created.id);
+    final reloaded = (await repo.getAll()).valueOrNull!.firstWhere(
+      (p) => p.id == created.id,
+    );
     expect(reloaded.name, 'New');
   });
 
@@ -49,10 +49,12 @@ void main() {
     final taskRepo = DriftTaskRepository(db, now: () => fixedNow);
     final task = (await taskRepo.create(
       TaskDraft(title: 'orphan', projectId: project.id),
-    ))
-        .valueOrNull!;
+    )).valueOrNull!;
 
-    final res = await repo.delete(project.id, mode: ProjectDeleteMode.moveToInbox);
+    final res = await repo.delete(
+      project.id,
+      mode: ProjectDeleteMode.moveToInbox,
+    );
     expect(res.isOk, isTrue);
 
     final all = await repo.getAll();
@@ -67,16 +69,14 @@ void main() {
     final taskRepo = DriftTaskRepository(db, now: () => fixedNow);
     final task = (await taskRepo.create(
       TaskDraft(title: 'gone', projectId: project.id),
-    ))
-        .valueOrNull!;
+    )).valueOrNull!;
 
     await repo.delete(project.id, mode: ProjectDeleteMode.deleteTasks);
     expect((await taskRepo.findById(task.id)).valueOrNull, isNull);
   });
 
   test('delete returns NotFound for an unknown id', () async {
-    final res =
-        await repo.delete('ghost', mode: ProjectDeleteMode.moveToInbox);
+    final res = await repo.delete('ghost', mode: ProjectDeleteMode.moveToInbox);
     expect(res.errorOrNull, isA<NotFoundException>());
   });
 

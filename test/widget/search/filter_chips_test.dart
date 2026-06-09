@@ -44,7 +44,9 @@ void main() {
   });
 
   testWidgets('clear chip resets filters', (tester) async {
-    container.read(searchControllerProvider.notifier).togglePriority(Priority.high);
+    container
+        .read(searchControllerProvider.notifier)
+        .togglePriority(Priority.high);
     container.read(searchControllerProvider.notifier).toggleTag('t1');
 
     await tester.pumpWidget(wrap(const FilterChipsRow()));

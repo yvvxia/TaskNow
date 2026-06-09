@@ -25,12 +25,13 @@ class ProjectDao extends DatabaseAccessor<AppDatabase> with _$ProjectDaoMixin {
   }
 
   Future<ProjectRow?> findById(String id) {
-    return (select(projects)
-          ..where((p) => p.id.equals(id) & p.deletedAt.isNull()))
-        .getSingleOrNull();
+    return (select(
+      projects,
+    )..where((p) => p.id.equals(id) & p.deletedAt.isNull())).getSingleOrNull();
   }
 
-  Future<void> upsert(ProjectRow row) => into(projects).insertOnConflictUpdate(row);
+  Future<void> upsert(ProjectRow row) =>
+      into(projects).insertOnConflictUpdate(row);
 
   /// Soft-deletes the project. When [reassignTasksTo] is provided, moves the
   /// project's tasks to that project; otherwise soft-deletes them.

@@ -7,10 +7,7 @@ import 'complete_task_usecase.dart';
 /// Toggles a subtask's [isDone] flag. When all subtasks are done **and**
 /// [Task.autoCompleteOnSubtasks] is true, completes the parent task.
 final class ToggleSubtaskUseCase {
-  const ToggleSubtaskUseCase(
-    this._tasks,
-    this._completeTaskUseCase,
-  );
+  const ToggleSubtaskUseCase(this._tasks, this._completeTaskUseCase);
 
   final ITaskRepository _tasks;
   final CompleteTaskUseCase _completeTaskUseCase;
@@ -29,10 +26,12 @@ final class ToggleSubtaskUseCase {
     final task = (found as Ok).value!;
     final subtaskIndex = task.subtasks.indexWhere((s) => s.id == subtaskId);
     if (subtaskIndex == -1) {
-      return const Err(NotFoundException(
-        code: 'subtask_not_found',
-        messageKey: 'error.notFound',
-      ));
+      return const Err(
+        NotFoundException(
+          code: 'subtask_not_found',
+          messageKey: 'error.notFound',
+        ),
+      );
     }
 
     final updatedSubtasks = <Subtask>[

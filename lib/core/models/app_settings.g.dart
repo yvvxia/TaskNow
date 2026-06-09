@@ -12,6 +12,7 @@ _AppSettings _$AppSettingsFromJson(Map<String, dynamic> json) => _AppSettings(
       (json['defaultReminderMinutes'] as num?)?.toInt() ?? 15,
   themeMode: json['themeMode'] as String? ?? 'system',
   locale: json['locale'] as String? ?? 'en',
+  dashboardUpcomingDays: (json['dashboardUpcomingDays'] as num?)?.toInt() ?? 7,
 );
 
 Map<String, dynamic> _$AppSettingsToJson(_AppSettings instance) =>
@@ -20,4 +21,5 @@ Map<String, dynamic> _$AppSettingsToJson(_AppSettings instance) =>
       'defaultReminderMinutes': instance.defaultReminderMinutes,
       'themeMode': instance.themeMode,
       'locale': instance.locale,
+      'dashboardUpcomingDays': instance.dashboardUpcomingDays,
     };

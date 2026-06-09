@@ -27,4 +27,8 @@ abstract interface class ITaskRepository {
 
   /// Reactive stream so the UI auto-refreshes after writes.
   Stream<List<Task>> watch(TaskQuery query);
+
+  /// Persists manual Gantt-row ordering: maps each task id to its new row
+  /// index. Used by the per-project Gantt view's drag-to-reorder.
+  Future<Result<void>> setGanttOrder(Map<String, int> orderByTaskId);
 }

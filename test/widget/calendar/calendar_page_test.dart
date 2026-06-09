@@ -40,13 +40,16 @@ void main() {
   });
 
   List<Override> baseOverrides() => [
-        taskRepositoryProvider.overrideWithValue(repo),
-        reminderRepositoryProvider.overrideWithValue(reminders),
-        notificationServiceProvider.overrideWithValue(notif),
-        settingsStoreProvider.overrideWithValue(settings),
-        projectRepositoryProvider.overrideWithValue(projects),
-        clockProvider.overrideWith((ref) => () => frozen),
-      ];
+    taskRepositoryProvider.overrideWithValue(repo),
+    reminderRepositoryProvider.overrideWithValue(reminders),
+    notificationServiceProvider.overrideWithValue(notif),
+    settingsStoreProvider.overrideWithValue(settings),
+    projectRepositoryProvider.overrideWithValue(projects),
+    clockProvider.overrideWith(
+      (ref) =>
+          () => frozen,
+    ),
+  ];
 
   Widget wrap(Widget child, {List<Override> overrides = const []}) {
     return ProviderScope(
@@ -67,8 +70,9 @@ void main() {
     expect(find.byKey(const Key('calendar-today')), findsOneWidget);
   });
 
-  testWidgets('switching to Gantt renders a bar for a dated task',
-      (tester) async {
+  testWidgets('switching to Gantt renders a bar for a dated task', (
+    tester,
+  ) async {
     repo.seed([
       Task(
         id: 'g1',
@@ -103,7 +107,12 @@ void main() {
     expect(after.isAfter(before), isTrue);
   });
 
-  testWidgets('drag on empty Gantt space creates a task', (tester) async {
+  testWidgets('Gantt no longer creates a task on empty-space drag', (
+    tester,
+  ) async {
+    // The one-row-per-task Gantt dropped background drag-to-create; tasks are
+    // now added explicitly (quick-add / add-task sheet). Dragging the empty
+    // timeline must be a no-op rather than spawning a stray task.
     final anchor = DateTime.utc(2026, 6, 1);
     final range = DateTimeRange(
       start: DateTime.utc(2026, 6, 1),
@@ -134,12 +143,10 @@ void main() {
 
     expect(repo.items, isEmpty);
 
-    // Vertical-safe horizontal drag on empty timeline body (header is 28px).
-    await tester.dragFrom(const Offset(50, 45), const Offset(50, 0));
+    await tester.dragFrom(const Offset(250, 80), const Offset(50, 0));
     await tester.pumpAndSettle();
 
-    expect(repo.items, hasLength(1));
-    expect(repo.items.first.title, 'New task');
+    expect(repo.items, isEmpty);
   });
 
   test('CalendarWindow week range spans 7 days', () {

@@ -13,5 +13,6 @@ abstract class Subtask with _$Subtask {
     @Default(0) int sortOrder,
   }) = _Subtask;
 
-  factory Subtask.fromJson(Map<String, dynamic> json) => _$SubtaskFromJson(json);
+  factory Subtask.fromJson(Map<String, dynamic> json) =>
+      _$SubtaskFromJson(json);
 }

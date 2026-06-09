@@ -18,9 +18,9 @@ void main() {
     addTearDown(container.dispose);
     expect(
       () => container.read(appDatabaseProvider),
-      throwsA(predicate<Object>(
-        (e) => e.toString().contains('appDatabaseProvider'),
-      )),
+      throwsA(
+        predicate<Object>((e) => e.toString().contains('appDatabaseProvider')),
+      ),
     );
   });
 
@@ -28,24 +28,31 @@ void main() {
     final db = newTestDb();
     addTearDown(db.close);
 
-    final container = ProviderContainer(
-      overrides: driftDataLayerOverrides(db),
-    );
+    final container = ProviderContainer(overrides: driftDataLayerOverrides(db));
     addTearDown(container.dispose);
 
     expect(container.read(appDatabaseProvider), same(db));
     expect(container.read(taskRepositoryProvider), isA<DriftTaskRepository>());
-    expect(container.read(projectRepositoryProvider),
-        isA<DriftProjectRepository>());
+    expect(
+      container.read(projectRepositoryProvider),
+      isA<DriftProjectRepository>(),
+    );
     expect(container.read(tagRepositoryProvider), isA<DriftTagRepository>());
-    expect(container.read(reminderRepositoryProvider),
-        isA<DriftReminderRepository>());
+    expect(
+      container.read(reminderRepositoryProvider),
+      isA<DriftReminderRepository>(),
+    );
 
     // The concrete repositories satisfy their abstract contracts.
     expect(container.read(taskRepositoryProvider), isA<ITaskRepository>());
-    expect(container.read(projectRepositoryProvider), isA<IProjectRepository>());
+    expect(
+      container.read(projectRepositoryProvider),
+      isA<IProjectRepository>(),
+    );
     expect(container.read(tagRepositoryProvider), isA<ITagRepository>());
     expect(
-        container.read(reminderRepositoryProvider), isA<IReminderRepository>());
+      container.read(reminderRepositoryProvider),
+      isA<IReminderRepository>(),
+    );
   });
 }

@@ -1,9 +1,5 @@
 /// User actions available on a task notification.
-enum NotificationActionType {
-  markDone,
-  snooze,
-  open,
-}
+enum NotificationActionType { markDone, snooze, open }
 
 /// Maps platform [NotificationAction.actionId] strings to [NotificationActionType].
 NotificationActionType? parseNotificationActionType(String actionId) {

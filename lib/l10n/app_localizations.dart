@@ -104,6 +104,18 @@ abstract class AppLocalizations {
   /// **'Tasks'**
   String get navTasks;
 
+  /// Navigation label for the Dashboard tab
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get navDashboard;
+
+  /// Navigation label for the Projects tab
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get navProjects;
+
   /// Navigation label for Calendar tab
   ///
   /// In en, this message translates to:
@@ -163,6 +175,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get dateClear;
+
+  /// Shown when a date has no specific time
+  ///
+  /// In en, this message translates to:
+  /// **'All day'**
+  String get allDay;
+
+  /// Tooltip to clear a date's time component
+  ///
+  /// In en, this message translates to:
+  /// **'Clear time (all day)'**
+  String get clearTime;
+
+  /// Desktop button to open the full create-task sheet
+  ///
+  /// In en, this message translates to:
+  /// **'New task with date & time'**
+  String get newTaskWithTime;
 
   /// Empty state for the task list
   ///
@@ -601,6 +631,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set overdue repeat interval (hours)'**
   String get hoursDialog;
+
+  /// Label for the project picker
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get projectLabel;
+
+  /// Context-menu action to create a task on the selected day
+  ///
+  /// In en, this message translates to:
+  /// **'Create task'**
+  String get calendarCreateTaskHere;
+
+  /// Context-menu action to open the day view
+  ///
+  /// In en, this message translates to:
+  /// **'Open day'**
+  String get calendarOpenDay;
+
+  /// Dashboard empty state when there are no relevant tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing due. You are all clear!'**
+  String get dashboardEmpty;
+
+  /// Empty state for an individual dashboard section
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here'**
+  String get dashboardSectionEmpty;
+
+  /// Dashboard section header for overdue tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get dashboardOverdue;
+
+  /// Dashboard section header for today's tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dashboardToday;
+
+  /// Dashboard section header for upcoming tasks within N days
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming ({days} days)'**
+  String dashboardUpcoming(int days);
+
+  /// Settings label for the dashboard upcoming window length
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming window'**
+  String get dashboardUpcomingDaysSetting;
+
+  /// Value label for the dashboard upcoming window length
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
+  String dashboardUpcomingDaysValue(int days);
+
+  /// Dialog title for setting the dashboard upcoming window length
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming window (days)'**
+  String get dashboardUpcomingDaysDialog;
+
+  /// Empty state for the projects list
+  ///
+  /// In en, this message translates to:
+  /// **'No projects yet. Tap + to create one.'**
+  String get projectsEmpty;
+
+  /// Title of the create-project dialog
+  ///
+  /// In en, this message translates to:
+  /// **'New project'**
+  String get projectCreateTitle;
+
+  /// Title of the edit-project dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Edit project'**
+  String get projectEditTitle;
+
+  /// Label for the project name field
+  ///
+  /// In en, this message translates to:
+  /// **'Project name'**
+  String get projectNameLabel;
+
+  /// Label for the project color picker
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get projectColorLabel;
+
+  /// Title of the delete-project dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Delete project?'**
+  String get projectDeleteTitle;
+
+  /// Body of the delete-project dialog
+  ///
+  /// In en, this message translates to:
+  /// **'What should happen to the tasks in \"{name}\"?'**
+  String projectDeleteMessage(String name);
+
+  /// Delete-project option: move tasks to inbox
+  ///
+  /// In en, this message translates to:
+  /// **'Move to Inbox'**
+  String get projectDeleteMoveInbox;
+
+  /// Delete-project option: delete tasks too
+  ///
+  /// In en, this message translates to:
+  /// **'Delete tasks'**
+  String get projectDeleteWithTasks;
+
+  /// Project detail tab: task list
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get projectTabList;
+
+  /// Project detail tab: calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get projectTabCalendar;
+
+  /// Project detail tab: gantt
+  ///
+  /// In en, this message translates to:
+  /// **'Gantt'**
+  String get projectTabGantt;
+
+  /// Error when a project name is empty
+  ///
+  /// In en, this message translates to:
+  /// **'Project name cannot be empty'**
+  String get errorEmptyProjectName;
 }
 
 class _AppLocalizationsDelegate

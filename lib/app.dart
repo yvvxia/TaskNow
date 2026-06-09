@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import 'core/widgets/adaptive_scaffold.dart';
 import 'features/calendar/calendar_page.dart';
-import 'features/search/search_page.dart';
+import 'features/dashboard/dashboard_page.dart';
+import 'features/project/project_detail_page.dart';
+import 'features/project/projects_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/settings/settings_providers.dart';
 import 'features/task/task_detail_page.dart';
-import 'features/task/task_list_page.dart';
+import 'features/task/tasks_hub_page.dart';
 import 'l10n/app_localizations.dart';
 
 /// Brand seed color (proposal §5.5 primary `#1976D2`).
@@ -99,7 +101,7 @@ CustomTransitionPage<void> _fadePage(GoRouterState state, Widget child) {
 /// can construct an isolated router per test.
 GoRouter createAppRouter() {
   return GoRouter(
-    initialLocation: '/tasks',
+    initialLocation: '/dashboard',
     routes: <RouteBase>[
       ShellRoute(
         builder: (context, state, child) => AdaptiveScaffold(
@@ -109,9 +111,21 @@ GoRouter createAppRouter() {
         ),
         routes: <RouteBase>[
           GoRoute(
-            path: '/tasks',
+            path: '/dashboard',
             pageBuilder: (context, state) =>
-                _fadePage(state, const TaskListPage()),
+                _fadePage(state, const DashboardPage()),
+          ),
+          GoRoute(
+            path: '/projects',
+            pageBuilder: (context, state) =>
+                _fadePage(state, const ProjectsPage()),
+          ),
+          GoRoute(
+            path: '/projects/:id',
+            pageBuilder: (context, state) => _fadePage(
+              state,
+              ProjectDetailPage(projectId: state.pathParameters['id']!),
+            ),
           ),
           GoRoute(
             path: '/calendar',
@@ -119,9 +133,9 @@ GoRouter createAppRouter() {
                 _fadePage(state, const CalendarPage()),
           ),
           GoRoute(
-            path: '/search',
+            path: '/tasks',
             pageBuilder: (context, state) =>
-                _fadePage(state, const SearchPage()),
+                _fadePage(state, const TasksHubPage()),
           ),
           GoRoute(
             path: '/settings',

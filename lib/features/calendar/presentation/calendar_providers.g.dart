@@ -57,16 +57,75 @@ final class BarColorModeProvider
 
 String _$barColorModeHash() => r'41ae508da1ae79c12513bb1fdff5c868323796a3';
 
-/// Streams the laid-out task bars for the current visible range. Watches the
-/// calendar window and re-queries via [TaskQuery.rangeOverlap] so only tasks
-/// intersecting the window are loaded.
+/// Map of project id → stored color string, used to color the global calendar
+/// by project.
+
+@ProviderFor(projectColors)
+final projectColorsProvider = ProjectColorsProvider._();
+
+/// Map of project id → stored color string, used to color the global calendar
+/// by project.
+
+final class ProjectColorsProvider
+    extends
+        $FunctionalProvider<
+          Map<String, String?>,
+          Map<String, String?>,
+          Map<String, String?>
+        >
+    with $Provider<Map<String, String?>> {
+  /// Map of project id → stored color string, used to color the global calendar
+  /// by project.
+  ProjectColorsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'projectColorsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$projectColorsHash();
+
+  @$internal
+  @override
+  $ProviderElement<Map<String, String?>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  Map<String, String?> create(Ref ref) {
+    return projectColors(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, String?> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, String?>>(value),
+    );
+  }
+}
+
+String _$projectColorsHash() => r'651cd3fe2908f11554fa67a0834b6c1673ee75b6';
+
+/// Streams the laid-out task bars for the current visible range, optionally
+/// scoped to a single [projectId] (null = all projects / global calendar).
+///
+/// When scoped to a project, bars are colored by priority; on the global
+/// calendar they are colored by project hue with priority saturation.
 
 @ProviderFor(visibleBars)
-final visibleBarsProvider = VisibleBarsProvider._();
+final visibleBarsProvider = VisibleBarsFamily._();
 
-/// Streams the laid-out task bars for the current visible range. Watches the
-/// calendar window and re-queries via [TaskQuery.rangeOverlap] so only tasks
-/// intersecting the window are loaded.
+/// Streams the laid-out task bars for the current visible range, optionally
+/// scoped to a single [projectId] (null = all projects / global calendar).
+///
+/// When scoped to a project, bars are colored by priority; on the global
+/// calendar they are colored by project hue with priority saturation.
 
 final class VisibleBarsProvider
     extends
@@ -76,22 +135,31 @@ final class VisibleBarsProvider
           Stream<List<TaskBar>>
         >
     with $FutureModifier<List<TaskBar>>, $StreamProvider<List<TaskBar>> {
-  /// Streams the laid-out task bars for the current visible range. Watches the
-  /// calendar window and re-queries via [TaskQuery.rangeOverlap] so only tasks
-  /// intersecting the window are loaded.
-  VisibleBarsProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'visibleBarsProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  /// Streams the laid-out task bars for the current visible range, optionally
+  /// scoped to a single [projectId] (null = all projects / global calendar).
+  ///
+  /// When scoped to a project, bars are colored by priority; on the global
+  /// calendar they are colored by project hue with priority saturation.
+  VisibleBarsProvider._({
+    required VisibleBarsFamily super.from,
+    required String? super.argument,
+  }) : super(
+         retry: null,
+         name: r'visibleBarsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$visibleBarsHash();
+
+  @override
+  String toString() {
+    return r'visibleBarsProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -101,8 +169,196 @@ final class VisibleBarsProvider
 
   @override
   Stream<List<TaskBar>> create(Ref ref) {
-    return visibleBars(ref);
+    final argument = this.argument as String?;
+    return visibleBars(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VisibleBarsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$visibleBarsHash() => r'488649384bd8557eb0199f16ad58150986e5bd97';
+String _$visibleBarsHash() => r'0df2d0caecfd9d4962c7a7d89dc4b541c97bf12b';
+
+/// Streams the laid-out task bars for the current visible range, optionally
+/// scoped to a single [projectId] (null = all projects / global calendar).
+///
+/// When scoped to a project, bars are colored by priority; on the global
+/// calendar they are colored by project hue with priority saturation.
+
+final class VisibleBarsFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<TaskBar>>, String?> {
+  VisibleBarsFamily._()
+    : super(
+        retry: null,
+        name: r'visibleBarsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Streams the laid-out task bars for the current visible range, optionally
+  /// scoped to a single [projectId] (null = all projects / global calendar).
+  ///
+  /// When scoped to a project, bars are colored by priority; on the global
+  /// calendar they are colored by project hue with priority saturation.
+
+  VisibleBarsProvider call(String? projectId) =>
+      VisibleBarsProvider._(argument: projectId, from: this);
+
+  @override
+  String toString() => r'visibleBarsProvider';
+}
+
+/// Streams one-task-per-row Gantt bars for the current visible range,
+/// optionally scoped to a single [projectId]. Rows are ordered by manual
+/// [Task.ganttOrder] then creation time.
+
+@ProviderFor(ganttBars)
+final ganttBarsProvider = GanttBarsFamily._();
+
+/// Streams one-task-per-row Gantt bars for the current visible range,
+/// optionally scoped to a single [projectId]. Rows are ordered by manual
+/// [Task.ganttOrder] then creation time.
+
+final class GanttBarsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<TaskBar>>,
+          List<TaskBar>,
+          Stream<List<TaskBar>>
+        >
+    with $FutureModifier<List<TaskBar>>, $StreamProvider<List<TaskBar>> {
+  /// Streams one-task-per-row Gantt bars for the current visible range,
+  /// optionally scoped to a single [projectId]. Rows are ordered by manual
+  /// [Task.ganttOrder] then creation time.
+  GanttBarsProvider._({
+    required GanttBarsFamily super.from,
+    required String? super.argument,
+  }) : super(
+         retry: null,
+         name: r'ganttBarsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$ganttBarsHash();
+
+  @override
+  String toString() {
+    return r'ganttBarsProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<TaskBar>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<TaskBar>> create(Ref ref) {
+    final argument = this.argument as String?;
+    return ganttBars(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GanttBarsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$ganttBarsHash() => r'164ec06d4cb786c3110b44562ae8c18abea800db';
+
+/// Streams one-task-per-row Gantt bars for the current visible range,
+/// optionally scoped to a single [projectId]. Rows are ordered by manual
+/// [Task.ganttOrder] then creation time.
+
+final class GanttBarsFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<TaskBar>>, String?> {
+  GanttBarsFamily._()
+    : super(
+        retry: null,
+        name: r'ganttBarsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Streams one-task-per-row Gantt bars for the current visible range,
+  /// optionally scoped to a single [projectId]. Rows are ordered by manual
+  /// [Task.ganttOrder] then creation time.
+
+  GanttBarsProvider call(String? projectId) =>
+      GanttBarsProvider._(argument: projectId, from: this);
+
+  @override
+  String toString() => r'ganttBarsProvider';
+}
+
+/// Use case that persists Gantt-row reordering.
+
+@ProviderFor(reorderGanttUseCase)
+final reorderGanttUseCaseProvider = ReorderGanttUseCaseProvider._();
+
+/// Use case that persists Gantt-row reordering.
+
+final class ReorderGanttUseCaseProvider
+    extends
+        $FunctionalProvider<
+          ReorderGanttUseCase,
+          ReorderGanttUseCase,
+          ReorderGanttUseCase
+        >
+    with $Provider<ReorderGanttUseCase> {
+  /// Use case that persists Gantt-row reordering.
+  ReorderGanttUseCaseProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'reorderGanttUseCaseProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$reorderGanttUseCaseHash();
+
+  @$internal
+  @override
+  $ProviderElement<ReorderGanttUseCase> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ReorderGanttUseCase create(Ref ref) {
+    return reorderGanttUseCase(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ReorderGanttUseCase value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ReorderGanttUseCase>(value),
+    );
+  }
+}
+
+String _$reorderGanttUseCaseHash() =>
+    r'd3db9f4ee1692e9468ce6650bf7ba1ee9a98af79';

@@ -15,7 +15,7 @@ class FakeSettingsStore implements ISettingsStore {
   final _controller = StreamController<AppSettings>.broadcast();
 
   FakeSettingsStore([AppSettings initial = const AppSettings()])
-      : _current = initial;
+    : _current = initial;
 
   @override
   T get<T>(SettingKey<T> key) => key.defaultValue;
@@ -99,34 +99,39 @@ void main() {
       expect(emitted.any((s) => s.themeMode == 'dark'), isTrue);
     });
 
-    test('enters error state when settingsStoreProvider is not overridden',
-        () async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    test(
+      'enters error state when settingsStoreProvider is not overridden',
+      () async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      // settingsStoreProvider throws by default; wait for evaluation
-      await Future<void>.delayed(Duration.zero);
-      final updated = container.read(settingsNotifierProvider);
-      expect(updated.hasError || updated.isLoading, isTrue);
-    });
+        // settingsStoreProvider throws by default; wait for evaluation
+        await Future<void>.delayed(Duration.zero);
+        final updated = container.read(settingsNotifierProvider);
+        expect(updated.hasError || updated.isLoading, isTrue);
+      },
+    );
   });
 
   group('themeProvider', () {
-    test('returns ThemeMode.system when store emits default settings', () async {
-      final fakeStore = FakeSettingsStore();
-      addTearDown(fakeStore.close);
+    test(
+      'returns ThemeMode.system when store emits default settings',
+      () async {
+        final fakeStore = FakeSettingsStore();
+        addTearDown(fakeStore.close);
 
-      final container = ProviderContainer(
-        overrides: [settingsStoreProvider.overrideWithValue(fakeStore)],
-      );
-      addTearDown(container.dispose);
+        final container = ProviderContainer(
+          overrides: [settingsStoreProvider.overrideWithValue(fakeStore)],
+        );
+        addTearDown(container.dispose);
 
-      // Keep a persistent listener so the stream is not paused.
-      final sub = container.listen(settingsNotifierProvider, (_, _) {});
-      addTearDown(sub.close);
-      await Future<void>.delayed(Duration.zero);
-      expect(container.read(themeProvider), ThemeMode.system);
-    });
+        // Keep a persistent listener so the stream is not paused.
+        final sub = container.listen(settingsNotifierProvider, (_, _) {});
+        addTearDown(sub.close);
+        await Future<void>.delayed(Duration.zero);
+        expect(container.read(themeProvider), ThemeMode.system);
+      },
+    );
 
     test('returns ThemeMode.dark when themeMode setting is "dark"', () async {
       const initial = AppSettings(themeMode: 'dark');

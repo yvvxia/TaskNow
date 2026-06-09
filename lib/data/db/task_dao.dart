@@ -53,10 +53,12 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
       case TaskStatus.incomplete:
         query.where((t) => t.isCompleted.equals(false));
       case TaskStatus.overdue:
-        query.where((t) =>
-            t.isCompleted.equals(false) &
-            t.dueDate.isNotNull() &
-            t.dueDate.isSmallerThanValue(nowMs));
+        query.where(
+          (t) =>
+              t.isCompleted.equals(false) &
+              t.dueDate.isNotNull() &
+              t.dueDate.isSmallerThanValue(nowMs),
+        );
       case null:
         break;
     }
@@ -87,9 +89,9 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
         query.orderBy([(t) => OrderingTerm(expression: t.priority)]);
       case TaskSort.createdAt:
       case TaskSort.createdDesc:
-        query.orderBy(
-          [(t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)],
-        );
+        query.orderBy([
+          (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc),
+        ]);
       case TaskSort.manual:
         query.orderBy([(t) => OrderingTerm(expression: t.sortOrder)]);
     }
@@ -129,14 +131,30 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
 
   /// Finds a non-deleted task by id.
   Future<TaskRow?> findById(String id) {
-    return (select(tasks)
-          ..where((t) => t.id.equals(id) & t.deletedAt.isNull()))
-        .getSingleOrNull();
+    return (select(
+      tasks,
+    )..where((t) => t.id.equals(id) & t.deletedAt.isNull())).getSingleOrNull();
   }
 
   /// Finds a task by id regardless of soft-delete state.
   Future<TaskRow?> findByIdIncludingDeleted(String id) {
     return (select(tasks)..where((t) => t.id.equals(id))).getSingleOrNull();
+  }
+
+  /// Persists manual Gantt-row ordering for a set of tasks. Each entry maps a
+  /// task id to its new [Tasks.ganttOrder] index. Applied atomically.
+  Future<void> setGanttOrders(Map<String, int> orderByTaskId, int nowMs) async {
+    if (orderByTaskId.isEmpty) return;
+    await transaction(() async {
+      for (final entry in orderByTaskId.entries) {
+        await (update(tasks)..where((t) => t.id.equals(entry.key))).write(
+          TasksCompanion(
+            ganttOrder: Value(entry.value),
+            updatedAt: Value(nowMs),
+          ),
+        );
+      }
+    });
   }
 
   /// Soft-deletes a single task (writes `deleted_at`/`updated_at`).
@@ -148,8 +166,9 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
 
   /// Soft-deletes every task in a recurrence series (matching parent id).
   Future<int> softDeleteSeries(String parentId, int nowMs) {
-    return (update(tasks)..where((t) => t.recurrenceParent.equals(parentId)))
-        .write(
+    return (update(
+      tasks,
+    )..where((t) => t.recurrenceParent.equals(parentId))).write(
       TasksCompanion(deletedAt: Value(nowMs), updatedAt: Value(nowMs)),
     );
   }

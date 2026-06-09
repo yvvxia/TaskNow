@@ -61,10 +61,7 @@ void main() {
   group('SettingsPage widget tests', () {
     testWidgets('renders settings-page key', (tester) async {
       await tester.pumpWidget(
-        _buildTestApp(
-          store: _FakeStore(),
-          child: const SettingsPage(),
-        ),
+        _buildTestApp(store: _FakeStore(), child: const SettingsPage()),
       );
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('settings-page')), findsOneWidget);
@@ -72,10 +69,7 @@ void main() {
 
     testWidgets('shows theme segmented button', (tester) async {
       await tester.pumpWidget(
-        _buildTestApp(
-          store: _FakeStore(),
-          child: const SettingsPage(),
-        ),
+        _buildTestApp(store: _FakeStore(), child: const SettingsPage()),
       );
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('theme-segmented-button')), findsOneWidget);
@@ -83,10 +77,7 @@ void main() {
 
     testWidgets('shows notifications global switch', (tester) async {
       await tester.pumpWidget(
-        _buildTestApp(
-          store: _FakeStore(),
-          child: const SettingsPage(),
-        ),
+        _buildTestApp(store: _FakeStore(), child: const SettingsPage()),
       );
       await tester.pumpAndSettle();
       expect(
@@ -97,10 +88,7 @@ void main() {
 
     testWidgets('shows sync coming-soon text after scrolling', (tester) async {
       await tester.pumpWidget(
-        _buildTestApp(
-          store: _FakeStore(),
-          child: const SettingsPage(),
-        ),
+        _buildTestApp(store: _FakeStore(), child: const SettingsPage()),
       );
       await tester.pumpAndSettle();
 
@@ -113,13 +101,11 @@ void main() {
       expect(find.textContaining('Phase 2'), findsOneWidget);
     });
 
-    testWidgets('shows about section with PlanList app name after scrolling',
-        (tester) async {
+    testWidgets('shows about section with PlanList app name after scrolling', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _buildTestApp(
-          store: _FakeStore(),
-          child: const SettingsPage(),
-        ),
+        _buildTestApp(store: _FakeStore(), child: const SettingsPage()),
       );
       await tester.pumpAndSettle();
 
@@ -136,9 +122,7 @@ void main() {
 
     testWidgets('renders with no store (error fallback)', (tester) async {
       // SettingsPage must not crash when no real store is available.
-      await tester.pumpWidget(
-        _buildTestApp(child: const SettingsPage()),
-      );
+      await tester.pumpWidget(_buildTestApp(child: const SettingsPage()));
       // Allow the async provider to settle
       await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();

@@ -6,11 +6,9 @@ import 'package:plan_list/features/task/presentation/task_tile.dart';
 import 'package:plan_list/features/task/presentation/task_view.dart';
 
 Widget wrap(Widget child) => MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: Scaffold(
-        body: SizedBox(width: 360, child: child),
-      ),
-    );
+  theme: ThemeData(useMaterial3: true),
+  home: Scaffold(body: SizedBox(width: 360, child: child)),
+);
 
 TaskView makeView(Task task, {DateTime? now}) =>
     TaskView.from(task, now ?? DateTime.utc(2026, 6, 7));

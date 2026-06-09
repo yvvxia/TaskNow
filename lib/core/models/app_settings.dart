@@ -12,6 +12,7 @@ abstract class AppSettings with _$AppSettings {
     @Default(15) int defaultReminderMinutes,
     @Default('system') String themeMode,
     @Default('en') String locale,
+    @Default(7) int dashboardUpcomingDays,
   }) = _AppSettings;
 
   factory AppSettings.fromJson(Map<String, dynamic> json) =>

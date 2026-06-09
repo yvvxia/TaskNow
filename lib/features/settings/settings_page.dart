@@ -38,9 +38,7 @@ class SettingsPage extends ConsumerWidget {
 
     return Scaffold(
       key: const Key('settings-page'),
-      appBar: AppBar(
-        title: Text(l10n?.settingsTitle ?? 'Settings'),
-      ),
+      appBar: AppBar(title: Text(l10n?.settingsTitle ?? 'Settings')),
       body: settingsAsync.when(
         data: (settings) => _SettingsBody(settings: settings),
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -120,8 +118,7 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
     int current,
     Future<void> Function(int) onPicked,
   ) async {
-    final controller =
-        TextEditingController(text: current.toString());
+    final controller = TextEditingController(text: current.toString());
     final result = await showDialog<int>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -229,9 +226,7 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
         ),
         ListTile(
           leading: const Icon(Icons.alarm),
-          title: Text(
-            l10n?.notificationsDefaultReminder ?? 'Default Reminder',
-          ),
+          title: Text(l10n?.notificationsDefaultReminder ?? 'Default Reminder'),
           trailing: Text(
             l10n?.notificationsDefaultReminderValue(
                   settings.defaultReminderMinutes,
@@ -280,26 +275,35 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
           leading: const Icon(Icons.bedtime),
           title: Text(l10n?.dndStart ?? 'DND Start'),
           trailing: Text(_formatMinutesOfDay(_dndStartMinutes)),
-          onTap: () => _pickTime(
-            context,
-            _dndStartMinutes,
-            (v) async {
-              await _setSetting(SettingKeys.dndStartMinutes, v);
-              if (mounted) setState(() => _dndStartMinutes = v);
-            },
-          ),
+          onTap: () => _pickTime(context, _dndStartMinutes, (v) async {
+            await _setSetting(SettingKeys.dndStartMinutes, v);
+            if (mounted) setState(() => _dndStartMinutes = v);
+          }),
         ),
         ListTile(
           leading: const Icon(Icons.wb_sunny),
           title: Text(l10n?.dndEnd ?? 'DND End'),
           trailing: Text(_formatMinutesOfDay(_dndEndMinutes)),
-          onTap: () => _pickTime(
+          onTap: () => _pickTime(context, _dndEndMinutes, (v) async {
+            await _setSetting(SettingKeys.dndEndMinutes, v);
+            if (mounted) setState(() => _dndEndMinutes = v);
+          }),
+        ),
+
+        // ── Dashboard ────────────────────────────────────────────────────────
+        _SectionHeader(l10n?.navDashboard ?? 'Dashboard'),
+        ListTile(
+          leading: const Icon(Icons.upcoming_outlined),
+          title: Text(l10n?.dashboardUpcomingDaysSetting ?? 'Upcoming window'),
+          trailing: Text(
+            l10n?.dashboardUpcomingDaysValue(settings.dashboardUpcomingDays) ??
+                '${settings.dashboardUpcomingDays} days',
+          ),
+          onTap: () => _pickInt(
             context,
-            _dndEndMinutes,
-            (v) async {
-              await _setSetting(SettingKeys.dndEndMinutes, v);
-              if (mounted) setState(() => _dndEndMinutes = v);
-            },
+            l10n?.dashboardUpcomingDaysDialog ?? 'Upcoming window (days)',
+            settings.dashboardUpcomingDays,
+            (v) => _setSetting(SettingKeys.dashboardUpcomingDays, v),
           ),
         ),
 
@@ -353,8 +357,8 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }

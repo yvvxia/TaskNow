@@ -56,8 +56,7 @@ class _NotificationBootstrapState extends ConsumerState<NotificationBootstrap> {
     ) async {
       if (next case AsyncData(:final value)) {
         await NotificationActionHandler(
-          completeTask: (id) =>
-              ref.read(completeTaskUseCaseProvider).call(id),
+          completeTask: (id) => ref.read(completeTaskUseCaseProvider).call(id),
           snooze: ref.read(snoozeReminderUseCaseProvider),
           router: ref.read(routerProvider),
         ).handleAction(value);

@@ -37,15 +37,12 @@ class SearchPage extends ConsumerWidget {
               if (tasks.isEmpty) {
                 return const EmptyState();
               }
-              return ResultList(
-                tasks: tasks,
-                keyword: query.effectiveKeyword,
-              );
+              return ResultList(tasks: tasks, keyword: query.effectiveKeyword);
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, _) => EmptyState(
-              message: l10n?.searchFailed(err.toString()) ??
-                  'Search failed: $err',
+              message:
+                  l10n?.searchFailed(err.toString()) ?? 'Search failed: $err',
             ),
           ),
         ),

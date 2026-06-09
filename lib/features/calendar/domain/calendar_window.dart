@@ -14,7 +14,10 @@ class CalendarWindow {
     final day = DateTime(anchor.year, anchor.month, anchor.day);
     switch (type) {
       case CalendarViewType.day:
-        return DateTimeRange(start: day, end: _endOf(day.add(const Duration(days: 1))));
+        return DateTimeRange(
+          start: day,
+          end: _endOf(day.add(const Duration(days: 1))),
+        );
       case CalendarViewType.week:
         final start = day.subtract(Duration(days: day.weekday - 1));
         return DateTimeRange(
@@ -36,11 +39,7 @@ class CalendarWindow {
   }
 
   /// Shifts [anchor] by one window in [dir] (`+1` next, `-1` prev).
-  static DateTime shiftAnchor(
-    CalendarViewType type,
-    DateTime anchor,
-    int dir,
-  ) {
+  static DateTime shiftAnchor(CalendarViewType type, DateTime anchor, int dir) {
     switch (type) {
       case CalendarViewType.day:
         return anchor.add(Duration(days: dir));

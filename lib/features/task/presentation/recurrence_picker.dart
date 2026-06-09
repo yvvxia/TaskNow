@@ -7,11 +7,7 @@ import '../../../core/models/recurrence_rule.dart';
 /// end date). Calls [onChanged] whenever the rule changes; passes [null] to
 /// clear the rule.
 class RecurrencePicker extends StatefulWidget {
-  const RecurrencePicker({
-    super.key,
-    this.value,
-    required this.onChanged,
-  });
+  const RecurrencePicker({super.key, this.value, required this.onChanged});
 
   final RecurrenceRule? value;
   final ValueChanged<RecurrenceRule?> onChanged;
@@ -61,10 +57,8 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
               value: _frequency,
               items: RecurrenceFrequency.values
                   .map(
-                    (f) => DropdownMenuItem(
-                      value: f,
-                      child: Text(_freqLabel(f)),
-                    ),
+                    (f) =>
+                        DropdownMenuItem(value: f, child: Text(_freqLabel(f))),
                   )
                   .toList(),
               onChanged: (v) {

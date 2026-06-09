@@ -15,8 +15,8 @@ import '../mappers/time_mapper.dart';
 /// [Result]/[AppException]; no raw exceptions escape.
 class DriftTaskRepository implements ITaskRepository {
   DriftTaskRepository(AppDatabase db, {DateTime Function()? now})
-      : _dao = db.taskDao,
-        _now = now ?? DateTime.now;
+    : _dao = db.taskDao,
+      _now = now ?? DateTime.now;
 
   final TaskDao _dao;
   final DateTime Function() _now;
@@ -24,11 +24,7 @@ class DriftTaskRepository implements ITaskRepository {
   @override
   Future<Result<Task>> create(TaskDraft draft) async {
     try {
-      final entity = TaskMapper.fromDraft(
-        draft,
-        id: kUuid.v4(),
-        now: _now(),
-      );
+      final entity = TaskMapper.fromDraft(draft, id: kUuid.v4(), now: _now());
       await _dao.upsertTask(TaskMapper.toRow(entity), entity.tagIds);
       return Ok(entity);
     } on Object catch (e) {
@@ -105,9 +101,20 @@ class DriftTaskRepository implements ITaskRepository {
 
   @override
   Stream<List<Task>> watch(TaskQuery query) {
-    return _dao.buildQuery(query, nowMs: _now().msUtc).watch().map(
-          (rows) => rows.map((r) => TaskMapper.toEntity(r)).toList(),
-        );
+    return _dao
+        .buildQuery(query, nowMs: _now().msUtc)
+        .watch()
+        .map((rows) => rows.map((r) => TaskMapper.toEntity(r)).toList());
+  }
+
+  @override
+  Future<Result<void>> setGanttOrder(Map<String, int> orderByTaskId) async {
+    try {
+      await _dao.setGanttOrders(orderByTaskId, _now().msUtc);
+      return const Ok<void>(null);
+    } on Object catch (e) {
+      return Err(_persistence(e));
+    }
   }
 
   Future<List<Task>> _composeAll(List<TaskRow> rows) async {

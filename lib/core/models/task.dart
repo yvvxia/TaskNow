@@ -25,6 +25,11 @@ abstract class Task with _$Task {
     @Default(Priority.medium) Priority priority,
     @Default(TaskStatus.incomplete) TaskStatus status,
     @Default(0) int sortOrder,
+
+    /// Manual ordering of this task's row in the Gantt view, independent of
+    /// [sortOrder]. Null means "not manually ordered" (falls back to creation
+    /// time).
+    int? ganttOrder,
     String? recurrenceRuleId,
     String? recurrenceParent,
     @Default(false) bool autoCompleteOnSubtasks,
@@ -59,8 +64,9 @@ abstract class Task with _$Task {
   }
 
   /// Fraction of subtasks that are done. Returns 0 when there are no subtasks.
-  double get subtaskProgress =>
-      subtasks.isEmpty ? 0 : subtasks.where((s) => s.isDone).length / subtasks.length;
+  double get subtaskProgress => subtasks.isEmpty
+      ? 0
+      : subtasks.where((s) => s.isDone).length / subtasks.length;
 
   /// True if this task belongs to a recurrence series.
   bool get isRecurring => recurrenceRuleId != null || recurrence != null;

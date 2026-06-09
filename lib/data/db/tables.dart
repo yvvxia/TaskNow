@@ -44,8 +44,11 @@ class RecurrenceRules extends Table {
 @DataClassName('TaskRow')
 class Tasks extends Table {
   TextColumn get id => text()();
-  TextColumn get projectId =>
-      text().nullable().references(Projects, #id, onDelete: KeyAction.setNull)();
+  TextColumn get projectId => text().nullable().references(
+    Projects,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
   TextColumn get title => text()();
   TextColumn get notes => text().nullable()();
   IntColumn get startDate => integer().nullable()(); // UTC ms
@@ -55,9 +58,16 @@ class Tasks extends Table {
   IntColumn get priority => integer().withDefault(const Constant(2))();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
   IntColumn get sortOrder => integer().withDefault(const Constant(0))();
-  TextColumn get recurrenceRuleId => text()
-      .nullable()
-      .references(RecurrenceRules, #id, onDelete: KeyAction.setNull)();
+
+  /// Manual ordering of this task's row in the Gantt view, independent of the
+  /// task list's [sortOrder]. Null means "not manually ordered" — the Gantt
+  /// falls back to creation time. Scoped per project in practice.
+  IntColumn get ganttOrder => integer().nullable()();
+  TextColumn get recurrenceRuleId => text().nullable().references(
+    RecurrenceRules,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
   TextColumn get recurrenceParent => text().nullable()();
   BoolColumn get autoCompleteOnSubtasks =>
       boolean().withDefault(const Constant(false))();
@@ -73,8 +83,8 @@ class Tasks extends Table {
 
   @override
   List<String> get customConstraints => <String>[
-        'CHECK (due_date IS NULL OR start_date IS NULL OR due_date >= start_date)',
-      ];
+    'CHECK (due_date IS NULL OR start_date IS NULL OR due_date >= start_date)',
+  ];
 }
 
 @DataClassName('SubtaskRow')

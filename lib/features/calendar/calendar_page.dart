@@ -19,7 +19,28 @@ import 'presentation/views/week_view.dart';
 /// Guards against a missing [ProviderScope] (legacy router tests) by rendering
 /// a minimal shell that still carries the `calendar-page` key.
 class CalendarPage extends StatelessWidget {
-  const CalendarPage({super.key});
+  const CalendarPage({
+    super.key,
+    this.projectId,
+    this.embedded = false,
+    this.showGanttSegment = true,
+    this.forceGantt = false,
+  });
+
+  /// When non-null the calendar is scoped to a single project; otherwise it
+  /// shows all projects (global calendar, colored by project).
+  final String? projectId;
+
+  /// When true the page is hosted inside another scaffold (e.g. a project
+  /// detail tab), so it omits its own [Scaffold] chrome.
+  final bool embedded;
+
+  /// Whether the view switcher includes the Gantt segment.
+  final bool showGanttSegment;
+
+  /// When true the page renders only the Gantt view (no view switcher), used
+  /// by a project's dedicated Gantt tab.
+  final bool forceGantt;
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +51,28 @@ class CalendarPage extends StatelessWidget {
       hasScope = false;
     }
 
-    return Scaffold(
-      key: const Key('calendar-page'),
-      body: hasScope ? const _CalendarBody() : const SizedBox.shrink(),
-    );
+    final body = hasScope
+        ? _CalendarBody(
+            projectId: projectId,
+            showGanttSegment: showGanttSegment,
+            forceGantt: forceGantt,
+          )
+        : const SizedBox.shrink();
+    if (embedded) return body;
+    return Scaffold(key: const Key('calendar-page'), body: body);
   }
 }
 
 class _CalendarBody extends ConsumerWidget {
-  const _CalendarBody();
+  const _CalendarBody({
+    this.projectId,
+    this.showGanttSegment = true,
+    this.forceGantt = false,
+  });
+
+  final String? projectId;
+  final bool showGanttSegment;
+  final bool forceGantt;
 
   void _onSelect(BuildContext context, WidgetRef ref, String? id) {
     ref.read(calendarViewStateProvider.notifier).selectTask(id);
@@ -66,17 +100,34 @@ class _CalendarBody extends ConsumerWidget {
     final view = ref.watch(calendarViewStateProvider);
     void onSelect(String? id) => _onSelect(context, ref, id);
 
-    final Widget body = switch (view.type) {
-      CalendarViewType.day => DayView(onSelect: onSelect),
-      CalendarViewType.week => WeekView(onSelect: onSelect),
-      CalendarViewType.month => MonthView(onSelect: onSelect),
-      CalendarViewType.gantt => GanttView(onSelect: onSelect),
-    };
+    final Widget body = forceGantt
+        ? GanttView(onSelect: onSelect, projectId: projectId)
+        : switch (view.type) {
+            CalendarViewType.day => DayView(
+              onSelect: onSelect,
+              projectId: projectId,
+            ),
+            CalendarViewType.week => WeekView(
+              onSelect: onSelect,
+              projectId: projectId,
+            ),
+            CalendarViewType.month => MonthView(
+              onSelect: onSelect,
+              projectId: projectId,
+            ),
+            CalendarViewType.gantt => GanttView(
+              onSelect: onSelect,
+              projectId: projectId,
+            ),
+          };
 
     return SafeArea(
       child: Column(
         children: [
-          const _CalendarHeader(),
+          _CalendarHeader(
+            showSwitcher: !forceGantt,
+            showGanttSegment: showGanttSegment,
+          ),
           const Divider(height: 1),
           Expanded(child: body),
         ],
@@ -86,7 +137,13 @@ class _CalendarBody extends ConsumerWidget {
 }
 
 class _CalendarHeader extends ConsumerWidget {
-  const _CalendarHeader();
+  const _CalendarHeader({
+    this.showSwitcher = true,
+    this.showGanttSegment = true,
+  });
+
+  final bool showSwitcher;
+  final bool showGanttSegment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -132,40 +189,49 @@ class _CalendarHeader extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SegmentedButton<CalendarViewType>(
-                segments: [
-                  ButtonSegment(
-                    value: CalendarViewType.day,
-                    label: Text(l10n?.calendarDay ?? 'Day'),
-                    icon: const Icon(Icons.calendar_view_day),
-                  ),
-                  ButtonSegment(
-                    value: CalendarViewType.week,
-                    label: Text(l10n?.calendarWeek ?? 'Week'),
-                    icon: const Icon(Icons.calendar_view_week),
-                  ),
-                  ButtonSegment(
-                    value: CalendarViewType.month,
-                    label: Text(l10n?.calendarMonth ?? 'Month'),
-                    icon: const Icon(Icons.calendar_view_month),
-                  ),
-                  ButtonSegment(
-                    value: CalendarViewType.gantt,
-                    label: Text(l10n?.calendarGantt ?? 'Gantt'),
-                    icon: const Icon(Icons.view_timeline),
-                  ),
-                ],
-                selected: {view.type},
-                onSelectionChanged: (selection) =>
-                    notifier.switchView(selection.first),
+          if (showSwitcher) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SegmentedButton<CalendarViewType>(
+                  segments: [
+                    ButtonSegment(
+                      value: CalendarViewType.day,
+                      label: Text(l10n?.calendarDay ?? 'Day'),
+                      icon: const Icon(Icons.calendar_view_day),
+                    ),
+                    ButtonSegment(
+                      value: CalendarViewType.week,
+                      label: Text(l10n?.calendarWeek ?? 'Week'),
+                      icon: const Icon(Icons.calendar_view_week),
+                    ),
+                    ButtonSegment(
+                      value: CalendarViewType.month,
+                      label: Text(l10n?.calendarMonth ?? 'Month'),
+                      icon: const Icon(Icons.calendar_view_month),
+                    ),
+                    if (showGanttSegment)
+                      ButtonSegment(
+                        value: CalendarViewType.gantt,
+                        label: Text(l10n?.calendarGantt ?? 'Gantt'),
+                        icon: const Icon(Icons.view_timeline),
+                      ),
+                  ],
+                  selected: {
+                    if (!showGanttSegment &&
+                        view.type == CalendarViewType.gantt)
+                      CalendarViewType.month
+                    else
+                      view.type,
+                  },
+                  onSelectionChanged: (selection) =>
+                      notifier.switchView(selection.first),
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );

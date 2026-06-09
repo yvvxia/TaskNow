@@ -15,20 +15,21 @@ void main() {
     db = newTestDb();
     repo = DriftReminderRepository(db);
     // Reminders FK -> tasks(id); create a parent task first.
-    final task = await DriftTaskRepository(db)
-        .create(const TaskDraft(title: 'parent'));
+    final task = await DriftTaskRepository(
+      db,
+    ).create(const TaskDraft(title: 'parent'));
     taskId = task.valueOrNull!.id;
   });
   tearDown(() => db.close());
 
   Reminder reminder(String id, DateTime at, {bool fired = false}) => Reminder(
-        id: id,
-        taskId: taskId,
-        triggerAt: at,
-        type: ReminderType.beforeDue,
-        offsetMin: 15,
-        isFired: fired,
-      );
+    id: id,
+    taskId: taskId,
+    triggerAt: at,
+    type: ReminderType.beforeDue,
+    offsetMin: 15,
+    isFired: fired,
+  );
 
   test('replaceForTask then getByTask returns reminders', () async {
     final res = await repo.replaceForTask(taskId, [
@@ -41,8 +42,12 @@ void main() {
   });
 
   test('replaceForTask replaces the previous set', () async {
-    await repo.replaceForTask(taskId, [reminder('r1', DateTime.utc(2026, 6, 1))]);
-    await repo.replaceForTask(taskId, [reminder('r2', DateTime.utc(2026, 6, 2))]);
+    await repo.replaceForTask(taskId, [
+      reminder('r1', DateTime.utc(2026, 6, 1)),
+    ]);
+    await repo.replaceForTask(taskId, [
+      reminder('r2', DateTime.utc(2026, 6, 2)),
+    ]);
     final got = await repo.getByTask(taskId);
     expect(got.valueOrNull!.map((r) => r.id), ['r2']);
   });
@@ -58,7 +63,9 @@ void main() {
   });
 
   test('markFired flips the is_fired flag', () async {
-    await repo.replaceForTask(taskId, [reminder('r1', DateTime.utc(2026, 6, 1))]);
+    await repo.replaceForTask(taskId, [
+      reminder('r1', DateTime.utc(2026, 6, 1)),
+    ]);
     final res = await repo.markFired('r1');
     expect(res.isOk, isTrue);
     final got = await repo.getByTask(taskId);
