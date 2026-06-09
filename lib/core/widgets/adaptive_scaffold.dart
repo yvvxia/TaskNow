@@ -320,6 +320,11 @@ class _DesktopSidebar extends ConsumerWidget {
     final settingsActive = location.startsWith('/settings');
     final overviewActive = location.startsWith('/dashboard');
     final projectsActive = location.startsWith('/projects');
+    final filtersActive =
+        location == '/tasks/today' ||
+        location == '/tasks/overdue' ||
+        location == '/tasks/completed';
+    final tagsActive = location.startsWith('/tasks/tag/');
     final width = collapsed
         ? AppSpacing.sidebarCollapsedWidth
         : AppSpacing.sidebarWidth;
@@ -472,79 +477,110 @@ class _DesktopSidebar extends ConsumerWidget {
                             ],
                           ),
                   ),
+                  ExpansionTile(
+                    key: const Key('sidebar-filters'),
+                    initiallyExpanded: true,
+                    tilePadding: const EdgeInsets.only(left: 32, right: 16),
+                    childrenPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.filter_list, size: 20),
+                    title: Text(l10n?.navFilters ?? 'Filters'),
+                    iconColor: filtersActive ? palette.primary : null,
+                    children: [
+                      tile(
+                        key: const Key('sidebar-filter-today'),
+                        icon: Icons.today_outlined,
+                        label: l10n?.filterToday ?? 'Today',
+                        selected: location == '/tasks/today',
+                        leftPad: 32,
+                        onTap: () => onNavigate('/tasks/today'),
+                      ),
+                      tile(
+                        key: const Key('sidebar-filter-overdue'),
+                        icon: Icons.warning_amber_outlined,
+                        label: l10n?.filterOverdue ?? 'Overdue',
+                        selected: location == '/tasks/overdue',
+                        leftPad: 32,
+                        onTap: () => onNavigate('/tasks/overdue'),
+                      ),
+                      tile(
+                        key: const Key('sidebar-filter-completed'),
+                        icon: Icons.check_circle_outline,
+                        label: l10n?.filterCompleted ?? 'Completed',
+                        selected: location == '/tasks/completed',
+                        leftPad: 32,
+                        onTap: () => onNavigate('/tasks/completed'),
+                      ),
+                    ],
+                  ),
+                  tagsAsync.when(
+                    loading: () => tile(
+                      icon: Icons.label_outline,
+                      label: '…',
+                      onTap: () {},
+                      leftPad: 16,
+                    ),
+                    error: (e, _) => tile(
+                      icon: Icons.error_outline,
+                      label: '$e',
+                      onTap: () {},
+                      leftPad: 16,
+                    ),
+                    data: (tags) => collapsed
+                        ? const SizedBox.shrink()
+                        : ExpansionTile(
+                            key: const Key('sidebar-tags'),
+                            initiallyExpanded: true,
+                            tilePadding: const EdgeInsets.only(
+                              left: 32,
+                              right: 16,
+                            ),
+                            childrenPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.label_outline, size: 20),
+                            title: Text(l10n?.navTags ?? 'Tags'),
+                            iconColor: tagsActive ? palette.primary : null,
+                            children: [
+                              if (tags.isEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    48,
+                                    0,
+                                    16,
+                                    8,
+                                  ),
+                                  child: Text(
+                                    l10n?.tagsEmpty ?? 'No tags yet',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                )
+                              else
+                                for (final tag in tags)
+                                  ListTile(
+                                    key: Key('sidebar-tag-${tag.id}'),
+                                    contentPadding: const EdgeInsets.only(
+                                      left: 48,
+                                      right: 16,
+                                    ),
+                                    dense: true,
+                                    leading: const Icon(
+                                      Icons.label_outline,
+                                      size: 18,
+                                    ),
+                                    title: Text(tag.name),
+                                    selected: location.startsWith(
+                                      '/tasks/tag/${tag.id}',
+                                    ),
+                                    selectedTileColor: palette.primary
+                                        .withValues(alpha: 0.12),
+                                    onTap: () =>
+                                        onNavigate('/tasks/tag/${tag.id}'),
+                                  ),
+                            ],
+                          ),
+                  ),
                 ],
               ),
-            if (!collapsed) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                child: Text(
-                  l10n?.navTags ?? 'Tags',
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-              ),
-              tagsAsync.when(
-                loading: () => const ListTile(title: Text('…')),
-                error: (e, _) => ListTile(title: Text('$e')),
-                data: (tags) {
-                  if (tags.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                      child: Text(
-                        l10n?.tagsEmpty ?? 'No tags yet',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    );
-                  }
-                  return Column(
-                    children: [
-                      for (final tag in tags)
-                        ListTile(
-                          key: Key('sidebar-tag-${tag.id}'),
-                          dense: true,
-                          leading: const Icon(Icons.label_outline, size: 18),
-                          title: Text(tag.name),
-                          selected: location.startsWith('/tasks/tag/${tag.id}'),
-                          selectedTileColor: palette.primary.withValues(
-                            alpha: 0.12,
-                          ),
-                          onTap: () => onNavigate('/tasks/tag/${tag.id}'),
-                        ),
-                    ],
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                child: Text(
-                  l10n?.navFilters ?? 'Filters',
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
-              ),
-              tile(
-                key: const Key('sidebar-filter-today'),
-                icon: Icons.today_outlined,
-                label: l10n?.filterToday ?? 'Today',
-                selected: location == '/tasks/today',
-                leftPad: 0,
-                onTap: () => onNavigate('/tasks/today'),
-              ),
-              tile(
-                key: const Key('sidebar-filter-overdue'),
-                icon: Icons.warning_amber_outlined,
-                label: l10n?.filterOverdue ?? 'Overdue',
-                selected: location == '/tasks/overdue',
-                leftPad: 0,
-                onTap: () => onNavigate('/tasks/overdue'),
-              ),
-              tile(
-                key: const Key('sidebar-filter-completed'),
-                icon: Icons.check_circle_outline,
-                label: l10n?.filterCompleted ?? 'Completed',
-                selected: location == '/tasks/completed',
-                leftPad: 0,
-                onTap: () => onNavigate('/tasks/completed'),
-              ),
-            ],
             tile(
               icon: Icons.calendar_month,
               label: l10n?.navCalendar ?? 'Calendar',

@@ -78,63 +78,66 @@ class TasksHubPage extends ConsumerWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text(
-              l10n?.navTags ?? 'Tags',
-              style: Theme.of(context).textTheme.labelSmall,
-            ),
+          ExpansionTile(
+            key: const Key('tasks-hub-filters'),
+            initiallyExpanded: true,
+            leading: const Icon(Icons.filter_list),
+            title: Text(l10n?.navFilters ?? 'Filters'),
+            children: [
+              ListTile(
+                key: const Key('tasks-hub-filter-today'),
+                contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                leading: const Icon(Icons.today_outlined),
+                title: Text(l10n?.filterToday ?? 'Today'),
+                onTap: () => context.go('/tasks/today'),
+              ),
+              ListTile(
+                key: const Key('tasks-hub-filter-overdue'),
+                contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                leading: const Icon(Icons.warning_amber_outlined),
+                title: Text(l10n?.filterOverdue ?? 'Overdue'),
+                onTap: () => context.go('/tasks/overdue'),
+              ),
+              ListTile(
+                key: const Key('tasks-hub-filter-completed'),
+                contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                leading: const Icon(Icons.check_circle_outline),
+                title: Text(l10n?.filterCompleted ?? 'Completed'),
+                onTap: () => context.go('/tasks/completed'),
+              ),
+            ],
           ),
           tagsAsync.when(
             loading: () => const ListTile(title: Text('…')),
             error: (e, _) => ListTile(title: Text('$e')),
-            data: (tags) {
-              if (tags.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: Text(
-                    l10n?.tagsEmpty ?? 'No tags yet',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                );
-              }
-              return Column(
-                children: [
+            data: (tags) => ExpansionTile(
+              key: const Key('tasks-hub-tags'),
+              initiallyExpanded: true,
+              leading: const Icon(Icons.label_outline),
+              title: Text(l10n?.navTags ?? 'Tags'),
+              children: [
+                if (tags.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    child: Text(
+                      l10n?.tagsEmpty ?? 'No tags yet',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  )
+                else
                   for (final tag in tags)
                     ListTile(
                       key: Key('tasks-hub-tag-${tag.id}'),
+                      contentPadding: const EdgeInsets.only(
+                        left: 32,
+                        right: 16,
+                      ),
                       leading: const Icon(Icons.label_outline),
                       title: Text(tag.name),
                       onTap: () => context.go('/tasks/tag/${tag.id}'),
                     ),
-                ],
-              );
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-            child: Text(
-              l10n?.navFilters ?? 'Filters',
-              style: Theme.of(context).textTheme.labelSmall,
+              ],
             ),
-          ),
-          ListTile(
-            key: const Key('tasks-hub-filter-today'),
-            leading: const Icon(Icons.today_outlined),
-            title: Text(l10n?.filterToday ?? 'Today'),
-            onTap: () => context.go('/tasks/today'),
-          ),
-          ListTile(
-            key: const Key('tasks-hub-filter-overdue'),
-            leading: const Icon(Icons.warning_amber_outlined),
-            title: Text(l10n?.filterOverdue ?? 'Overdue'),
-            onTap: () => context.go('/tasks/overdue'),
-          ),
-          ListTile(
-            key: const Key('tasks-hub-filter-completed'),
-            leading: const Icon(Icons.check_circle_outline),
-            title: Text(l10n?.filterCompleted ?? 'Completed'),
-            onTap: () => context.go('/tasks/completed'),
           ),
         ],
       ),
