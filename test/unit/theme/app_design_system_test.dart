@@ -30,4 +30,44 @@ void main() {
       });
     }
   });
+
+  group('AppTypographyScale', () {
+    test('comfortable scale uses larger body text than compact', () {
+      final compact = AppDesignSystem.buildTheme(
+        Brightness.light,
+        typography: AppTypographyScale.compact,
+      ).textTheme;
+      final comfortable = AppDesignSystem.buildTheme(
+        Brightness.light,
+        typography: AppTypographyScale.comfortable,
+      ).textTheme;
+
+      expect(
+        comfortable.bodyMedium!.fontSize,
+        greaterThan(compact.bodyMedium!.fontSize!),
+      );
+      expect(
+        comfortable.titleMedium!.fontSize,
+        greaterThan(compact.titleMedium!.fontSize!),
+      );
+      expect(
+        comfortable.labelSmall!.fontSize,
+        greaterThan(compact.labelSmall!.fontSize!),
+      );
+    });
+
+    test('compact scale tightens letter spacing', () {
+      final compact = AppDesignSystem.buildTheme(
+        Brightness.light,
+        typography: AppTypographyScale.compact,
+      ).textTheme;
+      final comfortable = AppDesignSystem.buildTheme(
+        Brightness.light,
+        typography: AppTypographyScale.comfortable,
+      ).textTheme;
+
+      expect(compact.bodyMedium!.letterSpacing, lessThan(0));
+      expect(comfortable.bodyMedium!.letterSpacing, 0);
+    });
+  });
 }

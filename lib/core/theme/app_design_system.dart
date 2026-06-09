@@ -16,9 +16,15 @@ const List<String> kFontFamilyFallback = <String>[
   'Source Han Sans SC',
 ];
 
+/// Typography scale: [compact] for desktop, [comfortable] for phone layouts.
+enum AppTypographyScale { compact, comfortable }
+
 /// Single entry point for Liveline visual tokens and [ThemeData] construction.
 abstract final class AppDesignSystem {
-  static ThemeData buildTheme(Brightness brightness) {
+  static ThemeData buildTheme(
+    Brightness brightness, {
+    AppTypographyScale typography = AppTypographyScale.compact,
+  }) {
     final palette = SemanticPalette.forBrightness(brightness);
     final colorScheme = ColorScheme(
       brightness: brightness,
@@ -77,10 +83,11 @@ abstract final class AppDesignSystem {
         indicatorColor: palette.primary.withValues(alpha: 0.12),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
+          final compact = typography == AppTypographyScale.compact;
           return TextStyle(
-            fontSize: 11,
+            fontSize: compact ? 11 : 12,
             fontWeight: FontWeight.w600,
-            letterSpacing: -0.1,
+            letterSpacing: compact ? -0.1 : 0,
             color: selected ? palette.primary : palette.onSurfaceVariant,
           );
         }),
@@ -143,7 +150,7 @@ abstract final class AppDesignSystem {
       // platforms. Re-apply MiSans afterwards so CJK text keeps consistent
       // metrics instead of silently falling back to the host font.
       textTheme: base.textTheme
-          .merge(_textTheme(palette))
+          .merge(_textTheme(palette, typography))
           .apply(
             fontFamily: kFontFamily,
             fontFamilyFallback: kFontFamilyFallback,
@@ -151,68 +158,75 @@ abstract final class AppDesignSystem {
     );
   }
 
-  static TextTheme _textTheme(SemanticPalette palette) {
+  static TextTheme _textTheme(
+    SemanticPalette palette,
+    AppTypographyScale typography,
+  ) {
+    final compact = typography == AppTypographyScale.compact;
+    final titleSpacing = compact ? -0.2 : 0.0;
+    final labelSpacing = compact ? -0.1 : 0.0;
+
     return TextTheme(
       titleLarge: TextStyle(
-        fontSize: 20,
+        fontSize: compact ? 20 : 22,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.2,
+        letterSpacing: titleSpacing,
         color: palette.onSurface,
         height: 1.4,
       ),
       titleMedium: TextStyle(
-        fontSize: 14,
+        fontSize: compact ? 14 : 16,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.2,
+        letterSpacing: titleSpacing,
         color: palette.onSurface,
         height: 1.4,
       ),
       titleSmall: TextStyle(
-        fontSize: 13,
+        fontSize: compact ? 13 : 14,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.2,
+        letterSpacing: titleSpacing,
         color: palette.onSurface,
         height: 1.4,
       ),
       bodyLarge: TextStyle(
-        fontSize: 14,
+        fontSize: compact ? 14 : 16,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.2,
+        letterSpacing: titleSpacing,
         color: palette.onSurface,
         height: 1.5,
       ),
       bodyMedium: TextStyle(
-        fontSize: 13,
+        fontSize: compact ? 13 : 14,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.2,
+        letterSpacing: titleSpacing,
         color: palette.onSurfaceVariant,
         height: 1.5,
       ),
       bodySmall: TextStyle(
-        fontSize: 11,
+        fontSize: compact ? 11 : 12,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.1,
+        letterSpacing: labelSpacing,
         color: palette.onSurfaceVariant,
         height: 1.4,
       ),
       labelLarge: TextStyle(
-        fontSize: 13,
+        fontSize: compact ? 13 : 14,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.2,
+        letterSpacing: titleSpacing,
         color: palette.onSurface,
         height: 1.4,
       ),
       labelMedium: TextStyle(
-        fontSize: 11,
+        fontSize: compact ? 11 : 12,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.1,
+        letterSpacing: labelSpacing,
         color: palette.onSurfaceVariant,
         height: 1.4,
       ),
       labelSmall: TextStyle(
-        fontSize: 10,
+        fontSize: compact ? 10 : 11,
         fontWeight: FontWeight.w600,
-        letterSpacing: -0.1,
+        letterSpacing: labelSpacing,
         color: palette.onSurfaceVariant,
         height: 1.4,
       ),

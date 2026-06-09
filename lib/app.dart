@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/theme/app_design_system.dart';
 import 'core/theme/theme_providers.dart';
 import 'core/widgets/adaptive_scaffold.dart';
 import 'features/calendar/calendar_page.dart';
@@ -167,6 +168,20 @@ class LivelineApp extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router ?? appRouter,
+      builder: (context, child) {
+        final width = MediaQuery.sizeOf(context).width;
+        if (width >= kCompactBreakpoint) {
+          return child ?? const SizedBox.shrink();
+        }
+        final brightness = Theme.of(context).brightness;
+        return Theme(
+          data: AppDesignSystem.buildTheme(
+            brightness,
+            typography: AppTypographyScale.comfortable,
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }
