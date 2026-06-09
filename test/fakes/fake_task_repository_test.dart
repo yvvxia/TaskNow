@@ -1,5 +1,5 @@
-import 'package:plan_list/core/models/task_draft.dart';
-import 'package:plan_list/core/models/task_query.dart';
+import 'package:liveline/core/models/task_draft.dart';
+import 'package:liveline/core/models/task_query.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'fake_task_repository.dart';

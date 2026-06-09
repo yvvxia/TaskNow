@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/recurrence_rule.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/task/domain/complete_task_usecase.dart';
-import 'package:plan_list/features/task/domain/recurrence_engine.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/recurrence_rule.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/task/domain/complete_task_usecase.dart';
+import 'package:liveline/features/task/domain/recurrence_engine.dart';
 
 import '../../helpers/fake_settings_store.dart';
 import '../../helpers/fakes.dart';

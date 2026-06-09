@@ -16,7 +16,7 @@ const List<String> kFontFamilyFallback = <String>[
   'Source Han Sans SC',
 ];
 
-/// Single entry point for PlanList visual tokens and [ThemeData] construction.
+/// Single entry point for Liveline visual tokens and [ThemeData] construction.
 abstract final class AppDesignSystem {
   static ThemeData buildTheme(Brightness brightness) {
     final palette = SemanticPalette.forBrightness(brightness);
@@ -57,7 +57,7 @@ abstract final class AppDesignSystem {
           fontFamily: kFontFamily,
           fontFamilyFallback: kFontFamilyFallback,
           fontSize: 22,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           color: palette.onSurface,
         ),
       ),
@@ -79,7 +79,7 @@ abstract final class AppDesignSystem {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             color: selected ? palette.primary : palette.onSurfaceVariant,
           );
         }),
@@ -143,31 +143,31 @@ abstract final class AppDesignSystem {
     return TextTheme(
       titleLarge: TextStyle(
         fontSize: 22,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         color: palette.onSurface,
         height: 1.4,
       ),
       titleMedium: TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: palette.onSurface,
         height: 1.4,
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         color: palette.onSurface,
         height: 1.5,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         color: palette.onSurfaceVariant,
         height: 1.5,
       ),
       labelSmall: TextStyle(
         fontSize: 11,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w600,
         color: palette.onSurfaceVariant,
         height: 1.4,
       ),

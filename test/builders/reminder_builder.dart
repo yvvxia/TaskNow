@@ -1,5 +1,5 @@
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/reminder.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/reminder.dart';
 
 int _seq = 0;
 

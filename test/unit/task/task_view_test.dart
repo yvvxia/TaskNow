@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/subtask.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/task/presentation/task_view.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/subtask.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/task/presentation/task_view.dart';
 
 void main() {
   final fixedNow = DateTime.utc(2026, 6, 7, 12, 0);

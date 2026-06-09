@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.planlist" "\0"
-            VALUE "FileDescription", "plan_list" "\0"
+            VALUE "CompanyName", "com.liveline" "\0"
+            VALUE "FileDescription", "Liveline" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "plan_list" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.planlist. All rights reserved." "\0"
-            VALUE "OriginalFilename", "plan_list.exe" "\0"
-            VALUE "ProductName", "plan_list" "\0"
+            VALUE "InternalName", "liveline" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.liveline. All rights reserved." "\0"
+            VALUE "OriginalFilename", "liveline.exe" "\0"
+            VALUE "ProductName", "Liveline" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
+import 'package:liveline/core/enums/enums.dart';
 
 void main() {
   test('Priority order matches proposal (HIGH = 0)', () {

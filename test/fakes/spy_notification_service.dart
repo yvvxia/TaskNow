@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:plan_list/core/contracts/i_notification_service.dart';
-import 'package:plan_list/core/models/notification_action.dart';
-import 'package:plan_list/core/models/notification_request.dart';
+import 'package:liveline/core/contracts/i_notification_service.dart';
+import 'package:liveline/core/models/notification_action.dart';
+import 'package:liveline/core/models/notification_request.dart';
 
 /// Records every call to the notification service for assertions, and lets
 /// tests inject [NotificationAction] events via [emitAction].

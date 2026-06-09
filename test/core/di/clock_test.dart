@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/clock.dart';
+import 'package:liveline/core/di/clock.dart';
 
 void main() {
   test('clockProvider defaults to a now-like clock', () {

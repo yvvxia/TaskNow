@@ -1,6 +1,6 @@
-import 'package:plan_list/core/contracts/i_reminder_repository.dart';
-import 'package:plan_list/core/models/reminder.dart';
-import 'package:plan_list/core/utils/result.dart';
+import 'package:liveline/core/contracts/i_reminder_repository.dart';
+import 'package:liveline/core/models/reminder.dart';
+import 'package:liveline/core/utils/result.dart';
 
 /// In-memory [IReminderRepository] keyed by task id.
 class FakeReminderRepository implements IReminderRepository {

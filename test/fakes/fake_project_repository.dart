@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:plan_list/core/contracts/i_project_repository.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/errors/app_exception.dart';
-import 'package:plan_list/core/models/project.dart';
-import 'package:plan_list/core/utils/result.dart';
+import 'package:liveline/core/contracts/i_project_repository.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/errors/app_exception.dart';
+import 'package:liveline/core/models/project.dart';
+import 'package:liveline/core/utils/result.dart';
 import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();

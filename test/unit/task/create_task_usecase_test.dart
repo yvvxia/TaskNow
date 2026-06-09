@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/errors/app_exception.dart';
-import 'package:plan_list/core/models/task_draft.dart';
-import 'package:plan_list/core/utils/result.dart';
-import 'package:plan_list/features/notification/application/reminder_scheduler.dart';
-import 'package:plan_list/features/notification/domain/reminder_calculator.dart';
-import 'package:plan_list/features/task/domain/create_task_usecase.dart';
+import 'package:liveline/core/errors/app_exception.dart';
+import 'package:liveline/core/models/task_draft.dart';
+import 'package:liveline/core/utils/result.dart';
+import 'package:liveline/features/notification/application/reminder_scheduler.dart';
+import 'package:liveline/features/notification/domain/reminder_calculator.dart';
+import 'package:liveline/features/task/domain/create_task_usecase.dart';
 
 import '../../helpers/fake_settings_store.dart';
 import '../../helpers/fakes.dart';

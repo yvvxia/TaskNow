@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:plan_list/core/contracts/i_settings_store.dart';
-import 'package:plan_list/core/models/app_settings.dart';
-import 'package:plan_list/core/models/setting_key.dart';
-import 'package:plan_list/core/models/setting_keys.dart';
+import 'package:liveline/core/contracts/i_settings_store.dart';
+import 'package:liveline/core/models/app_settings.dart';
+import 'package:liveline/core/models/setting_key.dart';
+import 'package:liveline/core/models/setting_keys.dart';
 
 /// In-memory [ISettingsStore]. Seed initial values via [values] and observe
 /// changes through [watch].

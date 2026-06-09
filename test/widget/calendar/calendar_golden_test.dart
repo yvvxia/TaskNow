@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/clock.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/calendar/domain/calendar_view_state.dart';
-import 'package:plan_list/features/calendar/domain/calendar_window.dart';
-import 'package:plan_list/features/calendar/presentation/calendar_view_state_notifier.dart';
-import 'package:plan_list/features/calendar/presentation/views/gantt_view.dart';
-import 'package:plan_list/features/calendar/presentation/views/week_view.dart';
+import 'package:liveline/core/di/clock.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/calendar/domain/calendar_view_state.dart';
+import 'package:liveline/features/calendar/domain/calendar_window.dart';
+import 'package:liveline/features/calendar/presentation/calendar_view_state_notifier.dart';
+import 'package:liveline/features/calendar/presentation/views/gantt_view.dart';
+import 'package:liveline/features/calendar/presentation/views/week_view.dart';
 
 import '../../helpers/fakes.dart';
 

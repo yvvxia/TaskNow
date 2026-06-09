@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/project.dart';
-import 'package:plan_list/features/project/domain/create_project_usecase.dart';
-import 'package:plan_list/features/project/domain/delete_project_usecase.dart';
-import 'package:plan_list/features/project/domain/project_validator.dart';
-import 'package:plan_list/features/project/domain/update_project_usecase.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/project.dart';
+import 'package:liveline/features/project/domain/create_project_usecase.dart';
+import 'package:liveline/features/project/domain/delete_project_usecase.dart';
+import 'package:liveline/features/project/domain/project_validator.dart';
+import 'package:liveline/features/project/domain/update_project_usecase.dart';
 
 import '../../fakes/fake_project_repository.dart';
 

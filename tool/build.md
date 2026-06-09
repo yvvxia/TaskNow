@@ -1,4 +1,4 @@
-# Building PlanList (Windows + Android)
+# Building Liveline (Windows + Android)
 
 `tool/build.ps1` wraps `flutter build` with the environment this project needs so
 release builds are reproducible from one command.
@@ -17,7 +17,7 @@ Artifacts:
 | Target  | Path |
 |---------|------|
 | Android | `build/app/outputs/flutter-apk/app-release.apk` |
-| Windows | `build/windows/x64/runner/Release/plan_list.exe` (ship the whole `Release/` folder) |
+| Windows | `build/windows/x64/runner/Release/liveline.exe` (ship the whole `Release/` folder) |
 
 ## Prerequisites
 

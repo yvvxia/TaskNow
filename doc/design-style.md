@@ -1,4 +1,4 @@
-# PlanList Design Style Guide
+# Liveline Design Style Guide
 
 > User-confirmed direction · 2026-06-09  
 > Implemented in `lib/core/theme/`
@@ -26,9 +26,9 @@
   commercial-use font, **bundled** in `assets/fonts/` so Windows and Android
   share identical CJK + Latin metrics (no reliance on host fonts like
   Microsoft YaHei).
-- **Weights** — only 400 (Regular) / 500 (Medium) / 600 (Semibold). No 700 bold;
-  hierarchy comes from size + 500/600, keeping the UI light and clean.
-  - Body: 400 · Section / list titles: 500 · Page & app-bar titles: 600.
+- **Weights** — 400 / 500 / 600 / 700 bundled. The type scale sits one notch
+  heavier than Material defaults for comfortable CJK reading:
+  - Body: 500 · Section / list titles: 600 · Page & app-bar titles: 700.
 - **License note** — per the MiSans IP License, the app must state that MiSans
   Fonts are used (surface in Settings → About). Font files must not be
   redistributed on their own.

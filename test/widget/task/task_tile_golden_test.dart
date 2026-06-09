@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/task/presentation/task_tile.dart';
-import 'package:plan_list/features/task/presentation/task_view.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/task/presentation/task_tile.dart';
+import 'package:liveline/features/task/presentation/task_view.dart';
 
 Widget wrap(Widget child) => MaterialApp(
   theme: ThemeData(useMaterial3: true),

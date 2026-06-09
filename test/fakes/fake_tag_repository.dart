@@ -1,6 +1,6 @@
-import 'package:plan_list/core/contracts/i_tag_repository.dart';
-import 'package:plan_list/core/models/tag.dart';
-import 'package:plan_list/core/utils/result.dart';
+import 'package:liveline/core/contracts/i_tag_repository.dart';
+import 'package:liveline/core/models/tag.dart';
+import 'package:liveline/core/utils/result.dart';
 import 'package:uuid/uuid.dart';
 
 const _uuid = Uuid();

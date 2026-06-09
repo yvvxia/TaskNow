@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/models/setting_key.dart';
+import 'package:liveline/core/models/setting_key.dart';
 
 void main() {
   test('SettingKey exposes name and default value', () {

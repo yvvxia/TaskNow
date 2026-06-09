@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/features/calendar/domain/time_axis.dart';
+import 'package:liveline/features/calendar/domain/time_axis.dart';
 
 void main() {
   final origin = DateTime.utc(2026, 6, 1);

@@ -21,7 +21,7 @@ class FlutterLocalNotificationService implements INotificationService {
   bool _initialized = false;
   bool _exactAlarmsAllowed = true;
 
-  static const _channelId = 'plan_list_reminders';
+  static const _channelId = 'liveline_reminders';
   static const _channelName = 'Task Reminders';
 
   @override
@@ -33,9 +33,9 @@ class FlutterLocalNotificationService implements INotificationService {
 
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const windows = WindowsInitializationSettings(
-      appName: 'PlanList',
-      appUserModelId: 'com.planlist.app',
-      guid: 'PlanList-Notification-GUID',
+      appName: 'Liveline',
+      appUserModelId: 'com.liveline.app',
+      guid: 'Liveline-Notification-GUID',
     );
     const initSettings = InitializationSettings(
       android: android,

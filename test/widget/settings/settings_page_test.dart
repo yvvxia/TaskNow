@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/contracts/i_settings_store.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/models/app_settings.dart';
-import 'package:plan_list/core/models/setting_key.dart';
-import 'package:plan_list/features/settings/settings_page.dart';
+import 'package:liveline/core/contracts/i_settings_store.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/models/app_settings.dart';
+import 'package:liveline/core/models/setting_key.dart';
+import 'package:liveline/features/settings/settings_page.dart';
 
 /// Minimal in-memory settings store for widget tests.
 class _FakeStore implements ISettingsStore {
@@ -112,7 +112,7 @@ void main() {
       expect(find.textContaining('Phase 2'), findsOneWidget);
     });
 
-    testWidgets('shows about section with PlanList app name after scrolling', (
+    testWidgets('shows about section with Liveline app name after scrolling', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -124,11 +124,11 @@ void main() {
       // Use textContaining to avoid .last on a potentially empty Finder when
       // the About section is initially off-screen in the culled ListView.
       await tester.scrollUntilVisible(
-        find.textContaining('PlanList'),
+        find.textContaining('Liveline'),
         300,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(find.textContaining('PlanList'), findsWidgets);
+      expect(find.textContaining('Liveline'), findsWidgets);
     });
 
     testWidgets('renders with no store (error fallback)', (tester) async {

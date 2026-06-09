@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart' show Color, DateTimeRange, HSLColor;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/calendar/domain/gantt_layout.dart';
-import 'package:plan_list/features/calendar/domain/task_bar.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/calendar/domain/gantt_layout.dart';
+import 'package:liveline/features/calendar/domain/task_bar.dart';
 
 void main() {
   final june = DateTimeRange(

@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
-import 'package:plan_list/core/contracts/i_notification_service.dart';
-import 'package:plan_list/core/contracts/i_project_repository.dart';
-import 'package:plan_list/core/contracts/i_reminder_repository.dart';
-import 'package:plan_list/core/contracts/i_settings_store.dart';
-import 'package:plan_list/core/contracts/i_sync_engine.dart';
-import 'package:plan_list/core/contracts/i_tag_repository.dart';
-import 'package:plan_list/core/contracts/i_task_repository.dart';
-import 'package:plan_list/core/di/clock.dart';
-import 'package:plan_list/core/di/providers.dart';
+import 'package:liveline/core/contracts/i_notification_service.dart';
+import 'package:liveline/core/contracts/i_project_repository.dart';
+import 'package:liveline/core/contracts/i_reminder_repository.dart';
+import 'package:liveline/core/contracts/i_settings_store.dart';
+import 'package:liveline/core/contracts/i_sync_engine.dart';
+import 'package:liveline/core/contracts/i_tag_repository.dart';
+import 'package:liveline/core/contracts/i_task_repository.dart';
+import 'package:liveline/core/di/clock.dart';
+import 'package:liveline/core/di/providers.dart';
 
 import 'fake_project_repository.dart';
 import 'fake_reminder_repository.dart';

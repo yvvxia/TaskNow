@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/errors/app_exception.dart';
-import 'package:plan_list/core/models/tag.dart';
-import 'package:plan_list/data/db/app_database.dart';
-import 'package:plan_list/data/repositories/drift_tag_repository.dart';
+import 'package:liveline/core/errors/app_exception.dart';
+import 'package:liveline/core/models/tag.dart';
+import 'package:liveline/data/db/app_database.dart';
+import 'package:liveline/data/repositories/drift_tag_repository.dart';
 
 void main() {
   late AppDatabase db;

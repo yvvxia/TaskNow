@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/widgets/adaptive_scaffold.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/widgets/adaptive_scaffold.dart';
 
 import '../../fakes/fake_project_repository.dart';
 import '../../helpers/fake_settings_store.dart';

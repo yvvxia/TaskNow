@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/utils/result.dart';
-import 'package:plan_list/platform/sync/no_op_sync_engine.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/utils/result.dart';
+import 'package:liveline/platform/sync/no_op_sync_engine.dart';
 
 void main() {
   group('NoOpSyncEngine', () {

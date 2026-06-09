@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/features/search/presentation/filter_chips_row.dart';
-import 'package:plan_list/features/search/search_controller.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/features/search/presentation/filter_chips_row.dart';
+import 'package:liveline/features/search/search_controller.dart';
 import '../../helpers/fakes.dart';
 
 void main() {

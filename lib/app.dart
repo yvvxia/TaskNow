@@ -136,7 +136,7 @@ GoRouter createAppRouter() {
   );
 }
 
-/// Lazily-created application router used by [PlanListApp] in production.
+/// Lazily-created application router used by [LivelineApp] in production.
 final GoRouter appRouter = createAppRouter();
 
 /// Root application widget wiring [MaterialApp.router] to `go_router` with
@@ -147,8 +147,8 @@ final GoRouter appRouter = createAppRouter();
 /// [Locale]. Both providers fall back to system defaults when the settings
 /// store is unavailable, so the only requirement to pump this widget is a
 /// surrounding [ProviderScope].
-class PlanListApp extends ConsumerWidget {
-  const PlanListApp({super.key, this.router});
+class LivelineApp extends ConsumerWidget {
+  const LivelineApp({super.key, this.router});
 
   /// Optional injected router (used by tests). Defaults to [appRouter].
   final GoRouter? router;
@@ -159,7 +159,7 @@ class PlanListApp extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
 
     return MaterialApp.router(
-      title: 'PlanList',
+      title: 'Liveline',
       theme: ref.watch(appLightThemeProvider),
       darkTheme: ref.watch(appDarkThemeProvider),
       themeMode: themeMode,

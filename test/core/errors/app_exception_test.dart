@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/errors/app_exception.dart';
+import 'package:liveline/core/errors/app_exception.dart';
 
 void main() {
   test('ValidationException has defaults and is an Exception', () {

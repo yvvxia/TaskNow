@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/clock.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/features/calendar/presentation/calendar_view_state_notifier.dart';
+import 'package:liveline/core/di/clock.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/features/calendar/presentation/calendar_view_state_notifier.dart';
 
 void main() {
   final frozen = DateTime.utc(2026, 6, 7);

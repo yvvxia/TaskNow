@@ -1,4 +1,4 @@
-# AGENTS.md — PlanList
+# AGENTS.md — Liveline
 
 A Flutter task/planner app (Android + Windows desktop) with calendar/Gantt,
 search, reminders, and zh/en localization. Riverpod + Drift + go_router.

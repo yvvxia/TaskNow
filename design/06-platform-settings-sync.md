@@ -110,7 +110,7 @@ abstract interface class IBackgroundScheduler {
 
 | 服务 / Service | Android | Windows |
 |---|---|---|
-| 数据库路径 / DB path | `getApplicationSupportDirectory()` | `%APPDATA%/PlanList` |
+| 数据库路径 / DB path | `getApplicationSupportDirectory()` | `%APPDATA%/Liveline` |
 | 后台调度 / Background | `WorkManager` | 启动对账 + 系统计划通知（无常驻进程） |
 | 通知 / Notification | `flutter_local_notifications` | Windows Toast 插件 |
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/calendar/domain/reorder_gantt_usecase.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/calendar/domain/reorder_gantt_usecase.dart';
 
 import '../../fakes/fake_task_repository.dart';
 

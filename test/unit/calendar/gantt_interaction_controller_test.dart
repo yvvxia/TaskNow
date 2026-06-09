@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/clock.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/core/models/task_draft.dart';
-import 'package:plan_list/data/db/app_database.dart';
-import 'package:plan_list/data/repositories/drift_project_repository.dart';
-import 'package:plan_list/data/repositories/drift_reminder_repository.dart';
-import 'package:plan_list/data/repositories/drift_task_repository.dart';
-import 'package:plan_list/features/calendar/domain/gantt_drag_intent.dart';
-import 'package:plan_list/features/calendar/domain/gantt_interaction_controller.dart';
+import 'package:liveline/core/di/clock.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/core/models/task_draft.dart';
+import 'package:liveline/data/db/app_database.dart';
+import 'package:liveline/data/repositories/drift_project_repository.dart';
+import 'package:liveline/data/repositories/drift_reminder_repository.dart';
+import 'package:liveline/data/repositories/drift_task_repository.dart';
+import 'package:liveline/features/calendar/domain/gantt_drag_intent.dart';
+import 'package:liveline/features/calendar/domain/gantt_interaction_controller.dart';
 
 import '../../helpers/fake_settings_store.dart';
 import '../../helpers/fakes.dart';

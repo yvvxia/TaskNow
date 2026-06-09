@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/features/task/domain/task_list_scope.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/features/task/domain/task_list_scope.dart';
 
 void main() {
   group('TaskListScope.toQuery', () {

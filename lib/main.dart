@@ -65,7 +65,7 @@ Future<void> main() async {
         syncEngineProvider.overrideWithValue(const NoOpSyncEngine()),
         routerProvider.overrideWithValue(appRouter),
       ],
-      child: const NotificationBootstrap(child: PlanListApp()),
+      child: const NotificationBootstrap(child: LivelineApp()),
     ),
   );
 }

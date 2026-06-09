@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/contracts/i_project_repository.dart';
-import 'package:plan_list/core/contracts/i_reminder_repository.dart';
-import 'package:plan_list/core/contracts/i_tag_repository.dart';
-import 'package:plan_list/core/contracts/i_task_repository.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/data/data_providers.dart';
-import 'package:plan_list/data/db/app_database.dart';
-import 'package:plan_list/data/repositories/drift_project_repository.dart';
-import 'package:plan_list/data/repositories/drift_reminder_repository.dart';
-import 'package:plan_list/data/repositories/drift_tag_repository.dart';
-import 'package:plan_list/data/repositories/drift_task_repository.dart';
+import 'package:liveline/core/contracts/i_project_repository.dart';
+import 'package:liveline/core/contracts/i_reminder_repository.dart';
+import 'package:liveline/core/contracts/i_tag_repository.dart';
+import 'package:liveline/core/contracts/i_task_repository.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/data/data_providers.dart';
+import 'package:liveline/data/db/app_database.dart';
+import 'package:liveline/data/repositories/drift_project_repository.dart';
+import 'package:liveline/data/repositories/drift_reminder_repository.dart';
+import 'package:liveline/data/repositories/drift_tag_repository.dart';
+import 'package:liveline/data/repositories/drift_task_repository.dart';
 
 void main() {
   test('appDatabaseProvider throws until overridden', () {

@@ -389,7 +389,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorEmptyProjectName => 'Project name cannot be empty';
 
   @override
-  String get appTitle => 'PlanList';
+  String get appTitle => 'Liveline';
 
   @override
   String get guestAccount => 'Guest';

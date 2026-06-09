@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/models/notification_action.dart';
-import 'package:plan_list/core/models/notification_request.dart';
+import 'package:liveline/core/models/notification_action.dart';
+import 'package:liveline/core/models/notification_request.dart';
 
 import 'spy_notification_service.dart';
 

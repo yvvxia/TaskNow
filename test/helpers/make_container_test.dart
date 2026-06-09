@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/di/clock.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/features/task/task_providers.dart';
+import 'package:liveline/core/di/clock.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/features/task/task_providers.dart';
 
 import '../fakes/fake_task_repository.dart';
 import '../fakes/make_container.dart';

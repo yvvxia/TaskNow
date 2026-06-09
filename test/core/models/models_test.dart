@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/app_settings.dart';
-import 'package:plan_list/core/models/notification_action.dart';
-import 'package:plan_list/core/models/notification_request.dart';
-import 'package:plan_list/core/models/project.dart';
-import 'package:plan_list/core/models/reminder.dart';
-import 'package:plan_list/core/models/tag.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/core/models/task_draft.dart';
-import 'package:plan_list/core/models/task_query.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/app_settings.dart';
+import 'package:liveline/core/models/notification_action.dart';
+import 'package:liveline/core/models/notification_request.dart';
+import 'package:liveline/core/models/project.dart';
+import 'package:liveline/core/models/reminder.dart';
+import 'package:liveline/core/models/tag.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/core/models/task_draft.dart';
+import 'package:liveline/core/models/task_query.dart';
 
 void main() {
   test('Task has defaults, copyWith and json round-trip', () {

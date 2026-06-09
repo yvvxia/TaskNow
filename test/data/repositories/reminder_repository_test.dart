@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/reminder.dart';
-import 'package:plan_list/core/models/task_draft.dart';
-import 'package:plan_list/data/db/app_database.dart';
-import 'package:plan_list/data/repositories/drift_reminder_repository.dart';
-import 'package:plan_list/data/repositories/drift_task_repository.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/reminder.dart';
+import 'package:liveline/core/models/task_draft.dart';
+import 'package:liveline/data/db/app_database.dart';
+import 'package:liveline/data/repositories/drift_reminder_repository.dart';
+import 'package:liveline/data/repositories/drift_task_repository.dart';
 
 void main() {
   late AppDatabase db;

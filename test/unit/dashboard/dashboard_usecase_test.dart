@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/dashboard/domain/dashboard_usecase.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/dashboard/domain/dashboard_usecase.dart';
 
 void main() {
   const useCase = DashboardUseCase();

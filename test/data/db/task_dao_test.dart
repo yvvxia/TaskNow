@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/task_query.dart';
-import 'package:plan_list/data/db/app_database.dart';
-import 'package:plan_list/data/db/task_dao.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/task_query.dart';
+import 'package:liveline/data/db/app_database.dart';
+import 'package:liveline/data/db/task_dao.dart';
 
 int ms(int y, int m, int d) => DateTime.utc(y, m, d).millisecondsSinceEpoch;
 

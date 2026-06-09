@@ -394,7 +394,7 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
         _SectionHeader(l10n?.aboutSection ?? 'About'),
         ListTile(
           leading: const Icon(Icons.info_outline),
-          title: const Text('PlanList'),
+          title: const Text('Liveline'),
           trailing: Text(
             l10n?.aboutVersion('0.1.0') ?? 'Version 0.1.0',
             style: Theme.of(context).textTheme.bodySmall,
@@ -415,7 +415,7 @@ class _SettingsBodyState extends ConsumerState<_SettingsBody> {
           title: Text(l10n?.aboutOpenSource ?? 'Open Source Licenses'),
           onTap: () => showLicensePage(
             context: context,
-            applicationName: 'PlanList',
+            applicationName: 'Liveline',
             applicationVersion: '0.1.0',
           ),
         ),

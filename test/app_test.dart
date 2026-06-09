@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:plan_list/app.dart';
-import 'package:plan_list/core/di/clock.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/main.dart' as app_main;
+import 'package:liveline/app.dart';
+import 'package:liveline/core/di/clock.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/main.dart' as app_main;
 
 import 'helpers/fake_settings_store.dart';
 import 'helpers/fakes.dart';
 
 void main() {
-  // PlanListApp is a ConsumerWidget (reads theme/locale providers) and the
+  // LivelineApp is a ConsumerWidget (reads theme/locale providers) and the
   // routed pages read the data/settings providers, so it must be pumped inside
   // a ProviderScope wired with the standard fakes. This lets the real page
   // bodies render their (empty) data states rather than error fallbacks.
@@ -52,7 +52,7 @@ void main() {
 
   Widget wrap(GoRouter router) => ProviderScope(
     overrides: baseOverrides(),
-    child: PlanListApp(router: router),
+    child: LivelineApp(router: router),
   );
 
   testWidgets('router starts on the dashboard page', (tester) async {
@@ -121,7 +121,7 @@ void main() {
     await app_main.main();
     await tester.pumpAndSettle();
     expect(find.byType(ProviderScope), findsOneWidget);
-    expect(find.byType(PlanListApp), findsOneWidget);
+    expect(find.byType(LivelineApp), findsOneWidget);
     expect(find.byKey(const Key('dashboard-page')), findsOneWidget);
 
     // Tear down within the test body so the real Drift data layer's

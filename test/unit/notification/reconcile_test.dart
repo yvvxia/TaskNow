@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/reminder.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/notification/application/reminder_scheduler.dart';
-import 'package:plan_list/features/notification/domain/reminder_calculator.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/reminder.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/notification/application/reminder_scheduler.dart';
+import 'package:liveline/features/notification/domain/reminder_calculator.dart';
 
 import '../../helpers/fake_settings_store.dart';
 import '../../helpers/fakes.dart';

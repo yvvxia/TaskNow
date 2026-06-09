@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/models/notification_request.dart';
-import 'package:plan_list/platform/notifications/windows_notification_service.dart';
+import 'package:liveline/core/models/notification_request.dart';
+import 'package:liveline/platform/notifications/windows_notification_service.dart';
 
 void main() {
   late WindowsNotificationService service;

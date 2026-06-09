@@ -1,9 +1,9 @@
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/status_filter.dart';
-import 'package:plan_list/core/models/task_query.dart';
-import 'package:plan_list/features/search/search_controller.dart';
+import 'package:liveline/core/enums/status_filter.dart';
+import 'package:liveline/core/models/task_query.dart';
+import 'package:liveline/features/search/search_controller.dart';
 
 void main() {
   test('setKeyword debounces updates to 250ms', () {

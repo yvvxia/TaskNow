@@ -1,5 +1,5 @@
 ---
-description: PlanList feature conventions - every new feature goes l10n + usecase + test
+description: Liveline feature conventions - every new feature goes l10n + usecase + test
 alwaysApply: true
 ---
 

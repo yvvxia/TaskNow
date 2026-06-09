@@ -31,7 +31,7 @@ for f in "${FILES[@]}"; do
     *.g.dart|*.freezed.dart) continue ;;
   esac
   # Forbidden: importing the data or platform layers.
-  if matches=$(grep -nE "import\s+['\"](package:plan_list/(data|platform)/|(\.\./)+(data|platform)/)" "$f"); then
+  if matches=$(grep -nE "import\s+['\"](package:liveline/(data|platform)/|(\.\./)+(data|platform)/)" "$f"); then
     echo "Forbidden layer import in $f:"
     echo "$matches"
     violations=$((violations + 1))

@@ -28,7 +28,7 @@ Therefore:
 - **Static analysis:** `flutter analyze` runs in CI and catches obvious errors.
 - **Grep-based gate:** `tool/check_layer_imports.sh` scans every `*.dart` file
   under any `domain/` or `presentation/` directory in `lib/` and reports any
-  `import` of `package:plan_list/data/…`, `package:plan_list/platform/…`, or a
+  `import` of `package:liveline/data/…`, `package:liveline/platform/…`, or a
   relative path resolving into those layers. This step runs in
   `.github/workflows/ci.yml`.
   - **Default mode is non-blocking** (prints offenders, exits 0).

@@ -1,4 +1,4 @@
-import 'package:plan_list/core/models/project.dart';
+import 'package:liveline/core/models/project.dart';
 
 int _seq = 0;
 

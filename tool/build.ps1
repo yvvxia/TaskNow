@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Reproducible release builds for PlanList (Windows + Android) on Windows.
+  Reproducible release builds for Liveline (Windows + Android) on Windows.
 
 .DESCRIPTION
   Wraps `flutter build` with the environment this project needs:
@@ -89,7 +89,7 @@ try {
         flutter build windows $modeFlag
         if ($LASTEXITCODE -ne 0) { throw "Windows build failed (exit $LASTEXITCODE)." }
         $cap = (Get-Culture).TextInfo.ToTitleCase($Mode)
-        $built += "build\windows\x64\runner\$cap\plan_list.exe"
+        $built += "build\windows\x64\runner\$cap\liveline.exe"
     }
 
     Write-Host ''

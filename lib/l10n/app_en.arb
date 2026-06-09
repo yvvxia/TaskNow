@@ -403,7 +403,7 @@
   "errorEmptyProjectName": "Project name cannot be empty",
   "@errorEmptyProjectName": {"description": "Error when a project name is empty"},
 
-  "appTitle": "PlanList",
+  "appTitle": "Liveline",
   "@appTitle": {"description": "Application title shown in the shell header"},
 
   "guestAccount": "Guest",

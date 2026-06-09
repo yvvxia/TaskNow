@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/data/mappers/time_mapper.dart';
+import 'package:liveline/data/mappers/time_mapper.dart';
 
 void main() {
   group('time_mapper', () {

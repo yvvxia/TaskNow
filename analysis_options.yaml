@@ -32,7 +32,7 @@ analyzer:
     - "**/*.freezed.dart"
 
 # Layering boundary (design §1 / 07 §7): presentation and domain code must NOT
-# import `package:plan_list/data/...` or `package:plan_list/platform/...`
+# import `package:liveline/data/...` or `package:liveline/platform/...`
 # (dependency inversion via core/contracts). This is enforced in CI by the
 # grep-based gate `tool/check_layer_imports.sh` (see `tool/import_lint.md`).
 # A full editor-level custom analyzer rule (e.g. `custom_lint` banned-imports)

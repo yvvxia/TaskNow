@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:plan_list/core/contracts/i_sync_engine.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/utils/result.dart';
+import 'package:liveline/core/contracts/i_sync_engine.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/utils/result.dart';
 
 /// No-op [ISyncEngine] that records how many times [push]/[pull] ran and lets
 /// tests drive the [status] stream. Mirrors the production `NoOpSyncEngine`

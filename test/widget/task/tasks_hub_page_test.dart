@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/models/project.dart';
-import 'package:plan_list/features/task/tasks_hub_page.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/models/project.dart';
+import 'package:liveline/features/task/tasks_hub_page.dart';
 
 import '../../fakes/fake_project_repository.dart';
 

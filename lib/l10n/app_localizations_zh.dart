@@ -387,7 +387,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get errorEmptyProjectName => '项目名称不能为空';
 
   @override
-  String get appTitle => 'PlanList';
+  String get appTitle => 'Liveline';
 
   @override
   String get guestAccount => '访客';

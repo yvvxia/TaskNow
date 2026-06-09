@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/contracts/i_settings_store.dart';
-import 'package:plan_list/core/di/providers.dart';
-import 'package:plan_list/core/models/app_settings.dart';
-import 'package:plan_list/core/models/setting_key.dart';
-import 'package:plan_list/features/settings/settings_providers.dart';
+import 'package:liveline/core/contracts/i_settings_store.dart';
+import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/models/app_settings.dart';
+import 'package:liveline/core/models/setting_key.dart';
+import 'package:liveline/features/settings/settings_providers.dart';
 
 /// A minimal in-memory [ISettingsStore] used in unit tests.
 class FakeSettingsStore implements ISettingsStore {

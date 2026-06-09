@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/features/search/presentation/empty_state.dart';
+import 'package:liveline/features/search/presentation/empty_state.dart';
 
 void main() {
   testWidgets('shows default no-results message', (tester) async {

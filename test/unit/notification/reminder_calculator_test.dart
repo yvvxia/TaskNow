@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/app_settings.dart';
-import 'package:plan_list/core/models/reminder.dart';
-import 'package:plan_list/core/models/task.dart';
-import 'package:plan_list/features/notification/domain/notification_settings.dart';
-import 'package:plan_list/features/notification/domain/reminder_calculator.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/app_settings.dart';
+import 'package:liveline/core/models/reminder.dart';
+import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/notification/domain/notification_settings.dart';
+import 'package:liveline/features/notification/domain/reminder_calculator.dart';
 
 void main() {
   const calc = ReminderCalculator();

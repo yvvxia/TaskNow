@@ -265,7 +265,7 @@ Future<void> main() async {
         settingsStoreProvider.overrideWithValue(settings),
         // syncEngineProvider 预留：Phase 2 注入 RemoteSyncEngine
       ],
-      child: const PlanListApp(),
+      child: const LivelineApp(),
     ),
   );
 }

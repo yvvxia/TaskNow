@@ -1,4 +1,4 @@
-name: plan_list
+name: liveline
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -95,8 +95,8 @@ flutter:
   # https://flutter.dev/to/asset-from-package
 
   # MiSans (Xiaomi) — global free commercial-use font. Bundled so Windows and
-  # Android render identical CJK + Latin metrics. Weights kept to 400/500/600
-  # to keep the UI clean and avoid heavy 700 bold.
+  # Android render identical CJK + Latin metrics. Weights 400/500/600/700 so the
+  # type scale can sit one notch heavier for comfortable CJK reading.
   fonts:
     - family: MiSans
       fonts:
@@ -106,3 +106,5 @@ flutter:
           weight: 500
         - asset: assets/fonts/MiSans-Semibold.otf
           weight: 600
+        - asset: assets/fonts/MiSans-Bold.otf
+          weight: 700

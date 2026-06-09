@@ -1,6 +1,6 @@
-import 'package:plan_list/core/contracts/i_task_repository.dart';
-import 'package:plan_list/core/enums/enums.dart';
-import 'package:plan_list/core/models/task_draft.dart';
+import 'package:liveline/core/contracts/i_task_repository.dart';
+import 'package:liveline/core/enums/enums.dart';
+import 'package:liveline/core/models/task_draft.dart';
 
 /// Generates [count] deterministic [TaskDraft]s spread across consecutive days
 /// starting at [start]. Used by the performance/regression suite to populate a

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/core/models/app_settings.dart';
-import 'package:plan_list/core/models/setting_keys.dart';
-import 'package:plan_list/platform/settings/shared_prefs_settings_store.dart';
+import 'package:liveline/core/models/app_settings.dart';
+import 'package:liveline/core/models/setting_keys.dart';
+import 'package:liveline/platform/settings/shared_prefs_settings_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

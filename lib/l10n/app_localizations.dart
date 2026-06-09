@@ -785,7 +785,7 @@ abstract class AppLocalizations {
   /// Application title shown in the shell header
   ///
   /// In en, this message translates to:
-  /// **'PlanList'**
+  /// **'Liveline'**
   String get appTitle;
 
   /// Tooltip for the placeholder account avatar

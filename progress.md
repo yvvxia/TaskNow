@@ -101,7 +101,7 @@ flowchart TD
 
 - Flutter SDK：`C:\Users\WuChen\AppData\Local\flutter`（User PATH）。
 - 全量门禁：`flutter analyze` 无问题；`flutter test` 共 **336** 项全部通过。
-- 生产装配：`lib/main.dart` 通过 `ProviderScope.overrides` 注入 `AppDatabase(openConnection())`（Drift/SQLite，存于应用文档目录 `plan_list.sqlite`）、`SharedPrefsSettingsStore`、平台 `INotificationService`、`NoOpSyncEngine`；测试环境（`FLUTTER_TEST`）下跳过会阻塞的 `SharedPreferences.getInstance()`。
+- 生产装配：`lib/main.dart` 通过 `ProviderScope.overrides` 注入 `AppDatabase(openConnection())`（Drift/SQLite，存于应用文档目录 `liveline.sqlite`）、`SharedPrefsSettingsStore`、平台 `INotificationService`、`NoOpSyncEngine`；测试环境（`FLUTTER_TEST`）下跳过会阻塞的 `SharedPreferences.getInstance()`。
 - Android 清单：已加 `POST_NOTIFICATIONS` / `SCHEDULE_EXACT_ALARM` / `USE_EXACT_ALARM` / `RECEIVE_BOOT_COMPLETED` 权限与 `flutter_local_notifications` 接收器。
 - 本地化：`MaterialApp` 已挂载 `AppLocalizations` delegates，支持 en/zh，随系统区域。
 - CI：`.github/workflows/ci.yml`（format → analyze → layer-import check → test --coverage → coverage summary）。

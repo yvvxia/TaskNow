@@ -164,7 +164,7 @@ class _AdaptiveScaffoldState extends ConsumerState<AdaptiveScaffold> {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text(l10n?.appTitle ?? 'PlanList'),
+      title: Text(l10n?.appTitle ?? 'Liveline'),
       actions: [
         IconButton(
           key: const Key('shell-search'),
@@ -377,7 +377,7 @@ class _DesktopSidebar extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: Text(
-                  l10n?.appTitle ?? 'PlanList',
+                  l10n?.appTitle ?? 'Liveline',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
