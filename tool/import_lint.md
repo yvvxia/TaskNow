@@ -31,19 +31,10 @@ Therefore:
   `import` of `package:plan_list/data/…`, `package:plan_list/platform/…`, or a
   relative path resolving into those layers. This step runs in
   `.github/workflows/ci.yml`.
-  - **Default mode is non-blocking** (prints offenders, exits 0) so the
-    pipeline is not broken by pre-existing, reviewed exceptions.
-  - Pass `--strict` to fail the build (exit 1) on any violation.
-
-### Known pre-existing exceptions (Phase 1)
-
-Two M1–M7 imports currently cross the boundary and are accepted for now:
-
-- `lib/features/search/presentation/result_list.dart` → `data/search/fts_tokenizer.dart`
-- `lib/features/notification/domain/notification_settings.dart` → `platform/settings/setting_keys.dart`
-
-These should be migrated behind `core/contracts` before the gate is switched to
-`--strict` in CI.
+  - **Default mode is non-blocking** (prints offenders, exits 0).
+  - Pass `--strict` to fail the build (exit 1) on any violation. The tree is
+    clean as of the `fts_tokenizer` / `setting_keys` migration to `core/`; CI
+    may switch to `--strict` when ready.
 
 ## Running locally
 

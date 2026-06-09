@@ -8,9 +8,7 @@ class ScriptSegment {
   final bool isCjk;
 }
 
-final RegExp _cjkRun = RegExp(
-  r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+',
-);
+final RegExp _cjkRun = RegExp(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+');
 
 /// Splits [raw] into alternating Latin and CJK script runs.
 List<ScriptSegment> splitByScript(String raw) {
@@ -122,20 +120,18 @@ List<TextSpan> buildHighlightSpans(
     if (merged.isEmpty || m.start > merged.last.end) {
       merged.add(m);
     } else if (m.end > merged.last.end) {
-      merged[merged.length - 1] = (
-        start: merged.last.start,
-        end: m.end,
-      );
+      merged[merged.length - 1] = (start: merged.last.start, end: m.end);
     }
   }
 
   final spans = <TextSpan>[];
   var cursor = 0;
-  final build = spanBuilder ??
+  final build =
+      spanBuilder ??
       (segment, {required isMatch}) => TextSpan(
-            text: segment,
-            style: isMatch ? const TextSpan().style : null,
-          );
+        text: segment,
+        style: isMatch ? const TextSpan().style : null,
+      );
 
   for (final m in merged) {
     if (cursor < m.start) {

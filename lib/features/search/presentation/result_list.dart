@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/enums/enums.dart';
-import '../../../data/search/fts_tokenizer.dart';
+import '../../../core/utils/fts_tokenizer.dart';
 import '../../task/presentation/task_view.dart';
 
 /// Scrollable search results with optional keyword highlight in titles.

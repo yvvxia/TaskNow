@@ -4,7 +4,7 @@ import '../../core/enums/enums.dart';
 import '../../core/enums/status_filter.dart';
 import '../../core/models/date_filter.dart';
 import '../../core/models/task_query.dart';
-import '../search/fts_tokenizer.dart';
+import '../../core/utils/fts_tokenizer.dart';
 import 'app_database.dart';
 import 'tables.dart';
 import 'task_dao.dart';

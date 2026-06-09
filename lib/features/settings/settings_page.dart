@@ -7,7 +7,7 @@ import '../../core/di/providers.dart';
 import '../../core/models/app_settings.dart';
 import '../../core/models/setting_key.dart';
 import '../../l10n/app_localizations.dart';
-import '../../platform/settings/setting_keys.dart';
+import '../../core/models/setting_keys.dart';
 import 'settings_providers.dart';
 
 /// Full Material 3 settings screen (Module 06).

@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/contracts/i_settings_store.dart';
 import '../../core/models/app_settings.dart';
 import '../../core/models/setting_key.dart';
-import 'setting_keys.dart';
+import '../../core/models/setting_keys.dart';
 
 /// [ISettingsStore] backed by [SharedPreferences].
 ///

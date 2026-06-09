@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:plan_list/data/search/fts_tokenizer.dart';
+import 'package:plan_list/core/utils/fts_tokenizer.dart';
 
 void main() {
   group('buildFtsMatch', () {

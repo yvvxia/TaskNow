@@ -1,6 +1,6 @@
 import '../../../core/contracts/i_settings_store.dart';
 import '../../../core/models/app_settings.dart';
-import '../../../platform/settings/setting_keys.dart';
+import '../../../core/models/setting_keys.dart';
 
 /// Notification-related settings snapshot used by the reminder calculator
 /// and scheduler. Combines [AppSettings] with extended DND keys from the store.
