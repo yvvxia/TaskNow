@@ -60,6 +60,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emptyTaskList => 'No tasks here';
 
   @override
+  String get emptyTodayTitle => 'No tasks today';
+
+  @override
+  String get emptyTodaySubtitle => 'Enjoy your free day';
+
+  @override
+  String get emptyOverdueTitle => 'No overdue tasks';
+
+  @override
+  String get emptyOverdueSubtitle => 'You\'re all caught up';
+
+  @override
+  String get emptyCompletedTitle => 'No completed tasks yet';
+
+  @override
+  String get emptyCompletedSubtitle => 'Completed tasks will show up here';
+
+  @override
+  String get emptyTasksTitle => 'No tasks yet';
+
+  @override
+  String get emptyTasksSubtitle => 'Tap + to add your first task';
+
+  @override
   String get createAction => 'Create';
 
   @override
@@ -407,6 +431,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tagsEmpty => 'No tags yet';
 
   @override
+  String get tagCreateTitle => 'New tag';
+
+  @override
+  String get tagNameLabel => 'Tag name';
+
+  @override
   String get navFilters => 'Filters';
 
   @override
@@ -481,6 +511,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskNotFound => 'Task not found';
 
   @override
+  String get taskDetailTitle => 'Task details';
+
+  @override
+  String get addSubtaskHint => 'Add subtask…';
+
+  @override
+  String detailCreated(String date) {
+    return 'Created $date';
+  }
+
+  @override
+  String detailCompleted(String date) {
+    return 'Completed $date';
+  }
+
+  @override
+  String get recurrenceRepeats => 'Repeats';
+
+  @override
+  String get recurrenceEvery => 'Every';
+
+  @override
+  String get recurrenceEnds => 'Ends';
+
+  @override
+  String get recurrenceNever => 'Never';
+
+  @override
+  String get recurrenceDaily => 'Daily';
+
+  @override
+  String get recurrenceWeekly => 'Weekly';
+
+  @override
+  String get recurrenceMonthly => 'Monthly';
+
+  @override
+  String get recurrenceCustom => 'Custom';
+
+  @override
+  String get recurrenceUnitDays => 'day(s)';
+
+  @override
+  String get recurrenceUnitWeeks => 'week(s)';
+
+  @override
+  String get recurrenceUnitMonths => 'month(s)';
+
+  @override
   String get barColorMode => 'Gantt bar color';
 
   @override
@@ -506,4 +585,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterSectionProjects => 'Projects';
+
+  @override
+  String get filterPriorityAny => 'Any';
 }

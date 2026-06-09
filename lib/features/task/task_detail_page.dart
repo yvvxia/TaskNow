@@ -68,7 +68,7 @@ class TaskDetailPage extends ConsumerWidget {
     return Scaffold(
       key: const Key('task-detail-page'),
       appBar: AppBar(
-        title: Text('Task $taskId'),
+        title: Text(l10n?.taskDetailTitle ?? 'Task details'),
         actions: [
           if (hasScope)
             IconButton(

@@ -52,6 +52,26 @@
   "emptyTaskList": "No tasks here",
   "@emptyTaskList": {"description": "Empty state for the task list"},
 
+  "emptyTodayTitle": "No tasks today",
+  "@emptyTodayTitle": {"description": "Empty-state title for the Today scope"},
+  "emptyTodaySubtitle": "Enjoy your free day",
+  "@emptyTodaySubtitle": {"description": "Empty-state subtitle for the Today scope"},
+
+  "emptyOverdueTitle": "No overdue tasks",
+  "@emptyOverdueTitle": {"description": "Empty-state title for the Overdue scope"},
+  "emptyOverdueSubtitle": "You're all caught up",
+  "@emptyOverdueSubtitle": {"description": "Empty-state subtitle for the Overdue scope"},
+
+  "emptyCompletedTitle": "No completed tasks yet",
+  "@emptyCompletedTitle": {"description": "Empty-state title for the Completed scope"},
+  "emptyCompletedSubtitle": "Completed tasks will show up here",
+  "@emptyCompletedSubtitle": {"description": "Empty-state subtitle for the Completed scope"},
+
+  "emptyTasksTitle": "No tasks yet",
+  "@emptyTasksTitle": {"description": "Generic empty-state title for the task list"},
+  "emptyTasksSubtitle": "Tap + to add your first task",
+  "@emptyTasksSubtitle": {"description": "Generic empty-state subtitle for the task list"},
+
   "createAction": "Create",
   "@createAction": {"description": "Confirm button to create a task"},
 
@@ -421,6 +441,12 @@
   "tagsEmpty": "No tags yet",
   "@tagsEmpty": {"description": "Empty state when no tags exist"},
 
+  "tagCreateTitle": "New tag",
+  "@tagCreateTitle": {"description": "Title of the create-tag dialog"},
+
+  "tagNameLabel": "Tag name",
+  "@tagNameLabel": {"description": "Label for the tag name field"},
+
   "navFilters": "Filters",
   "@navFilters": {"description": "Sidebar section label for smart filters"},
 
@@ -492,6 +518,61 @@
   "taskNotFound": "Task not found",
   "@taskNotFound": {"description": "Task detail when task is missing"},
 
+  "taskDetailTitle": "Task details",
+  "@taskDetailTitle": {"description": "App bar title of the full-screen task detail page"},
+
+  "addSubtaskHint": "Add subtask…",
+  "@addSubtaskHint": {"description": "Hint for the add-subtask input"},
+
+  "detailCreated": "Created {date}",
+  "@detailCreated": {
+    "description": "Task detail meta: creation timestamp",
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+
+  "detailCompleted": "Completed {date}",
+  "@detailCompleted": {
+    "description": "Task detail meta: completion timestamp",
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+
+  "recurrenceRepeats": "Repeats",
+  "@recurrenceRepeats": {"description": "Recurrence picker: frequency label"},
+
+  "recurrenceEvery": "Every",
+  "@recurrenceEvery": {"description": "Recurrence picker: interval label"},
+
+  "recurrenceEnds": "Ends",
+  "@recurrenceEnds": {"description": "Recurrence picker: end-date label"},
+
+  "recurrenceNever": "Never",
+  "@recurrenceNever": {"description": "Recurrence picker: no end date"},
+
+  "recurrenceDaily": "Daily",
+  "@recurrenceDaily": {"description": "Recurrence frequency: daily"},
+
+  "recurrenceWeekly": "Weekly",
+  "@recurrenceWeekly": {"description": "Recurrence frequency: weekly"},
+
+  "recurrenceMonthly": "Monthly",
+  "@recurrenceMonthly": {"description": "Recurrence frequency: monthly"},
+
+  "recurrenceCustom": "Custom",
+  "@recurrenceCustom": {"description": "Recurrence frequency: custom"},
+
+  "recurrenceUnitDays": "day(s)",
+  "@recurrenceUnitDays": {"description": "Recurrence interval unit: days"},
+
+  "recurrenceUnitWeeks": "week(s)",
+  "@recurrenceUnitWeeks": {"description": "Recurrence interval unit: weeks"},
+
+  "recurrenceUnitMonths": "month(s)",
+  "@recurrenceUnitMonths": {"description": "Recurrence interval unit: months"},
+
   "actionSave": "Save",
   "@actionSave": {"description": "Generic save button"},
 
@@ -520,5 +601,8 @@
   "@filterSectionTags": {"description": "Search filter group: tags"},
 
   "filterSectionProjects": "Projects",
-  "@filterSectionProjects": {"description": "Search filter group: projects"}
+  "@filterSectionProjects": {"description": "Search filter group: projects"},
+
+  "filterPriorityAny": "Any",
+  "@filterPriorityAny": {"description": "Priority filter chip label when no priority is selected"}
 }

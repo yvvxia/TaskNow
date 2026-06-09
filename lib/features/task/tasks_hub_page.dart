@@ -4,13 +4,29 @@ import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../calendar/domain/gantt_layout.dart';
+import '../project/presentation/project_edit_dialog.dart';
 import '../project/project_providers.dart';
+import '../tag/presentation/tag_create_dialog.dart';
 import '../tag/tag_providers.dart';
 
 /// Mobile/tablet "Tasks hub": overview + expandable project folder listing
 /// every project. Desktop users see the same tree in the sidebar instead.
 class TasksHubPage extends ConsumerWidget {
   const TasksHubPage({super.key});
+
+  Future<void> _createProject(BuildContext context, WidgetRef ref) async {
+    final result = await showProjectEditDialog(context);
+    if (result == null) return;
+    await ref
+        .read(createProjectUseCaseProvider)
+        .call(result.name, color: result.color);
+  }
+
+  Future<void> _createTag(BuildContext context, WidgetRef ref) async {
+    final name = await showTagCreateDialog(context);
+    if (name == null) return;
+    await ref.read(createTagUseCaseProvider).call(name);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,6 +91,13 @@ class TasksHubPage extends ConsumerWidget {
                       title: Text(p.name),
                       onTap: () => context.go('/projects/${p.id}'),
                     ),
+                ListTile(
+                  key: const Key('tasks-hub-project-create'),
+                  contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                  leading: const Icon(Icons.add),
+                  title: Text(l10n?.projectCreateTitle ?? 'New project'),
+                  onTap: () => _createProject(context, ref),
+                ),
               ],
             ),
           ),
@@ -136,6 +159,13 @@ class TasksHubPage extends ConsumerWidget {
                       title: Text(tag.name),
                       onTap: () => context.go('/tasks/tag/${tag.id}'),
                     ),
+                ListTile(
+                  key: const Key('tasks-hub-tag-create'),
+                  contentPadding: const EdgeInsets.only(left: 32, right: 16),
+                  leading: const Icon(Icons.add),
+                  title: Text(l10n?.tagCreateTitle ?? 'New tag'),
+                  onTap: () => _createTag(context, ref),
+                ),
               ],
             ),
           ),

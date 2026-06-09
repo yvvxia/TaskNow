@@ -37,15 +37,11 @@ class FilterChipsRow extends ConsumerWidget {
           ),
           const SizedBox(width: 8),
           _GroupLabel(l10n?.filterSectionPriority ?? 'Priority'),
-          ...Priority.values.map(
-            (p) => Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: FilterChip(
-                key: Key('priority-chip-${p.name}'),
-                label: Text(priorityLabel(p, l10n)),
-                selected: query.effectivePriorities?.contains(p) ?? false,
-                onSelected: (_) => controller.togglePriority(p),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: _PriorityMenuChip(
+              selected: query.effectivePriorities ?? const <Priority>{},
+              onToggle: controller.togglePriority,
             ),
           ),
           _GroupLabel(l10n?.filterSectionDate ?? 'Date'),
@@ -145,6 +141,44 @@ class _StatusMenuChip extends StatelessWidget {
             ),
           )
           .toList(),
+    );
+  }
+}
+
+/// A single chip that opens a checklist menu to pick one or more priorities,
+/// instead of rendering one chip per priority.
+class _PriorityMenuChip extends StatelessWidget {
+  const _PriorityMenuChip({required this.selected, required this.onToggle});
+
+  final Set<Priority> selected;
+  final ValueChanged<Priority> onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final label = selected.isEmpty
+        ? (l10n?.filterPriorityAny ?? 'Any')
+        : Priority.values
+              .where(selected.contains)
+              .map((p) => priorityLabel(p, l10n))
+              .join(', ');
+    return PopupMenuButton<Priority>(
+      key: const Key('priority-filter-chip'),
+      onSelected: onToggle,
+      itemBuilder: (context) => Priority.values
+          .map(
+            (p) => CheckedPopupMenuItem<Priority>(
+              key: Key('priority-menu-${p.name}'),
+              value: p,
+              checked: selected.contains(p),
+              child: Text(priorityLabel(p, l10n)),
+            ),
+          )
+          .toList(),
+      child: Chip(
+        label: Text(label),
+        avatar: const Icon(Icons.flag_outlined, size: 18),
+      ),
     );
   }
 }

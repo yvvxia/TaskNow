@@ -6,8 +6,10 @@ import '../../core/models/setting_keys.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/semantic_colors.dart';
 import '../../features/calendar/domain/gantt_layout.dart';
+import '../../features/project/presentation/project_edit_dialog.dart';
 import '../../features/project/project_providers.dart';
 import '../../features/search/presentation/search_overlay.dart' as search_ui;
+import '../../features/tag/presentation/tag_create_dialog.dart';
 import '../../features/tag/tag_providers.dart';
 import '../../features/task/presentation/add_task_sheet.dart';
 import '../../features/task/presentation/task_detail_panel.dart';
@@ -309,6 +311,20 @@ class _DesktopSidebar extends ConsumerWidget {
   final ValueChanged<String> onNavigate;
   final VoidCallback onOpenSearch;
 
+  Future<void> _createProject(BuildContext context, WidgetRef ref) async {
+    final result = await showProjectEditDialog(context);
+    if (result == null) return;
+    await ref
+        .read(createProjectUseCaseProvider)
+        .call(result.name, color: result.color);
+  }
+
+  Future<void> _createTag(BuildContext context, WidgetRef ref) async {
+    final name = await showTagCreateDialog(context);
+    if (name == null) return;
+    await ref.read(createTagUseCaseProvider).call(name);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -474,6 +490,19 @@ class _DesktopSidebar extends ConsumerWidget {
                                     onTap: () =>
                                         onNavigate('/projects/${p.id}'),
                                   ),
+                              ListTile(
+                                key: const Key('sidebar-project-create'),
+                                contentPadding: const EdgeInsets.only(
+                                  left: 48,
+                                  right: 16,
+                                ),
+                                dense: true,
+                                leading: const Icon(Icons.add, size: 18),
+                                title: Text(
+                                  l10n?.projectCreateTitle ?? 'New project',
+                                ),
+                                onTap: () => _createProject(context, ref),
+                              ),
                             ],
                           ),
                   ),
@@ -576,6 +605,17 @@ class _DesktopSidebar extends ConsumerWidget {
                                     onTap: () =>
                                         onNavigate('/tasks/tag/${tag.id}'),
                                   ),
+                              ListTile(
+                                key: const Key('sidebar-tag-create'),
+                                contentPadding: const EdgeInsets.only(
+                                  left: 48,
+                                  right: 16,
+                                ),
+                                dense: true,
+                                leading: const Icon(Icons.add, size: 18),
+                                title: Text(l10n?.tagCreateTitle ?? 'New tag'),
+                                onTap: () => _createTag(context, ref),
+                              ),
                             ],
                           ),
                   ),

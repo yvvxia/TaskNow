@@ -60,6 +60,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emptyTaskList => '暂无任务';
 
   @override
+  String get emptyTodayTitle => '今天没有任务';
+
+  @override
+  String get emptyTodaySubtitle => '好好享受清闲的一天吧';
+
+  @override
+  String get emptyOverdueTitle => '还没有逾期任务';
+
+  @override
+  String get emptyOverdueSubtitle => '一切都准时完成啦';
+
+  @override
+  String get emptyCompletedTitle => '还没有已完成任务';
+
+  @override
+  String get emptyCompletedSubtitle => '完成的任务会显示在这里';
+
+  @override
+  String get emptyTasksTitle => '还没有任务';
+
+  @override
+  String get emptyTasksSubtitle => '点击 + 添加第一个任务';
+
+  @override
   String get createAction => '创建';
 
   @override
@@ -405,6 +429,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tagsEmpty => '还没有标签';
 
   @override
+  String get tagCreateTitle => '新建标签';
+
+  @override
+  String get tagNameLabel => '标签名称';
+
+  @override
   String get navFilters => '筛选';
 
   @override
@@ -473,6 +503,55 @@ class AppLocalizationsZh extends AppLocalizations {
   String get taskNotFound => '未找到任务';
 
   @override
+  String get taskDetailTitle => '任务详情';
+
+  @override
+  String get addSubtaskHint => '添加子任务…';
+
+  @override
+  String detailCreated(String date) {
+    return '创建于 $date';
+  }
+
+  @override
+  String detailCompleted(String date) {
+    return '完成于 $date';
+  }
+
+  @override
+  String get recurrenceRepeats => '重复';
+
+  @override
+  String get recurrenceEvery => '每';
+
+  @override
+  String get recurrenceEnds => '结束';
+
+  @override
+  String get recurrenceNever => '永不';
+
+  @override
+  String get recurrenceDaily => '每天';
+
+  @override
+  String get recurrenceWeekly => '每周';
+
+  @override
+  String get recurrenceMonthly => '每月';
+
+  @override
+  String get recurrenceCustom => '自定义';
+
+  @override
+  String get recurrenceUnitDays => '天';
+
+  @override
+  String get recurrenceUnitWeeks => '周';
+
+  @override
+  String get recurrenceUnitMonths => '个月';
+
+  @override
   String get barColorMode => '甘特条配色';
 
   @override
@@ -498,4 +577,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get filterSectionProjects => '项目';
+
+  @override
+  String get filterPriorityAny => '任意';
 }

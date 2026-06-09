@@ -28,19 +28,17 @@ void main() {
     );
   }
 
-  testWidgets('priority chips toggle selected state in query', (tester) async {
+  testWidgets('priority menu toggles selected state in query', (tester) async {
     await tester.pumpWidget(wrap(const FilterChipsRow()));
 
-    await tester.tap(find.byKey(const Key('priority-chip-high')));
+    await tester.tap(find.byKey(const Key('priority-filter-chip')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('priority-menu-high')));
     await tester.pumpAndSettle();
 
     final query = container.read(searchControllerProvider);
     expect(query.effectivePriorities, {Priority.high});
-
-    final chip = tester.widget<FilterChip>(
-      find.byKey(const Key('priority-chip-high')),
-    );
-    expect(chip.selected, isTrue);
   });
 
   testWidgets('clear chip resets filters', (tester) async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/enums/enums.dart';
 import '../../../core/models/subtask.dart';
@@ -207,17 +208,29 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
           _SectionTitle(l10n?.detailSectionMeta ?? 'Info'),
           if (taskView.task.createdAt != null)
             Text(
-              'Created: ${taskView.task.createdAt}',
+              l10n?.detailCreated(
+                    _formatMeta(context, taskView.task.createdAt!),
+                  ) ??
+                  'Created ${taskView.task.createdAt}',
               style: Theme.of(context).textTheme.labelSmall,
             ),
           if (taskView.task.completedAt != null)
             Text(
-              'Completed: ${taskView.task.completedAt}',
+              l10n?.detailCompleted(
+                    _formatMeta(context, taskView.task.completedAt!),
+                  ) ??
+                  'Completed ${taskView.task.completedAt}',
               style: Theme.of(context).textTheme.labelSmall,
             ),
         ],
       ),
     );
+  }
+
+  /// Formats a stored (UTC) timestamp as a localized local date-time.
+  String _formatMeta(BuildContext context, DateTime dt) {
+    final l10n = AppLocalizations.of(context);
+    return DateFormat.yMMMd(l10n?.localeName).add_Hm().format(dt.toLocal());
   }
 
   String _priorityLabel(AppLocalizations? l10n, Priority p) => switch (p) {
@@ -390,13 +403,14 @@ class _AddSubtaskFieldState extends State<_AddSubtaskField> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Row(
       children: [
         Expanded(
           child: TextField(
             controller: _ctrl,
-            decoration: const InputDecoration(
-              hintText: 'Add subtask…',
+            decoration: InputDecoration(
+              hintText: l10n?.addSubtaskHint ?? 'Add subtask…',
               isDense: true,
             ),
             onSubmitted: (v) {

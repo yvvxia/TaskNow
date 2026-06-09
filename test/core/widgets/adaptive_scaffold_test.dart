@@ -4,9 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:liveline/core/di/providers.dart';
 import 'package:liveline/core/widgets/adaptive_scaffold.dart';
 
-import '../../fakes/fake_project_repository.dart';
 import '../../helpers/fake_settings_store.dart';
-import '../../fakes/fake_tag_repository.dart';
 import '../../helpers/fakes.dart';
 
 Future<void> _pumpAt(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/enums/enums.dart';
 import '../../../core/models/recurrence_rule.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Widget for picking recurrence settings (frequency, interval, weekdays,
 /// end date). Calls [onChanged] whenever the rule changes; passes [null] to
@@ -45,20 +47,24 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final localeName = l10n?.localeName;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Frequency
         Row(
           children: [
-            const Text('Repeats:'),
+            Text('${l10n?.recurrenceRepeats ?? 'Repeats'}:'),
             const SizedBox(width: 12),
             DropdownButton<RecurrenceFrequency>(
               value: _frequency,
               items: RecurrenceFrequency.values
                   .map(
-                    (f) =>
-                        DropdownMenuItem(value: f, child: Text(_freqLabel(f))),
+                    (f) => DropdownMenuItem(
+                      value: f,
+                      child: Text(_freqLabel(f, l10n)),
+                    ),
                   )
                   .toList(),
               onChanged: (v) {
@@ -73,7 +79,7 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
         // Interval
         Row(
           children: [
-            const Text('Every:'),
+            Text('${l10n?.recurrenceEvery ?? 'Every'}:'),
             const SizedBox(width: 12),
             SizedBox(
               width: 60,
@@ -91,7 +97,7 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
               ),
             ),
             const SizedBox(width: 8),
-            Text(_unitLabel(_frequency)),
+            Text(_unitLabel(_frequency, l10n)),
           ],
         ),
 
@@ -100,17 +106,17 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
           Wrap(
             spacing: 4,
             children: [
-              for (final entry in _weekdays.entries)
+              for (var weekday = 1; weekday <= 7; weekday++)
                 FilterChip(
-                  label: Text(entry.value),
-                  selected: _byWeekday.contains(entry.key),
+                  label: Text(_weekdayLabel(weekday, localeName)),
+                  selected: _byWeekday.contains(weekday),
                   onSelected: (sel) {
                     setState(() {
                       if (sel) {
-                        _byWeekday.add(entry.key);
+                        _byWeekday.add(weekday);
                         _byWeekday.sort();
                       } else {
-                        _byWeekday.remove(entry.key);
+                        _byWeekday.remove(weekday);
                       }
                     });
                     _emit();
@@ -122,7 +128,7 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
         // End date
         Row(
           children: [
-            const Text('Ends:'),
+            Text('${l10n?.recurrenceEnds ?? 'Ends'}:'),
             const SizedBox(width: 12),
             TextButton(
               onPressed: () async {
@@ -139,7 +145,7 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
               },
               child: Text(
                 _endDate == null
-                    ? 'Never'
+                    ? (l10n?.recurrenceNever ?? 'Never')
                     : '${_endDate!.year}-${_endDate!.month.toString().padLeft(2, '0')}-${_endDate!.day.toString().padLeft(2, '0')}',
               ),
             ),
@@ -157,39 +163,34 @@ class _RecurrencePickerState extends State<RecurrencePicker> {
     );
   }
 
-  static String _freqLabel(RecurrenceFrequency f) {
+  static String _freqLabel(RecurrenceFrequency f, AppLocalizations? l10n) {
     switch (f) {
       case RecurrenceFrequency.daily:
-        return 'Daily';
+        return l10n?.recurrenceDaily ?? 'Daily';
       case RecurrenceFrequency.weekly:
-        return 'Weekly';
+        return l10n?.recurrenceWeekly ?? 'Weekly';
       case RecurrenceFrequency.monthly:
-        return 'Monthly';
+        return l10n?.recurrenceMonthly ?? 'Monthly';
       case RecurrenceFrequency.custom:
-        return 'Custom';
+        return l10n?.recurrenceCustom ?? 'Custom';
     }
   }
 
-  static String _unitLabel(RecurrenceFrequency f) {
+  static String _unitLabel(RecurrenceFrequency f, AppLocalizations? l10n) {
     switch (f) {
       case RecurrenceFrequency.daily:
-        return 'day(s)';
-      case RecurrenceFrequency.weekly:
-        return 'week(s)';
-      case RecurrenceFrequency.monthly:
-        return 'month(s)';
       case RecurrenceFrequency.custom:
-        return 'day(s)';
+        return l10n?.recurrenceUnitDays ?? 'day(s)';
+      case RecurrenceFrequency.weekly:
+        return l10n?.recurrenceUnitWeeks ?? 'week(s)';
+      case RecurrenceFrequency.monthly:
+        return l10n?.recurrenceUnitMonths ?? 'month(s)';
     }
   }
 
-  static const Map<int, String> _weekdays = {
-    1: 'Mon',
-    2: 'Tue',
-    3: 'Wed',
-    4: 'Thu',
-    5: 'Fri',
-    6: 'Sat',
-    7: 'Sun',
-  };
+  /// Localized short weekday name for an ISO weekday (1 = Mon … 7 = Sun).
+  /// 2024-01-01 was a Monday, so January [isoWeekday] falls on that weekday.
+  static String _weekdayLabel(int isoWeekday, String? localeName) {
+    return DateFormat.E(localeName).format(DateTime(2024, 1, isoWeekday));
+  }
 }

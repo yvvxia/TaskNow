@@ -200,6 +200,54 @@ abstract class AppLocalizations {
   /// **'No tasks here'**
   String get emptyTaskList;
 
+  /// Empty-state title for the Today scope
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks today'**
+  String get emptyTodayTitle;
+
+  /// Empty-state subtitle for the Today scope
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy your free day'**
+  String get emptyTodaySubtitle;
+
+  /// Empty-state title for the Overdue scope
+  ///
+  /// In en, this message translates to:
+  /// **'No overdue tasks'**
+  String get emptyOverdueTitle;
+
+  /// Empty-state subtitle for the Overdue scope
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up'**
+  String get emptyOverdueSubtitle;
+
+  /// Empty-state title for the Completed scope
+  ///
+  /// In en, this message translates to:
+  /// **'No completed tasks yet'**
+  String get emptyCompletedTitle;
+
+  /// Empty-state subtitle for the Completed scope
+  ///
+  /// In en, this message translates to:
+  /// **'Completed tasks will show up here'**
+  String get emptyCompletedSubtitle;
+
+  /// Generic empty-state title for the task list
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks yet'**
+  String get emptyTasksTitle;
+
+  /// Generic empty-state subtitle for the task list
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add your first task'**
+  String get emptyTasksSubtitle;
+
   /// Confirm button to create a task
   ///
   /// In en, this message translates to:
@@ -818,6 +866,18 @@ abstract class AppLocalizations {
   /// **'No tags yet'**
   String get tagsEmpty;
 
+  /// Title of the create-tag dialog
+  ///
+  /// In en, this message translates to:
+  /// **'New tag'**
+  String get tagCreateTitle;
+
+  /// Label for the tag name field
+  ///
+  /// In en, this message translates to:
+  /// **'Tag name'**
+  String get tagNameLabel;
+
   /// Sidebar section label for smart filters
   ///
   /// In en, this message translates to:
@@ -950,6 +1010,96 @@ abstract class AppLocalizations {
   /// **'Task not found'**
   String get taskNotFound;
 
+  /// App bar title of the full-screen task detail page
+  ///
+  /// In en, this message translates to:
+  /// **'Task details'**
+  String get taskDetailTitle;
+
+  /// Hint for the add-subtask input
+  ///
+  /// In en, this message translates to:
+  /// **'Add subtask…'**
+  String get addSubtaskHint;
+
+  /// Task detail meta: creation timestamp
+  ///
+  /// In en, this message translates to:
+  /// **'Created {date}'**
+  String detailCreated(String date);
+
+  /// Task detail meta: completion timestamp
+  ///
+  /// In en, this message translates to:
+  /// **'Completed {date}'**
+  String detailCompleted(String date);
+
+  /// Recurrence picker: frequency label
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats'**
+  String get recurrenceRepeats;
+
+  /// Recurrence picker: interval label
+  ///
+  /// In en, this message translates to:
+  /// **'Every'**
+  String get recurrenceEvery;
+
+  /// Recurrence picker: end-date label
+  ///
+  /// In en, this message translates to:
+  /// **'Ends'**
+  String get recurrenceEnds;
+
+  /// Recurrence picker: no end date
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get recurrenceNever;
+
+  /// Recurrence frequency: daily
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get recurrenceDaily;
+
+  /// Recurrence frequency: weekly
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get recurrenceWeekly;
+
+  /// Recurrence frequency: monthly
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get recurrenceMonthly;
+
+  /// Recurrence frequency: custom
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get recurrenceCustom;
+
+  /// Recurrence interval unit: days
+  ///
+  /// In en, this message translates to:
+  /// **'day(s)'**
+  String get recurrenceUnitDays;
+
+  /// Recurrence interval unit: weeks
+  ///
+  /// In en, this message translates to:
+  /// **'week(s)'**
+  String get recurrenceUnitWeeks;
+
+  /// Recurrence interval unit: months
+  ///
+  /// In en, this message translates to:
+  /// **'month(s)'**
+  String get recurrenceUnitMonths;
+
   /// Settings: Gantt bar coloring mode
   ///
   /// In en, this message translates to:
@@ -1003,6 +1153,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Projects'**
   String get filterSectionProjects;
+
+  /// Priority filter chip label when no priority is selected
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get filterPriorityAny;
 }
 
 class _AppLocalizationsDelegate

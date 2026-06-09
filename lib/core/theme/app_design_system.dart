@@ -135,7 +135,18 @@ abstract final class AppDesignSystem {
         visualDensity: VisualDensity.standard,
       ),
       dividerTheme: DividerThemeData(color: palette.outline, thickness: 1),
-      textTheme: _textTheme(palette),
+      // Merge the custom styles onto the full Material 3 text theme rather than
+      // replacing it: replacing would leave every style we don't override
+      // (labelMedium, bodySmall, …) null, which makes Text widgets using those
+      // styles fall back to an uncolored default and render invisibly on some
+      // platforms. Re-apply MiSans afterwards so CJK text keeps consistent
+      // metrics instead of silently falling back to the host font.
+      textTheme: base.textTheme
+          .merge(_textTheme(palette))
+          .apply(
+            fontFamily: kFontFamily,
+            fontFamilyFallback: kFontFamilyFallback,
+          ),
     );
   }
 

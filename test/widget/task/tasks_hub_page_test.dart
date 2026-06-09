@@ -94,4 +94,22 @@ void main() {
 
     expect(find.byKey(const Key('project-p1')), findsOneWidget);
   });
+
+  testWidgets('new project entry creates a project', (tester) async {
+    final router = GoRouter(
+      routes: [GoRoute(path: '/', builder: (_, _) => const TasksHubPage())],
+    );
+
+    await tester.pumpWidget(wrap(router));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('tasks-hub-project-create')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'Gamma');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gamma'), findsOneWidget);
+  });
 }
