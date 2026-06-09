@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/project.dart';
 import '../../core/models/task_draft.dart';
+import '../../core/widgets/empty_illustration.dart';
 import '../../core/widgets/layout_breakpoints.dart';
 import '../../core/widgets/shell_navigation.dart';
 import '../../l10n/app_localizations.dart';
@@ -155,8 +156,12 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
           ),
         Expanded(
           child: tasksState.when(
-            data: (tasks) =>
-                _TaskListView(tasks: tasks, notifier: notifier, ref: ref),
+            data: (tasks) => _TaskListView(
+              tasks: tasks,
+              notifier: notifier,
+              ref: ref,
+              scope: widget.scope,
+            ),
             loading: () => const SizedBox.shrink(),
             error: (err, _) => const SizedBox.shrink(),
           ),
@@ -247,11 +252,13 @@ class _TaskListView extends StatelessWidget {
     required this.tasks,
     required this.notifier,
     required this.ref,
+    required this.scope,
   });
 
   final List<TaskView> tasks;
   final TaskListNotifier notifier;
   final WidgetRef ref;
+  final TaskListScope scope;
 
   Future<void> _confirmDelete(BuildContext context, TaskView task) async {
     final l10n = AppLocalizations.of(context);
@@ -284,7 +291,13 @@ class _TaskListView extends StatelessWidget {
   Widget build(BuildContext context) {
     if (tasks.isEmpty) {
       final l10n = AppLocalizations.of(context);
-      return Center(child: Text(l10n?.emptyTaskList ?? 'No tasks here'));
+      final empty = _emptyStateFor(scope, l10n);
+      return EmptyIllustration(
+        key: const Key('tasks-empty-state'),
+        asset: empty.asset,
+        title: empty.title,
+        subtitle: empty.subtitle,
+      );
     }
     return ListView.builder(
       itemCount: tasks.length,
@@ -302,5 +315,42 @@ class _TaskListView extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+/// Illustration + copy shown when a task list scope has no tasks.
+typedef _EmptyState = ({String asset, String title, String? subtitle});
+
+_EmptyState _emptyStateFor(TaskListScope scope, AppLocalizations? l10n) {
+  const base = 'assets/illustrations';
+  switch (scope) {
+    case TodayScope():
+      return (
+        asset: '$base/empty_today.png',
+        title: l10n?.emptyTodayTitle ?? 'No tasks today',
+        subtitle: l10n?.emptyTodaySubtitle ?? 'Enjoy your free day',
+      );
+    case OverdueScope():
+      return (
+        asset: '$base/empty_overdue.png',
+        title: l10n?.emptyOverdueTitle ?? 'No overdue tasks',
+        subtitle: l10n?.emptyOverdueSubtitle ?? "You're all caught up",
+      );
+    case CompletedScope():
+      return (
+        asset: '$base/empty_completed.png',
+        title: l10n?.emptyCompletedTitle ?? 'No completed tasks yet',
+        subtitle:
+            l10n?.emptyCompletedSubtitle ?? 'Completed tasks will show up here',
+      );
+    case ProjectScope():
+    case TagScope():
+    case InboxScope():
+    case AllScope():
+      return (
+        asset: '$base/empty_tasks.png',
+        title: l10n?.emptyTasksTitle ?? 'No tasks yet',
+        subtitle: l10n?.emptyTasksSubtitle ?? 'Tap + to add your first task',
+      );
   }
 }

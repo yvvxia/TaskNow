@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:liveline/app.dart';
 import 'package:liveline/core/di/clock.dart';
 import 'package:liveline/core/di/providers.dart';
+import 'package:liveline/core/models/task.dart';
 import 'package:liveline/main.dart' as app_main;
 
 import 'helpers/fake_settings_store.dart';
@@ -83,6 +84,8 @@ void main() {
   });
 
   testWidgets('task detail route passes the id path parameter', (tester) async {
+    repo.seed([const Task(id: 'abc-123', title: 'Task abc-123')]);
+
     final router = createAppRouter();
     await tester.pumpWidget(wrap(router));
     await tester.pumpAndSettle();
