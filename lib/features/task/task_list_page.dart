@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/enums/enums.dart';
 import '../../core/models/project.dart';
 import '../../core/models/task_draft.dart';
+import '../../core/theme/app_surface_style.dart';
+import '../../core/widgets/app_card.dart';
 import '../../core/widgets/empty_illustration.dart';
 import '../../core/widgets/layout_breakpoints.dart';
 import '../../core/widgets/shell_navigation.dart';
@@ -74,8 +76,19 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
     return scope is ProjectScope ? scope.projectId : null;
   }
 
+  /// Tag id when viewing a tag filter; new tasks are tagged automatically.
+  String? get _scopeTagId {
+    final scope = widget.scope;
+    return scope is TagScope ? scope.tagId : null;
+  }
+
+  List<String> get _scopeTagIds =>
+      _scopeTagId == null ? const [] : [_scopeTagId!];
+
   Future<void> _quickAdd(String title) async {
-    await _createDraft(TaskDraft(title: title, projectId: _scopeProjectId));
+    await _createDraft(
+      TaskDraft(title: title, projectId: _scopeProjectId, tagIds: _scopeTagIds),
+    );
   }
 
   Future<void> _createDraft(TaskDraft draft) async {
@@ -87,6 +100,7 @@ class _TaskListContentState extends ConsumerState<_TaskListContent> {
       context,
       onCreate: _createDraft,
       projectId: _scopeProjectId,
+      tagIds: _scopeTagIds,
     );
   }
 
@@ -299,7 +313,9 @@ class _TaskListView extends StatelessWidget {
         subtitle: empty.subtitle,
       );
     }
-    return ListView.builder(
+    final grouped = context.surfaceStyle.grouped;
+    final list = ListView.builder(
+      padding: grouped ? const EdgeInsets.symmetric(vertical: 4) : null,
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
@@ -315,6 +331,8 @@ class _TaskListView extends StatelessWidget {
         );
       },
     );
+    if (!grouped) return list;
+    return AppCard(child: list);
   }
 }
 

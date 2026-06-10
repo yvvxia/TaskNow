@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/di/providers.dart';
+import '../../core/models/reminder.dart';
 import '../notification/reminder_scheduler_provider.dart';
 import 'domain/complete_task_usecase.dart';
 import 'domain/create_task_usecase.dart';
 import 'domain/delete_task_usecase.dart';
 import 'domain/recurrence_engine.dart';
 import 'domain/reorder_tasks_usecase.dart';
+import 'domain/set_task_reminders_usecase.dart';
 import 'domain/toggle_subtask_usecase.dart';
 import 'domain/uncomplete_task_usecase.dart';
 import 'domain/update_task_usecase.dart';
@@ -63,3 +65,18 @@ final deleteTaskUseCaseProvider = Provider<DeleteTaskUseCase>(
 final reorderTasksUseCaseProvider = Provider<ReorderTasksUseCase>(
   (ref) => ReorderTasksUseCase(ref.watch(taskRepositoryProvider)),
 );
+
+final setTaskRemindersUseCaseProvider = Provider<SetTaskRemindersUseCase>(
+  (ref) => SetTaskRemindersUseCase(
+    ref.watch(reminderRepositoryProvider),
+    ref.watch(reminderSchedulerProvider),
+  ),
+);
+
+final taskRemindersProvider = FutureProvider.autoDispose
+    .family<List<Reminder>, String>((ref, taskId) async {
+      final result = await ref
+          .watch(reminderRepositoryProvider)
+          .getByTask(taskId);
+      return result.valueOrNull ?? const [];
+    });

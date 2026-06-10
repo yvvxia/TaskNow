@@ -13,6 +13,7 @@ import '../domain/task_list_scope.dart';
 import '../task_providers.dart';
 import 'note_editor.dart';
 import 'recurrence_picker.dart';
+import 'reminders_editor_dialog.dart';
 import 'tag_picker.dart';
 import 'task_list_notifier.dart';
 
@@ -169,21 +170,8 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
     );
   }
 
-  Future<void> _showRemindersDialog() async {
-    final l10n = AppLocalizations.of(context);
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n?.detailMenuReminders ?? 'Reminders'),
-        content: Text(l10n?.remindersComingSoon ?? 'Reminders coming soon'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n?.actionCancel ?? 'Cancel'),
-          ),
-        ],
-      ),
-    );
+  Future<void> _showRemindersDialog(Task task) async {
+    await showRemindersEditorDialog(context, ref, task);
   }
 
   Future<void> _showInfoDialog(Task task) async {
@@ -198,9 +186,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
           children: [
             if (task.createdAt != null)
               Text(
-                l10n?.detailCreated(
-                      _formatMeta(context, task.createdAt!),
-                    ) ??
+                l10n?.detailCreated(_formatMeta(context, task.createdAt!)) ??
                     'Created ${task.createdAt}',
                 style: Theme.of(context).textTheme.labelSmall,
               ),
@@ -241,7 +227,7 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
       case 'recurrence':
         _showRecurrenceDialog(task);
       case 'reminders':
-        _showRemindersDialog();
+        _showRemindersDialog(task);
       case 'info':
         _showInfoDialog(task);
       case 'delete':
@@ -357,7 +343,10 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
                   PopupMenuItem(
                     value: 'reminders',
                     child: ListTile(
-                      leading: const Icon(Icons.notifications_outlined, size: 20),
+                      leading: const Icon(
+                        Icons.notifications_outlined,
+                        size: 20,
+                      ),
                       title: Text(l10n?.detailMenuReminders ?? 'Reminders'),
                       contentPadding: EdgeInsets.zero,
                       dense: true,
@@ -384,7 +373,9 @@ class _TaskDetailBodyState extends ConsumerState<TaskDetailBody> {
                       ),
                       title: Text(
                         l10n?.detailMenuDelete ?? 'Delete task',
-                        style: TextStyle(color: Theme.of(ctx).colorScheme.error),
+                        style: TextStyle(
+                          color: Theme.of(ctx).colorScheme.error,
+                        ),
                       ),
                       contentPadding: EdgeInsets.zero,
                       dense: true,

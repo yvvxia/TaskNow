@@ -27,6 +27,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navSettings => '设置';
 
   @override
+  String get windowMinimize => '最小化';
+
+  @override
+  String get windowMaximize => '最大化';
+
+  @override
+  String get windowRestore => '还原';
+
+  @override
+  String get windowClose => '关闭';
+
+  @override
   String get tasksTitle => '任务';
 
   @override
@@ -534,6 +546,38 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get remindersComingSoon => '提醒功能即将推出';
+
+  @override
+  String get remindersAdd => '添加提醒';
+
+  @override
+  String get remindersAtDue => '到期时';
+
+  @override
+  String get remindersAtStart => '开始时';
+
+  @override
+  String remindersMinutesBefore(int minutes) {
+    return '提前 $minutes 分钟';
+  }
+
+  @override
+  String get remindersOneDayBefore => '提前 1 天';
+
+  @override
+  String get remindersRemove => '移除';
+
+  @override
+  String get remindersEmpty => '未设置提醒';
+
+  @override
+  String get remindersCustomMinutes => '自定义…';
+
+  @override
+  String get remindersCustomMinutesTitle => '提前分钟数';
+
+  @override
+  String get remindersNeedDate => '请先设置开始或截止日期，才能添加提醒。';
 
   @override
   String get taskLoading => '加载中…';

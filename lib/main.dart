@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'app.dart';
 import 'core/di/providers.dart';
@@ -29,6 +30,20 @@ import 'platform/sync/no_op_sync_engine.dart';
 /// lazily and guarded by [NotificationBootstrap].
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (!_isRunningUnderTest && !kIsWeb && Platform.isWindows) {
+    await windowManager.ensureInitialized();
+    const windowOptions = WindowOptions(
+      size: Size(1280, 800),
+      minimumSize: Size(800, 600),
+      center: true,
+      titleBarStyle: TitleBarStyle.hidden,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
 
   // MiSans IP License requires the app to state that MiSans Fonts are used.
   LicenseRegistry.addLicense(() async* {

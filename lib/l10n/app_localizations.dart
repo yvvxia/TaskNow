@@ -134,6 +134,30 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get navSettings;
 
+  /// Windows title bar: minimize window
+  ///
+  /// In en, this message translates to:
+  /// **'Minimize'**
+  String get windowMinimize;
+
+  /// Windows title bar: maximize window
+  ///
+  /// In en, this message translates to:
+  /// **'Maximize'**
+  String get windowMaximize;
+
+  /// Windows title bar: restore window
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get windowRestore;
+
+  /// Windows title bar: close window
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get windowClose;
+
   /// Title of the task list page
   ///
   /// In en, this message translates to:
@@ -1075,6 +1099,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reminders coming soon'**
   String get remindersComingSoon;
+
+  /// Add a reminder in the reminders editor
+  ///
+  /// In en, this message translates to:
+  /// **'Add reminder'**
+  String get remindersAdd;
+
+  /// Reminder fires when the task is due
+  ///
+  /// In en, this message translates to:
+  /// **'At due time'**
+  String get remindersAtDue;
+
+  /// Reminder fires when the task starts
+  ///
+  /// In en, this message translates to:
+  /// **'At start time'**
+  String get remindersAtStart;
+
+  /// Reminder offset before due date
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min before due'**
+  String remindersMinutesBefore(int minutes);
+
+  /// Reminder one day before due
+  ///
+  /// In en, this message translates to:
+  /// **'1 day before due'**
+  String get remindersOneDayBefore;
+
+  /// Remove a reminder from the list
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remindersRemove;
+
+  /// Empty reminders list
+  ///
+  /// In en, this message translates to:
+  /// **'No reminders set'**
+  String get remindersEmpty;
+
+  /// Custom reminder offset menu item
+  ///
+  /// In en, this message translates to:
+  /// **'Custom…'**
+  String get remindersCustomMinutes;
+
+  /// Dialog title for custom offset
+  ///
+  /// In en, this message translates to:
+  /// **'Minutes before due'**
+  String get remindersCustomMinutesTitle;
+
+  /// Hint when task has no dates for reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Set a start or due date to add reminders.'**
+  String get remindersNeedDate;
 
   /// Task detail loading state
   ///

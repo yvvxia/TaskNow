@@ -19,6 +19,15 @@
   "navSettings": "Settings",
   "@navSettings": {"description": "Navigation label for Settings tab"},
 
+  "windowMinimize": "Minimize",
+  "@windowMinimize": {"description": "Windows title bar: minimize window"},
+  "windowMaximize": "Maximize",
+  "@windowMaximize": {"description": "Windows title bar: maximize window"},
+  "windowRestore": "Restore",
+  "@windowRestore": {"description": "Windows title bar: restore window"},
+  "windowClose": "Close",
+  "@windowClose": {"description": "Windows title bar: close window"},
+
   "tasksTitle": "Tasks",
   "@tasksTitle": {"description": "Title of the task list page"},
 
@@ -550,6 +559,30 @@
 
   "remindersComingSoon": "Reminders coming soon",
   "@remindersComingSoon": {"description": "Placeholder for reminders UI"},
+
+  "remindersAdd": "Add reminder",
+  "@remindersAdd": {"description": "Add a reminder in the reminders editor"},
+  "remindersAtDue": "At due time",
+  "@remindersAtDue": {"description": "Reminder fires when the task is due"},
+  "remindersAtStart": "At start time",
+  "@remindersAtStart": {"description": "Reminder fires when the task starts"},
+  "remindersMinutesBefore": "{minutes} min before due",
+  "@remindersMinutesBefore": {
+    "description": "Reminder offset before due date",
+    "placeholders": {"minutes": {"type": "int"}}
+  },
+  "remindersOneDayBefore": "1 day before due",
+  "@remindersOneDayBefore": {"description": "Reminder one day before due"},
+  "remindersRemove": "Remove",
+  "@remindersRemove": {"description": "Remove a reminder from the list"},
+  "remindersEmpty": "No reminders set",
+  "@remindersEmpty": {"description": "Empty reminders list"},
+  "remindersCustomMinutes": "Custom…",
+  "@remindersCustomMinutes": {"description": "Custom reminder offset menu item"},
+  "remindersCustomMinutesTitle": "Minutes before due",
+  "@remindersCustomMinutesTitle": {"description": "Dialog title for custom offset"},
+  "remindersNeedDate": "Set a start or due date to add reminders.",
+  "@remindersNeedDate": {"description": "Hint when task has no dates for reminders"},
 
   "taskLoading": "Loading…",
   "@taskLoading": {"description": "Task detail loading state"},

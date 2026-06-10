@@ -27,6 +27,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navSettings => 'Settings';
 
   @override
+  String get windowMinimize => 'Minimize';
+
+  @override
+  String get windowMaximize => 'Maximize';
+
+  @override
+  String get windowRestore => 'Restore';
+
+  @override
+  String get windowClose => 'Close';
+
+  @override
   String get tasksTitle => 'Tasks';
 
   @override
@@ -543,6 +555,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remindersComingSoon => 'Reminders coming soon';
+
+  @override
+  String get remindersAdd => 'Add reminder';
+
+  @override
+  String get remindersAtDue => 'At due time';
+
+  @override
+  String get remindersAtStart => 'At start time';
+
+  @override
+  String remindersMinutesBefore(int minutes) {
+    return '$minutes min before due';
+  }
+
+  @override
+  String get remindersOneDayBefore => '1 day before due';
+
+  @override
+  String get remindersRemove => 'Remove';
+
+  @override
+  String get remindersEmpty => 'No reminders set';
+
+  @override
+  String get remindersCustomMinutes => 'Custom…';
+
+  @override
+  String get remindersCustomMinutesTitle => 'Minutes before due';
+
+  @override
+  String get remindersNeedDate => 'Set a start or due date to add reminders.';
 
   @override
   String get taskLoading => 'Loading…';

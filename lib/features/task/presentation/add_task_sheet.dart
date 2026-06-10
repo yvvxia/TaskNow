@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/models/project.dart';
 import '../../../core/models/task_draft.dart';
+import '../../../core/utils/result.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../calendar/domain/gantt_layout.dart';
+import '../../project/presentation/project_edit_dialog.dart';
 import '../../project/project_providers.dart';
 
 /// Shows the [AddTaskSheet] as a modal bottom sheet.
@@ -20,6 +24,7 @@ Future<void> showAddTaskSheet(
   DateTime? initialStart,
   DateTime? initialDue,
   String? projectId,
+  List<String> tagIds = const [],
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -30,6 +35,7 @@ Future<void> showAddTaskSheet(
       initialStart: initialStart,
       initialDue: initialDue,
       projectId: projectId,
+      tagIds: tagIds,
     ),
   );
 }
@@ -45,6 +51,7 @@ class AddTaskSheet extends ConsumerStatefulWidget {
     this.initialStart,
     this.initialDue,
     this.projectId,
+    this.tagIds = const [],
   });
 
   final Future<void> Function(TaskDraft draft) onCreate;
@@ -53,6 +60,9 @@ class AddTaskSheet extends ConsumerStatefulWidget {
 
   /// When non-null the task is created in this project and no picker is shown.
   final String? projectId;
+
+  /// Tag ids pre-applied to the created task (e.g. when adding from a tag view).
+  final List<String> tagIds;
 
   @override
   ConsumerState<AddTaskSheet> createState() => _AddTaskSheetState();
@@ -79,6 +89,45 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
     super.dispose();
   }
 
+  String _selectedProjectName(List<Project> projects) {
+    for (final p in projects) {
+      if (p.id == _projectId) return p.name;
+    }
+    return '';
+  }
+
+  /// Opens the project picker as its own modal sheet.
+  ///
+  /// The keyboard is dismissed first so the add-task sheet settles into its
+  /// resting position before the picker animates up; otherwise the soft
+  /// keyboard collapsing mid-open leaves the two sheets misaligned.
+  Future<void> _pickProject() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final projects =
+        ref.read(projectListProvider).asData?.value ?? const <Project>[];
+    final result = await showModalBottomSheet<_ProjectPickResult>(
+      context: context,
+      showDragHandle: true,
+      builder: (_) =>
+          _ProjectPickerSheet(projects: projects, selectedId: _projectId),
+    );
+    if (result == null || !mounted) return;
+    switch (result) {
+      case _ProjectPicked(:final id):
+        setState(() => _projectId = id);
+      case _ProjectCreateNew():
+        final edit = await showProjectEditDialog(context);
+        if (edit == null || !mounted) return;
+        final created = await ref
+            .read(createProjectUseCaseProvider)
+            .call(edit.name, color: edit.color);
+        if (!mounted) return;
+        if (created case Ok(:final value)) {
+          setState(() => _projectId = value.id);
+        }
+    }
+  }
+
   Future<void> _submit() async {
     final title = _titleCtrl.text.trim();
     if (title.isEmpty || _submitting || _projectId == null) return;
@@ -89,6 +138,7 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
         startDate: _start,
         dueDate: _due,
         projectId: _projectId,
+        tagIds: widget.tagIds,
       ),
     );
     if (mounted) Navigator.of(context).pop();
@@ -128,26 +178,33 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
           ),
           if (showPicker) ...[
             const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.folder_outlined, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    l10n?.projectLabel ?? 'Project',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ),
-                DropdownButton<String>(
-                  value: _projectId,
-                  underline: const SizedBox.shrink(),
-                  items: [
-                    for (final p in projects)
-                      DropdownMenuItem(value: p.id, child: Text(p.name)),
+            InkWell(
+              onTap: _pickProject,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    const Icon(Icons.folder_outlined, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n?.projectLabel ?? 'Project',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        _selectedProjectName(projects),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                    const Icon(Icons.arrow_drop_down),
                   ],
-                  onChanged: (v) => setState(() => _projectId = v),
                 ),
-              ],
+              ),
             ),
           ],
           const SizedBox(height: 8),
@@ -168,6 +225,83 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
             onPressed: _submitting ? null : _submit,
             icon: const Icon(Icons.check),
             label: Text(l10n?.createAction ?? 'Create'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Result of the project picker sheet: either an existing project was chosen
+/// or the user asked to create a new one.
+sealed class _ProjectPickResult {
+  const _ProjectPickResult();
+}
+
+class _ProjectPicked extends _ProjectPickResult {
+  const _ProjectPicked(this.id);
+  final String id;
+}
+
+class _ProjectCreateNew extends _ProjectPickResult {
+  const _ProjectCreateNew();
+}
+
+/// Modal sheet listing existing projects plus a "create new project" action.
+///
+/// Shown by [AddTaskSheet] instead of an inline dropdown so that opening it
+/// while the keyboard is up no longer leaves the picker overlay stranded above
+/// the collapsing add-task sheet.
+class _ProjectPickerSheet extends StatelessWidget {
+  const _ProjectPickerSheet({required this.projects, required this.selectedId});
+
+  final List<Project> projects;
+  final String? selectedId;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                l10n?.projectSelectTitle ?? 'Select project',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          ),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                for (final p in projects)
+                  ListTile(
+                    leading: CircleAvatar(
+                      radius: 8,
+                      backgroundColor:
+                          GanttLayout.parseColor(p.color) ??
+                          GanttLayout.projectColor(p.id),
+                    ),
+                    title: Text(p.name),
+                    trailing: p.id == selectedId
+                        ? const Icon(Icons.check)
+                        : null,
+                    onTap: () =>
+                        Navigator.of(context).pop(_ProjectPicked(p.id)),
+                  ),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: Text(l10n?.projectCreateTitle ?? 'New project'),
+            onTap: () => Navigator.of(context).pop(const _ProjectCreateNew()),
           ),
         ],
       ),

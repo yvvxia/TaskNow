@@ -5,7 +5,11 @@ import 'package:liveline/core/di/providers.dart';
 import 'package:liveline/core/models/subtask.dart';
 import 'package:liveline/core/models/tag.dart';
 import 'package:liveline/core/models/task.dart';
+import 'package:liveline/features/notification/application/reminder_scheduler.dart';
+import 'package:liveline/features/notification/domain/reminder_calculator.dart';
 import 'package:liveline/features/task/presentation/task_detail_body.dart';
+import 'package:liveline/features/task/domain/set_task_reminders_usecase.dart';
+import 'package:liveline/features/task/task_providers.dart';
 
 import '../../fakes/fake_project_repository.dart';
 import '../../fakes/fake_reminder_repository.dart';
@@ -17,31 +21,46 @@ import '../../fakes/spy_notification_service.dart';
 void main() {
   late FakeTaskRepository tasks;
   late FakeTagRepository tags;
+  late FakeReminderRepository reminders;
+  late SpyNotificationService notif;
 
   setUp(() {
+    reminders = FakeReminderRepository();
+    notif = SpyNotificationService();
     tasks = FakeTaskRepository()
       ..seed([
-        const Task(
+        Task(
           id: 't1',
           title: 'Alpha',
           notes: '# Hello\n\n**bold**',
-          tagIds: ['tag1'],
-          subtasks: [Subtask(id: 's1', title: 'Sub one')],
+          tagIds: const ['tag1'],
+          subtasks: const [Subtask(id: 's1', title: 'Sub one')],
+          dueDate: DateTime.now().toUtc().add(const Duration(days: 2)),
         ),
       ]);
-    tags = FakeTagRepository()
-      ..seed([const Tag(id: 'tag1', name: 'Work')]);
+    tags = FakeTagRepository()..seed([const Tag(id: 'tag1', name: 'Work')]);
   });
 
   Widget wrap({double height = 700}) {
+    final scheduler = ReminderScheduler(
+      const ReminderCalculator(),
+      reminders,
+      notif,
+      FakeSettingsStore(),
+      tasks,
+      FakeProjectRepository(),
+    );
     return ProviderScope(
       overrides: [
         taskRepositoryProvider.overrideWithValue(tasks),
         tagRepositoryProvider.overrideWithValue(tags),
-        reminderRepositoryProvider.overrideWithValue(FakeReminderRepository()),
-        notificationServiceProvider.overrideWithValue(SpyNotificationService()),
+        reminderRepositoryProvider.overrideWithValue(reminders),
+        notificationServiceProvider.overrideWithValue(notif),
         settingsStoreProvider.overrideWithValue(FakeSettingsStore()),
         projectRepositoryProvider.overrideWithValue(FakeProjectRepository()),
+        setTaskRemindersUseCaseProvider.overrideWithValue(
+          SetTaskRemindersUseCase(reminders, scheduler),
+        ),
       ],
       child: MaterialApp(
         home: Scaffold(
@@ -64,8 +83,9 @@ void main() {
     expect(find.byKey(const Key('notes-preview')), findsOneWidget);
   });
 
-  testWidgets('shows compact toolbar with dates, priority, and more menu',
-      (tester) async {
+  testWidgets('shows compact toolbar with dates, priority, and more menu', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -74,8 +94,9 @@ void main() {
     expect(find.byKey(const Key('detail-more-menu')), findsOneWidget);
   });
 
-  testWidgets('more menu contains recurrence, reminders, info, and delete',
-      (tester) async {
+  testWidgets('more menu contains recurrence, reminders, info, and delete', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -88,8 +109,9 @@ void main() {
     expect(find.byKey(const Key('detail-delete')), findsOneWidget);
   });
 
-  testWidgets('delete via more menu confirms then removes the task',
-      (tester) async {
+  testWidgets('delete via more menu confirms then removes the task', (
+    tester,
+  ) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -128,12 +150,38 @@ void main() {
     expect(find.byKey(const Key('detail-add-tag')), findsOneWidget);
   });
 
+  testWidgets('reminders editor opens from more menu and saves', (
+    tester,
+  ) async {
+    await tester.pumpWidget(wrap());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('detail-more-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Reminders'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('reminders-editor-dialog')), findsOneWidget);
+    expect(find.text('15 min before due'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('reminders-save')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('reminders-editor-dialog')), findsNothing);
+    final stored = await reminders.getByTask('t1');
+    expect(stored.valueOrNull, hasLength(1));
+    expect(notif.scheduledRequests, isNotEmpty);
+  });
+
   testWidgets('subtasks render and can be added', (tester) async {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('subtask-s1')), findsOneWidget);
-    await tester.enterText(find.byKey(const Key('add-subtask-field')), 'New sub');
+    await tester.enterText(
+      find.byKey(const Key('add-subtask-field')),
+      'New sub',
+    );
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
 
