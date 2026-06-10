@@ -81,14 +81,39 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
   double _dragDx = 0;
   bool _dragging = false;
   bool _armed = false; // mobile long-press gate
+  _Edge _pendingEdge = _Edge.none;
+  int _pendingDays = 0;
+  String? _pendingTaskId;
+  DateTime? _pendingStart;
+  DateTime? _pendingEnd;
 
   bool get _canDrag => widget.isDesktop || _armed;
+  bool get _hasPendingPreview =>
+      _pendingTaskId == widget.bar.task.id && _pendingDays != 0;
 
   /// Effective resize-handle width; narrowed on very short bars so the centre
   /// always remains a move zone.
   double get _effectiveHandleWidth {
     if (widget.width <= 0) return 0;
     return math.min(widget.handleWidth, widget.width / 4);
+  }
+
+  @override
+  void didUpdateWidget(covariant DraggableTimelineBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_pendingTaskId == null) return;
+    if (_pendingTaskId != widget.bar.task.id) {
+      _clearPendingPreview();
+      return;
+    }
+    final pendingStart = _pendingStart;
+    final pendingEnd = _pendingEnd;
+    if (pendingStart != null &&
+        pendingEnd != null &&
+        _sameCalendarDay(widget.bar.barStart, pendingStart) &&
+        _sameCalendarDay(widget.bar.barEnd, pendingEnd)) {
+      _clearPendingPreview();
+    }
   }
 
   void _start(Offset local) {
@@ -115,42 +140,140 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
     setState(() => _dragDx += d.primaryDelta ?? d.delta.dx);
   }
 
+  void _updateFromLongPress(LongPressMoveUpdateDetails d) {
+    if (!_dragging) return;
+    setState(() => _dragDx = d.offsetFromOrigin.dx);
+  }
+
+  void _cancel() {
+    if (!_dragging && !_armed) return;
+    setState(() {
+      _dragging = false;
+      _armed = false;
+      _edge = _Edge.none;
+      _dragDx = 0;
+    });
+  }
+
   Future<void> _end() async {
     final dx = _dragDx;
     final edge = _edge;
     final wasDragging = _dragging;
-    setState(() {
-      _dragging = false;
-      _edge = _Edge.none;
-      _dragDx = 0;
-    });
-    _armed = false;
-    if (!wasDragging) return;
-
-    final days = (dx / widget.pxPerDay).round();
-    if (days == 0) return;
+    if (!wasDragging) {
+      _armed = false;
+      return;
+    }
 
     final id = widget.bar.task.id;
+    final days = _clampedDays(edge, (dx / widget.pxPerDay).round());
+    setState(() {
+      _dragging = false;
+      _armed = false;
+      _edge = _Edge.none;
+      _dragDx = 0;
+      if (days == 0) {
+        _clearPendingPreview();
+      } else {
+        _setPendingPreview(id, edge, days);
+      }
+    });
+    if (days == 0) return;
+
     if (edge == _Edge.none) {
-      await widget.onApply(
-        MoveDrag(
-          taskId: id,
-          delta: Duration(days: days),
-        ),
-      );
+      try {
+        await widget.onApply(
+          MoveDrag(
+            taskId: id,
+            delta: Duration(days: days),
+          ),
+        );
+      } catch (_) {
+        if (mounted) setState(_clearPendingPreview);
+        rethrow;
+      }
       return;
     }
 
     final anchor = edge == _Edge.start
         ? widget.bar.barStart
         : widget.bar.barEnd;
-    await widget.onApply(
-      ResizeDrag(
-        taskId: id,
-        edge: edge == _Edge.start ? DragEdge.start : DragEdge.end,
-        newDate: anchor.add(Duration(days: days)),
-      ),
+    try {
+      await widget.onApply(
+        ResizeDrag(
+          taskId: id,
+          edge: edge == _Edge.start ? DragEdge.start : DragEdge.end,
+          newDate: anchor.add(Duration(days: days)),
+        ),
+      );
+    } catch (_) {
+      if (mounted) setState(_clearPendingPreview);
+      rethrow;
+    }
+  }
+
+  int _clampedDays(_Edge edge, int days) {
+    if (edge == _Edge.none || days == 0) return days;
+    final spanDays = math.max(
+      1,
+      _dateOnly(
+            widget.bar.barEnd,
+          ).difference(_dateOnly(widget.bar.barStart)).inDays +
+          1,
     );
+    return switch (edge) {
+      _Edge.start => math.min(days, spanDays - 1),
+      _Edge.end => math.max(days, 1 - spanDays),
+      _Edge.none => days,
+    };
+  }
+
+  void _setPendingPreview(String taskId, _Edge edge, int days) {
+    _pendingTaskId = taskId;
+    _pendingEdge = edge;
+    _pendingDays = days;
+    switch (edge) {
+      case _Edge.none:
+        _pendingStart = widget.bar.barStart.add(Duration(days: days));
+        _pendingEnd = widget.bar.barEnd.add(Duration(days: days));
+      case _Edge.start:
+        _pendingStart = widget.bar.barStart.add(Duration(days: days));
+        _pendingEnd = widget.bar.barEnd;
+      case _Edge.end:
+        _pendingStart = widget.bar.barStart;
+        _pendingEnd = widget.bar.barEnd.add(Duration(days: days));
+    }
+  }
+
+  void _clearPendingPreview() {
+    _pendingTaskId = null;
+    _pendingEdge = _Edge.none;
+    _pendingDays = 0;
+    _pendingStart = null;
+    _pendingEnd = null;
+  }
+
+  DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  bool _sameCalendarDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  ({double left, double width}) _applyPreviewGeometry({
+    required double left,
+    required double width,
+    required _Edge edge,
+    required int days,
+  }) {
+    final snapped = days * widget.pxPerDay;
+    switch (edge) {
+      case _Edge.none:
+        left += snapped;
+      case _Edge.start:
+        left += snapped;
+        width -= snapped;
+      case _Edge.end:
+        width += snapped;
+    }
+    return (left: left, width: width.clamp(widget.minWidthPx, double.infinity));
   }
 
   @override
@@ -158,17 +281,23 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
     var left = widget.left;
     var width = widget.width;
     if (_dragging) {
-      final snapped = (_dragDx / widget.pxPerDay).round() * widget.pxPerDay;
-      switch (_edge) {
-        case _Edge.none:
-          left += snapped;
-        case _Edge.start:
-          left += snapped;
-          width -= snapped;
-        case _Edge.end:
-          width += snapped;
-      }
-      width = width.clamp(widget.minWidthPx, double.infinity);
+      final preview = _applyPreviewGeometry(
+        left: left,
+        width: width,
+        edge: _edge,
+        days: _clampedDays(_edge, (_dragDx / widget.pxPerDay).round()),
+      );
+      left = preview.left;
+      width = preview.width;
+    } else if (_hasPendingPreview) {
+      final preview = _applyPreviewGeometry(
+        left: left,
+        width: width,
+        edge: _pendingEdge,
+        days: _pendingDays,
+      );
+      left = preview.left;
+      width = preview.width;
     }
 
     final handle = _effectiveHandleWidth;
@@ -183,19 +312,25 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
         onTap: widget.isDesktop
             ? () => widget.onSelect(widget.bar.task.id)
             : null,
-        onLongPress: widget.isDesktop
+        onLongPressStart: widget.isDesktop
             ? null
-            : () {
+            : (d) {
                 HapticFeedback.mediumImpact();
                 setState(() => _armed = true);
+                _start(d.localPosition);
               },
-        onSecondaryTapDown:
-            widget.isDesktop && widget.onContextMenu != null
+        onLongPressMoveUpdate: widget.isDesktop ? null : _updateFromLongPress,
+        onLongPressEnd: widget.isDesktop ? null : (_) => _end(),
+        onLongPressCancel: widget.isDesktop ? null : _cancel,
+        onSecondaryTapDown: widget.isDesktop && widget.onContextMenu != null
             ? (d) => widget.onContextMenu!(d.globalPosition)
             : null,
-        onHorizontalDragStart: _canDrag ? (d) => _start(d.localPosition) : null,
-        onHorizontalDragUpdate: _canDrag ? _update : null,
-        onHorizontalDragEnd: _canDrag ? (_) => _end() : null,
+        onHorizontalDragStart: widget.isDesktop
+            ? (d) => _start(d.localPosition)
+            : null,
+        onHorizontalDragUpdate: widget.isDesktop ? _update : null,
+        onHorizontalDragEnd: widget.isDesktop ? (_) => _end() : null,
+        onHorizontalDragCancel: widget.isDesktop ? _cancel : null,
         child: Stack(
           children: [
             _body(context),
@@ -210,7 +345,7 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
   Widget _body(BuildContext context) {
     final bar = widget.bar;
     final isComplete = bar.task.status == TaskStatus.complete;
-    final active = _armed || _dragging;
+    final active = _armed || _dragging || _hasPendingPreview;
     final body = Container(
       key: widget.barKey ?? Key('timeline-bar-${bar.task.id}'),
       decoration: BoxDecoration(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liveline/core/di/clock.dart';
@@ -173,4 +174,162 @@ void main() {
     expect(resized.startDate, start, reason: 'start date unchanged');
     expect(resized.dueDate, start.add(const Duration(days: 3)));
   });
+
+  testWidgets('mobile long-press dragging a Gantt bar moves the task', (
+    tester,
+  ) async {
+    final repo = FakeTaskRepository();
+    final reminders = FakeReminderRepository();
+    final notif = SpyNotificationService();
+    final settings = FakeSettingsStore();
+    final scheduler = ReminderScheduler(
+      const ReminderCalculator(),
+      reminders,
+      notif,
+      settings,
+      repo,
+      FakeProjectRepository(),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        taskRepositoryProvider.overrideWithValue(repo),
+        clockProvider.overrideWith(
+          (ref) =>
+              () => DateTime(2026, 6, 15),
+        ),
+        createTaskUseCaseProvider.overrideWithValue(
+          CreateTaskUseCase(repo, scheduler),
+        ),
+        updateTaskUseCaseProvider.overrideWithValue(
+          UpdateTaskUseCase(repo, scheduler),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    addTearDown(repo.dispose);
+    addTearDown(notif.dispose);
+    addTearDown(settings.dispose);
+
+    container
+        .read(calendarViewStateProvider.notifier)
+        .switchView(CalendarViewType.gantt);
+    final start = container.read(calendarViewStateProvider).visibleRange.start;
+    repo.seed([
+      Task(
+        id: 'x',
+        title: 'Task X',
+        startDate: start,
+        dueDate: start.add(const Duration(days: 2)),
+      ),
+    ]);
+
+    tester.view.physicalSize = const Size(500, 700);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          home: Scaffold(body: GanttView(onSelect: (_) {})),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    final rect = tester.getRect(find.byKey(const Key('gantt-bar-x')));
+    final gesture = await tester.startGesture(rect.center);
+    await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
+    await gesture.moveBy(const Offset(GanttView.mobilePxPerDay * 2, 0));
+    await tester.pump();
+    await gesture.up();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    final moved = repo.items.single;
+    expect(moved.startDate, start.add(const Duration(days: 2)));
+    expect(moved.dueDate, start.add(const Duration(days: 4)));
+  });
+
+  testWidgets(
+    'mobile resize clamps at a one-day Gantt bar instead of bouncing',
+    (tester) async {
+      final repo = FakeTaskRepository();
+      final reminders = FakeReminderRepository();
+      final notif = SpyNotificationService();
+      final settings = FakeSettingsStore();
+      final scheduler = ReminderScheduler(
+        const ReminderCalculator(),
+        reminders,
+        notif,
+        settings,
+        repo,
+        FakeProjectRepository(),
+      );
+      final container = ProviderContainer(
+        overrides: [
+          taskRepositoryProvider.overrideWithValue(repo),
+          clockProvider.overrideWith(
+            (ref) =>
+                () => DateTime(2026, 6, 15),
+          ),
+          createTaskUseCaseProvider.overrideWithValue(
+            CreateTaskUseCase(repo, scheduler),
+          ),
+          updateTaskUseCaseProvider.overrideWithValue(
+            UpdateTaskUseCase(repo, scheduler),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      addTearDown(repo.dispose);
+      addTearDown(notif.dispose);
+      addTearDown(settings.dispose);
+
+      container
+          .read(calendarViewStateProvider.notifier)
+          .switchView(CalendarViewType.gantt);
+      final start = container
+          .read(calendarViewStateProvider)
+          .visibleRange
+          .start;
+      final due = start.add(const Duration(days: 2));
+      repo.seed([
+        Task(id: 'x', title: 'Task X', startDate: start, dueDate: due),
+      ]);
+
+      tester.view.physicalSize = const Size(500, 700);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            home: Scaffold(body: GanttView(onSelect: (_) {})),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      final rect = tester.getRect(find.byKey(const Key('gantt-bar-x')));
+      final gesture = await tester.startGesture(
+        Offset(rect.left + 2, rect.center.dy),
+      );
+      await tester.pump(kLongPressTimeout + const Duration(milliseconds: 100));
+      await gesture.moveBy(const Offset(GanttView.mobilePxPerDay * 10, 0));
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final resized = repo.items.single;
+      expect(resized.startDate, due);
+      expect(resized.dueDate, due);
+    },
+  );
 }
