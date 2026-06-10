@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' show DateTimeRange;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:liveline/core/enums/enums.dart';
 import 'package:liveline/core/errors/app_exception.dart';
+import 'package:liveline/core/models/subtask.dart';
 import 'package:liveline/core/models/task.dart';
 import 'package:liveline/core/models/task_draft.dart';
 import 'package:liveline/core/models/task_query.dart';
@@ -108,6 +109,34 @@ void main() {
     final res = await repo.query(const TaskQuery());
     final reloaded = res.valueOrNull!.firstWhere((t) => t.id == task.id);
     expect(reloaded.tagIds, const ['tg']);
+  });
+
+  test('update persists subtasks and findById reloads them', () async {
+    final task = await create('Parent');
+    final subtasks = [
+      const Subtask(id: 's1', title: 'Step 1'),
+      const Subtask(id: 's2', title: 'Step 2', isDone: true, sortOrder: 1),
+    ];
+    await repo.update(task.copyWith(subtasks: subtasks));
+    final found = await repo.findById(task.id);
+    expect(found.valueOrNull!.subtasks.map((s) => s.id), ['s1', 's2']);
+    expect(found.valueOrNull!.subtasks[1].isDone, isTrue);
+  });
+
+  test('watch hydrates tag ids and subtasks', () async {
+    await db.into(db.tags).insert(const TagRow(id: 'tg', name: 'work'));
+    final task = await create('Hydrated');
+    await repo.update(
+      task.copyWith(
+        tagIds: const ['tg'],
+        subtasks: [const Subtask(id: 'st', title: 'Checklist')],
+      ),
+    );
+
+    final list = await repo.watch(const TaskQuery()).first;
+    final reloaded = list.firstWhere((t) => t.id == task.id);
+    expect(reloaded.tagIds, const ['tg']);
+    expect(reloaded.subtasks.map((s) => s.id), ['st']);
   });
 
   test('watch emits an updated list after a write', () async {

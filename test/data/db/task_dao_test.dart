@@ -199,6 +199,31 @@ void main() {
       expect(await dao.findByIdIncludingDeleted('x'), isNotNull);
     });
 
+    test('replaces subtasks atomically', () async {
+      final s1 = SubtaskRow(
+        id: 's1',
+        taskId: 'x',
+        title: 'First',
+        isDone: false,
+        sortOrder: 0,
+      );
+      final s2 = SubtaskRow(
+        id: 's2',
+        taskId: 'x',
+        title: 'Second',
+        isDone: true,
+        sortOrder: 1,
+      );
+      await dao.upsertTask(taskRow('x'), const [], subtasks: [s1, s2]);
+      expect((await dao.subtasksFor('x')).map((r) => r.id), ['s1', 's2']);
+
+      final s1Done = s1.copyWith(isDone: true);
+      await dao.upsertTask(taskRow('x'), const [], subtasks: [s1Done]);
+      final rows = await dao.subtasksFor('x');
+      expect(rows, hasLength(1));
+      expect(rows.first.isDone, isTrue);
+    });
+
     test('softDeleteSeries soft-deletes all tasks sharing a parent', () async {
       await dao.upsertTask(taskRow('p'), const []);
       await db

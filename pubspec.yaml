@@ -51,6 +51,8 @@ dependencies:
     sdk: flutter
   flutter_local_notifications: ^22.0.0
   timezone: ^0.11.0
+  linked_scroll_controller: ^0.2.0
+  flutter_markdown_plus: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -75,8 +77,9 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   image_path: assets/branding/logo.png
+  image_path_android: assets/branding/logo_android.png
   adaptive_icon_background: "#2563EB"
-  adaptive_icon_foreground: assets/branding/logo.png
+  adaptive_icon_foreground: assets/branding/logo_android.png
   windows:
     generate: true
     image_path: assets/branding/logo.png

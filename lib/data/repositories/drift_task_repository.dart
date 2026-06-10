@@ -8,6 +8,7 @@ import '../../core/models/task_query.dart';
 import '../../core/utils/result.dart';
 import '../db/app_database.dart';
 import '../db/task_dao.dart';
+import '../mappers/subtask_mapper.dart';
 import '../mappers/task_mapper.dart';
 import '../mappers/time_mapper.dart';
 
@@ -25,7 +26,11 @@ class DriftTaskRepository implements ITaskRepository {
   Future<Result<Task>> create(TaskDraft draft) async {
     try {
       final entity = TaskMapper.fromDraft(draft, id: kUuid.v4(), now: _now());
-      await _dao.upsertTask(TaskMapper.toRow(entity), entity.tagIds);
+      await _dao.upsertTask(
+        TaskMapper.toRow(entity),
+        entity.tagIds,
+        subtasks: SubtaskMapper.toRows(entity.subtasks, taskId: entity.id),
+      );
       return Ok(entity);
     } on Object catch (e) {
       return Err(_persistence(e));
@@ -36,7 +41,11 @@ class DriftTaskRepository implements ITaskRepository {
   Future<Result<Task>> update(Task task) async {
     try {
       final updated = task.copyWith(updatedAt: _now().toUtc());
-      await _dao.upsertTask(TaskMapper.toRow(updated), updated.tagIds);
+      await _dao.upsertTask(
+        TaskMapper.toRow(updated),
+        updated.tagIds,
+        subtasks: SubtaskMapper.toRows(updated.subtasks, taskId: updated.id),
+      );
       return Ok(updated);
     } on Object catch (e) {
       return Err(_persistence(e));
@@ -67,8 +76,7 @@ class DriftTaskRepository implements ITaskRepository {
     try {
       final row = await _dao.findById(id);
       if (row == null) return const Ok<Task?>(null);
-      final tagIds = await _dao.tagIdsFor(id);
-      return Ok(TaskMapper.toEntity(row, tagIds: tagIds));
+      return Ok(await _composeOne(row));
     } on Object catch (e) {
       return Err(_persistence(e));
     }
@@ -104,7 +112,7 @@ class DriftTaskRepository implements ITaskRepository {
     return _dao
         .buildQuery(query, nowMs: _now().msUtc)
         .watch()
-        .map((rows) => rows.map((r) => TaskMapper.toEntity(r)).toList());
+        .asyncMap(_composeAll);
   }
 
   @override
@@ -117,13 +125,27 @@ class DriftTaskRepository implements ITaskRepository {
     }
   }
 
+  Future<Task> _composeOne(TaskRow row) async {
+    final composed = await _composeAll([row]);
+    return composed.first;
+  }
+
   Future<List<Task>> _composeAll(List<TaskRow> rows) async {
-    final result = <Task>[];
-    for (final row in rows) {
-      final tagIds = await _dao.tagIdsFor(row.id);
-      result.add(TaskMapper.toEntity(row, tagIds: tagIds));
-    }
-    return result;
+    if (rows.isEmpty) return const [];
+    final ids = rows.map((r) => r.id).toList(growable: false);
+    final tagsByTask = await _dao.tagIdsForTasks(ids);
+    final subtasksByTask = await _dao.subtasksForTasks(ids);
+    return rows
+        .map(
+          (row) => TaskMapper.toEntity(
+            row,
+            tagIds: tagsByTask[row.id] ?? const [],
+            subtasks: (subtasksByTask[row.id] ?? const [])
+                .map(SubtaskMapper.toEntity)
+                .toList(growable: false),
+          ),
+        )
+        .toList(growable: false);
   }
 
   /// Builds a simple FTS5 MATCH expression: prefix-match each whitespace token.

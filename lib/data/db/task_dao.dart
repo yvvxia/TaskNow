@@ -111,8 +111,13 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
     ).map((row) => tasks.map(row.data)).get();
   }
 
-  /// Inserts or updates a task and replaces its tag links atomically.
-  Future<void> upsertTask(TaskRow row, List<String> tagIds) async {
+  /// Inserts or updates a task and replaces its tag links and subtasks
+  /// atomically.
+  Future<void> upsertTask(
+    TaskRow row,
+    List<String> tagIds, {
+    List<SubtaskRow> subtasks = const [],
+  }) async {
     await transaction(() async {
       await into(tasks).insertOnConflictUpdate(row);
       await (delete(taskTags)..where((tt) => tt.taskId.equals(row.id))).go();
@@ -124,6 +129,12 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
                 .map((tagId) => TaskTagRow(taskId: row.id, tagId: tagId))
                 .toList(),
           );
+        });
+      }
+      await (delete(this.subtasks)..where((s) => s.taskId.equals(row.id))).go();
+      if (subtasks.isNotEmpty) {
+        await batch((b) {
+          b.insertAll(this.subtasks, subtasks);
         });
       }
     });
@@ -180,5 +191,42 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
       ..where(taskTags.taskId.equals(taskId));
     final rows = await query.get();
     return rows.map((r) => r.read(taskTags.tagId)!).toList();
+  }
+
+  /// Returns subtasks for [taskId], ordered by [Subtasks.sortOrder].
+  Future<List<SubtaskRow>> subtasksFor(String taskId) {
+    return (select(subtasks)
+          ..where((s) => s.taskId.equals(taskId))
+          ..orderBy([(s) => OrderingTerm(expression: s.sortOrder)]))
+        .get();
+  }
+
+  /// Returns tag ids grouped by task id for [taskIds].
+  Future<Map<String, List<String>>> tagIdsForTasks(List<String> taskIds) async {
+    if (taskIds.isEmpty) return {};
+    final rows = await (select(taskTags)
+          ..where((tt) => tt.taskId.isIn(taskIds)))
+        .get();
+    final map = <String, List<String>>{};
+    for (final row in rows) {
+      map.putIfAbsent(row.taskId, () => []).add(row.tagId);
+    }
+    return map;
+  }
+
+  /// Returns subtasks grouped by task id for [taskIds], ordered by sort order.
+  Future<Map<String, List<SubtaskRow>>> subtasksForTasks(
+    List<String> taskIds,
+  ) async {
+    if (taskIds.isEmpty) return {};
+    final rows = await (select(subtasks)
+          ..where((s) => s.taskId.isIn(taskIds))
+          ..orderBy([(s) => OrderingTerm(expression: s.sortOrder)]))
+        .get();
+    final map = <String, List<SubtaskRow>>{};
+    for (final row in rows) {
+      map.putIfAbsent(row.taskId, () => []).add(row);
+    }
+    return map;
   }
 }

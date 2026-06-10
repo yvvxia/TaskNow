@@ -1,4 +1,5 @@
 import '../../core/enums/enums.dart';
+import '../../core/models/subtask.dart';
 import '../../core/models/task.dart';
 import '../../core/models/task_draft.dart';
 import '../db/app_database.dart';
@@ -9,8 +10,13 @@ import 'time_mapper.dart';
 /// OVERDUE status is derived elsewhere, so a row only ever maps back to
 /// [TaskStatus.complete] or [TaskStatus.incomplete].
 abstract final class TaskMapper {
-  /// Maps a persistence row (plus its linked [tagIds]) to a domain entity.
-  static Task toEntity(TaskRow row, {List<String> tagIds = const <String>[]}) {
+  /// Maps a persistence row (plus its linked [tagIds] and [subtasks]) to a
+  /// domain entity.
+  static Task toEntity(
+    TaskRow row, {
+    List<String> tagIds = const <String>[],
+    List<Subtask> subtasks = const <Subtask>[],
+  }) {
     return Task(
       id: row.id,
       title: row.title,
@@ -28,6 +34,7 @@ abstract final class TaskMapper {
       recurrenceParent: row.recurrenceParent,
       autoCompleteOnSubtasks: row.autoCompleteOnSubtasks,
       tagIds: List<String>.unmodifiable(tagIds),
+      subtasks: List<Subtask>.unmodifiable(subtasks),
       updatedAt: dateTimeFromUtcMs(row.updatedAt),
       deletedAt: dateTimeFromUtcMsOrNull(row.deletedAt),
       syncVersion: row.syncVersion,
