@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/enums/enums.dart';
 import '../../domain/gantt_drag_intent.dart';
@@ -36,6 +37,7 @@ class DraggableTimelineBar extends StatefulWidget {
     required this.onSelect,
     required this.onApply,
     this.barKey,
+    this.onContextMenu,
     this.handleWidth = 14,
     double? minWidthPx,
   }) : minWidthPx = minWidthPx ?? pxPerDay - 2;
@@ -58,6 +60,9 @@ class DraggableTimelineBar extends StatefulWidget {
   final bool isDesktop;
   final ValueChanged<String?> onSelect;
   final Future<void> Function(GanttDragIntent) onApply;
+
+  /// Desktop right-click context menu (edit / delete).
+  final void Function(Offset globalPos)? onContextMenu;
 
   /// Grab-zone width at each end that triggers a resize instead of a move.
   final double handleWidth;
@@ -180,7 +185,14 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
             : null,
         onLongPress: widget.isDesktop
             ? null
-            : () => setState(() => _armed = true),
+            : () {
+                HapticFeedback.mediumImpact();
+                setState(() => _armed = true);
+              },
+        onSecondaryTapDown:
+            widget.isDesktop && widget.onContextMenu != null
+            ? (d) => widget.onContextMenu!(d.globalPosition)
+            : null,
         onHorizontalDragStart: _canDrag ? (d) => _start(d.localPosition) : null,
         onHorizontalDragUpdate: _canDrag ? _update : null,
         onHorizontalDragEnd: _canDrag ? (_) => _end() : null,
@@ -198,7 +210,8 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
   Widget _body(BuildContext context) {
     final bar = widget.bar;
     final isComplete = bar.task.status == TaskStatus.complete;
-    return Container(
+    final active = _armed || _dragging;
+    final body = Container(
       key: widget.barKey ?? Key('timeline-bar-${bar.task.id}'),
       decoration: BoxDecoration(
         color: isComplete
@@ -213,6 +226,15 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
                 width: 2,
               )
             : null,
+        boxShadow: active
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ]
+            : null,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 6),
       alignment: Alignment.centerLeft,
@@ -221,6 +243,16 @@ class _DraggableTimelineBarState extends State<DraggableTimelineBar> {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: taskBarTitleStyle(isComplete: isComplete),
+      ),
+    );
+    if (!active) return body;
+    return Transform.scale(
+      scale: 1.03,
+      child: Material(
+        elevation: 6,
+        borderRadius: BorderRadius.circular(6),
+        color: Colors.transparent,
+        child: body,
       ),
     );
   }
