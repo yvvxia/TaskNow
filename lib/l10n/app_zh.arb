@@ -148,6 +148,7 @@
     }
   },
   "deleteTaskGenericMessage": "将永久删除该任务。",
+  "detailDeleteTask": "删除任务",
 
   "errorEmptyTitle": "标题不能为空",
   "errorDueBeforeStart": "截止日期不能早于开始日期",
@@ -160,8 +161,21 @@
   "hoursDialog": "设置逾期重复间隔（小时）",
 
   "projectLabel": "项目",
+  "projectSelectTitle": "选择项目",
   "calendarCreateTaskHere": "创建任务",
   "calendarOpenDay": "打开当天",
+
+  "calendarDisplaySettings": "显示设置",
+  "calendarShowCompleted": "显示已完成",
+  "calendarColorMode": "任务颜色",
+  "calendarColorByPriority": "按优先级",
+  "calendarColorByProject": "按清单",
+  "calendarFilterByList": "按清单筛选",
+  "calendarFilterByTag": "按标签筛选",
+  "calendarClearFilters": "清除筛选",
+  "calendarQuickArrange": "快速安排",
+  "calendarQuickArrangeHint": "将任务拖到时间轴上即可安排时间",
+  "calendarQuickArrangeEmpty": "没有待安排的任务",
 
   "dashboardEmpty": "没有待办，一切就绪！",
   "dashboardSectionEmpty": "暂无内容",
@@ -262,5 +276,20 @@
   "filterSectionDate": "日期",
   "filterSectionTags": "标签",
   "filterSectionProjects": "项目",
-  "filterPriorityAny": "任意"
+  "filterPriorityAny": "任意",
+
+  "detailSectionTags": "标签",
+  "detailAddTag": "添加标签",
+  "detailMoreMenu": "更多",
+  "detailMenuDates": "日期",
+  "detailMenuRecurrence": "重复",
+  "detailMenuReminders": "提醒",
+  "detailMenuInfo": "信息",
+  "detailMenuDelete": "删除任务",
+  "notesEdit": "编辑",
+  "notesPreview": "预览",
+  "notesPlaceholder": "用 Markdown 书写笔记…",
+  "autoCompleteOnSubtasksLabel": "子任务全部完成时自动完成任务",
+  "subtaskProgress": "已完成 {done}/{total}",
+  "detailDatesDialogTitle": "日期"
 }

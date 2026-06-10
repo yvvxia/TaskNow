@@ -56,21 +56,21 @@ void main() {
 
   testWidgets('week view golden', (tester) async {
     final anchor = DateTime(2026, 6, 10);
-    final range = CalendarWindow.rangeFor(CalendarViewType.week, anchor);
+    final monday = CalendarWindow.rangeFor(CalendarViewType.week, anchor).start;
     repo.seed([
       Task(
         id: 'w1',
         title: 'Spec review',
         priority: Priority.high,
-        startDate: range.start,
-        dueDate: range.start.add(const Duration(days: 2)),
+        startDate: monday.add(const Duration(hours: 9)),
+        dueDate: monday.add(const Duration(hours: 11)),
       ),
       Task(
         id: 'w2',
         title: 'Design sync',
         priority: Priority.medium,
-        startDate: range.start.add(const Duration(days: 1)),
-        dueDate: range.start.add(const Duration(days: 4)),
+        startDate: monday.add(const Duration(days: 2, hours: 14)),
+        dueDate: monday.add(const Duration(days: 2, hours: 16)),
       ),
     ]);
 

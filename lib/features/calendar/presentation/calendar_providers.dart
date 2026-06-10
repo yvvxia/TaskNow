@@ -3,12 +3,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/di/clock.dart';
 import '../../../core/di/providers.dart';
 import '../../../core/models/setting_keys.dart';
+import '../../../core/models/task.dart';
 import '../../settings/settings_providers.dart';
 import '../../../core/models/task_query.dart';
 import '../../project/project_providers.dart';
 import '../domain/gantt_layout.dart';
 import '../domain/reorder_gantt_usecase.dart';
 import '../domain/task_bar.dart';
+import 'calendar_display_settings_notifier.dart';
 import 'calendar_view_state_notifier.dart';
 
 part 'calendar_providers.g.dart';
@@ -45,15 +47,20 @@ Stream<List<TaskBar>> visibleBars(Ref ref, String? projectId) {
   final repo = ref.watch(taskRepositoryProvider);
   final now = ref.watch(clockProvider)();
   final colors = ref.watch(projectColorsProvider);
+  final display = ref.watch(calendarDisplaySettingsProvider);
 
-  final colorMode = projectId == null
-      ? BarColorMode.project
-      : BarColorMode.priority;
-  final query = projectId == null
+  var query = projectId == null
       ? TaskQuery.rangeOverlap(view.visibleRange)
       : TaskQuery.rangeOverlap(
           view.visibleRange,
         ).copyWith(projectId: projectId);
+  query = query.copyWith(
+    includeCompleted: display.showCompleted,
+    tagIds: display.tagIds.toList(),
+    // List filter only applies to the global calendar; a project-scoped
+    // calendar is already constrained to its own project.
+    projectIds: projectId == null ? display.projectIds : const <String>{},
+  );
 
   return repo
       .watch(query)
@@ -62,30 +69,29 @@ Stream<List<TaskBar>> visibleBars(Ref ref, String? projectId) {
           tasks,
           range: view.visibleRange,
           now: now,
-          colorMode: colorMode,
+          colorMode: display.colorMode,
           projectColors: colors,
         ),
       );
 }
 
-/// Streams one-task-per-row Gantt bars for the current visible range,
+/// Streams one-task-per-row Gantt bars for all dated tasks in scope,
 /// optionally scoped to a single [projectId]. Rows are ordered by manual
-/// [Task.ganttOrder] then creation time.
+/// [Task.ganttOrder] then creation time. The horizontal axis is derived from
+/// the task date span in [GanttView], not from [calendarViewStateProvider].
 @riverpod
 Stream<List<TaskBar>> ganttBars(Ref ref, String? projectId) {
-  final view = ref.watch(calendarViewStateProvider);
   final repo = ref.watch(taskRepositoryProvider);
   final now = ref.watch(clockProvider)();
   final colors = ref.watch(projectColorsProvider);
+  final display = ref.watch(calendarDisplaySettingsProvider);
 
-  final colorMode = projectId == null
-      ? BarColorMode.project
-      : BarColorMode.priority;
-  final query = projectId == null
-      ? TaskQuery.rangeOverlap(view.visibleRange)
-      : TaskQuery.rangeOverlap(
-          view.visibleRange,
-        ).copyWith(projectId: projectId);
+  final query = TaskQuery(
+    includeCompleted: display.showCompleted,
+    projectId: projectId,
+    tagIds: display.tagIds.toList(),
+    projectIds: projectId == null ? display.projectIds : const <String>{},
+  );
 
   return repo
       .watch(query)
@@ -93,9 +99,24 @@ Stream<List<TaskBar>> ganttBars(Ref ref, String? projectId) {
         (tasks) => GanttLayout.assignOneRowPerTask(
           tasks,
           now: now,
-          colorMode: colorMode,
+          colorMode: display.colorMode,
           projectColors: colors,
         ),
+      );
+}
+
+/// Streams undated ("unscheduled") tasks — those with neither a start nor a
+/// due date — for the quick-arrange panel. Excludes completed tasks.
+@riverpod
+Stream<List<Task>> unscheduledTasks(Ref ref, String? projectId) {
+  final repo = ref.watch(taskRepositoryProvider);
+  final query = TaskQuery(includeCompleted: false, projectId: projectId);
+  return repo
+      .watch(query)
+      .map(
+        (tasks) => tasks
+            .where((t) => t.startDate == null && t.dueDate == null)
+            .toList(),
       );
 }
 

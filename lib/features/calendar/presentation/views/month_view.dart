@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/enums/enums.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../task/presentation/add_task_sheet.dart';
 import '../../../task/task_providers.dart';
@@ -10,6 +11,7 @@ import '../../domain/gantt_interaction_controller.dart';
 import '../../domain/task_bar.dart';
 import '../calendar_providers.dart';
 import '../calendar_view_state_notifier.dart';
+import 'timed_grid.dart';
 
 /// Payload for dragging a month chip: which task, and the day cell it was
 /// grabbed from (so the drop computes a whole-day shift).
@@ -324,13 +326,18 @@ class _MiniBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isComplete = bar.task.status == TaskStatus.complete;
     final chip = Container(
       key: Key('month-bar-${bar.task.id}'),
       height: MonthView._chipHeight - 3,
       margin: const EdgeInsets.only(bottom: 2),
       padding: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: bar.isOverdue ? bar.color.withValues(alpha: 0.55) : bar.color,
+        color: isComplete
+            ? bar.color.withValues(alpha: 0.55)
+            : bar.isOverdue
+            ? bar.color.withValues(alpha: 0.55)
+            : bar.color,
         borderRadius: BorderRadius.circular(3),
       ),
       alignment: Alignment.centerLeft,
@@ -338,7 +345,7 @@ class _MiniBar extends StatelessWidget {
         bar.task.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: Colors.white, fontSize: 9),
+        style: taskBarTitleStyle(isComplete: isComplete, fontSize: 9),
       ),
     );
 

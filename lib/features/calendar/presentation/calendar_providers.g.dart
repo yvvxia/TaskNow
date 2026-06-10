@@ -184,7 +184,7 @@ final class VisibleBarsProvider
   }
 }
 
-String _$visibleBarsHash() => r'0df2d0caecfd9d4962c7a7d89dc4b541c97bf12b';
+String _$visibleBarsHash() => r'1b526c20447163daffcb272f0a97f9f94fb1a6fd';
 
 /// Streams the laid-out task bars for the current visible range, optionally
 /// scoped to a single [projectId] (null = all projects / global calendar).
@@ -216,16 +216,18 @@ final class VisibleBarsFamily extends $Family
   String toString() => r'visibleBarsProvider';
 }
 
-/// Streams one-task-per-row Gantt bars for the current visible range,
+/// Streams one-task-per-row Gantt bars for all dated tasks in scope,
 /// optionally scoped to a single [projectId]. Rows are ordered by manual
-/// [Task.ganttOrder] then creation time.
+/// [Task.ganttOrder] then creation time. The horizontal axis is derived from
+/// the task date span in [GanttView], not from [calendarViewStateProvider].
 
 @ProviderFor(ganttBars)
 final ganttBarsProvider = GanttBarsFamily._();
 
-/// Streams one-task-per-row Gantt bars for the current visible range,
+/// Streams one-task-per-row Gantt bars for all dated tasks in scope,
 /// optionally scoped to a single [projectId]. Rows are ordered by manual
-/// [Task.ganttOrder] then creation time.
+/// [Task.ganttOrder] then creation time. The horizontal axis is derived from
+/// the task date span in [GanttView], not from [calendarViewStateProvider].
 
 final class GanttBarsProvider
     extends
@@ -235,9 +237,10 @@ final class GanttBarsProvider
           Stream<List<TaskBar>>
         >
     with $FutureModifier<List<TaskBar>>, $StreamProvider<List<TaskBar>> {
-  /// Streams one-task-per-row Gantt bars for the current visible range,
+  /// Streams one-task-per-row Gantt bars for all dated tasks in scope,
   /// optionally scoped to a single [projectId]. Rows are ordered by manual
-  /// [Task.ganttOrder] then creation time.
+  /// [Task.ganttOrder] then creation time. The horizontal axis is derived from
+  /// the task date span in [GanttView], not from [calendarViewStateProvider].
   GanttBarsProvider._({
     required GanttBarsFamily super.from,
     required String? super.argument,
@@ -282,11 +285,12 @@ final class GanttBarsProvider
   }
 }
 
-String _$ganttBarsHash() => r'164ec06d4cb786c3110b44562ae8c18abea800db';
+String _$ganttBarsHash() => r'37f1e367e3f54fdab84b178c46a6e52228df550a';
 
-/// Streams one-task-per-row Gantt bars for the current visible range,
+/// Streams one-task-per-row Gantt bars for all dated tasks in scope,
 /// optionally scoped to a single [projectId]. Rows are ordered by manual
-/// [Task.ganttOrder] then creation time.
+/// [Task.ganttOrder] then creation time. The horizontal axis is derived from
+/// the task date span in [GanttView], not from [calendarViewStateProvider].
 
 final class GanttBarsFamily extends $Family
     with $FunctionalFamilyOverride<Stream<List<TaskBar>>, String?> {
@@ -299,15 +303,104 @@ final class GanttBarsFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Streams one-task-per-row Gantt bars for the current visible range,
+  /// Streams one-task-per-row Gantt bars for all dated tasks in scope,
   /// optionally scoped to a single [projectId]. Rows are ordered by manual
-  /// [Task.ganttOrder] then creation time.
+  /// [Task.ganttOrder] then creation time. The horizontal axis is derived from
+  /// the task date span in [GanttView], not from [calendarViewStateProvider].
 
   GanttBarsProvider call(String? projectId) =>
       GanttBarsProvider._(argument: projectId, from: this);
 
   @override
   String toString() => r'ganttBarsProvider';
+}
+
+/// Streams undated ("unscheduled") tasks — those with neither a start nor a
+/// due date — for the quick-arrange panel. Excludes completed tasks.
+
+@ProviderFor(unscheduledTasks)
+final unscheduledTasksProvider = UnscheduledTasksFamily._();
+
+/// Streams undated ("unscheduled") tasks — those with neither a start nor a
+/// due date — for the quick-arrange panel. Excludes completed tasks.
+
+final class UnscheduledTasksProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Task>>,
+          List<Task>,
+          Stream<List<Task>>
+        >
+    with $FutureModifier<List<Task>>, $StreamProvider<List<Task>> {
+  /// Streams undated ("unscheduled") tasks — those with neither a start nor a
+  /// due date — for the quick-arrange panel. Excludes completed tasks.
+  UnscheduledTasksProvider._({
+    required UnscheduledTasksFamily super.from,
+    required String? super.argument,
+  }) : super(
+         retry: null,
+         name: r'unscheduledTasksProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$unscheduledTasksHash();
+
+  @override
+  String toString() {
+    return r'unscheduledTasksProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<Task>> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<Task>> create(Ref ref) {
+    final argument = this.argument as String?;
+    return unscheduledTasks(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UnscheduledTasksProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$unscheduledTasksHash() => r'0eddd15dfd3c9fe260d32935e6bbc27ff49509d6';
+
+/// Streams undated ("unscheduled") tasks — those with neither a start nor a
+/// due date — for the quick-arrange panel. Excludes completed tasks.
+
+final class UnscheduledTasksFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<Task>>, String?> {
+  UnscheduledTasksFamily._()
+    : super(
+        retry: null,
+        name: r'unscheduledTasksProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Streams undated ("unscheduled") tasks — those with neither a start nor a
+  /// due date — for the quick-arrange panel. Excludes completed tasks.
+
+  UnscheduledTasksProvider call(String? projectId) =>
+      UnscheduledTasksProvider._(argument: projectId, from: this);
+
+  @override
+  String toString() => r'unscheduledTasksProvider';
 }
 
 /// Use case that persists Gantt-row reordering.

@@ -5,6 +5,10 @@ import 'package:intl/intl.dart';
 import '../../core/enums/enums.dart';
 import '../../core/widgets/shell_navigation.dart';
 import '../../l10n/app_localizations.dart';
+import '../project/project_providers.dart';
+import '../tag/tag_providers.dart';
+import 'domain/task_bar.dart';
+import 'presentation/calendar_display_settings_notifier.dart';
 import 'presentation/calendar_view_state_notifier.dart';
 import 'presentation/views/day_view.dart';
 import 'presentation/views/gantt_view.dart';
@@ -112,6 +116,7 @@ class _CalendarBody extends ConsumerWidget {
           _CalendarHeader(
             showSwitcher: !forceGantt,
             showGanttSegment: showGanttSegment,
+            projectId: projectId,
           ),
           const Divider(height: 1),
           Expanded(child: body),
@@ -125,10 +130,12 @@ class _CalendarHeader extends ConsumerWidget {
   const _CalendarHeader({
     this.showSwitcher = true,
     this.showGanttSegment = true,
+    this.projectId,
   });
 
   final bool showSwitcher;
   final bool showGanttSegment;
+  final String? projectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -136,44 +143,55 @@ class _CalendarHeader extends ConsumerWidget {
     final notifier = ref.read(calendarViewStateProvider.notifier);
     final l10n = AppLocalizations.of(context);
 
+    final displayButton = IconButton(
+      key: const Key('calendar-display-settings'),
+      icon: const Icon(Icons.more_vert),
+      tooltip: l10n?.calendarDisplaySettings ?? 'Display settings',
+      onPressed: () => _openDisplaySettings(context, projectId),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
         children: [
-          Row(
-            children: [
-              IconButton(
-                key: const Key('calendar-prev'),
-                icon: const Icon(Icons.chevron_left),
-                tooltip: l10n?.calendarPrevious ?? 'Previous',
-                onPressed: notifier.prev,
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    _label(
-                      view.type,
-                      view.anchor,
-                      view.visibleRange,
-                      l10n?.localeName,
+          if (view.type != CalendarViewType.gantt)
+            Row(
+              children: [
+                IconButton(
+                  key: const Key('calendar-prev'),
+                  icon: const Icon(Icons.chevron_left),
+                  tooltip: l10n?.calendarPrevious ?? 'Previous',
+                  onPressed: notifier.prev,
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      _label(
+                        view.type,
+                        view.anchor,
+                        view.visibleRange,
+                        l10n?.localeName,
+                      ),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
-              ),
-              TextButton(
-                key: const Key('calendar-today'),
-                onPressed: notifier.goToToday,
-                child: Text(l10n?.calendarToday ?? 'Today'),
-              ),
-              IconButton(
-                key: const Key('calendar-next'),
-                icon: const Icon(Icons.chevron_right),
-                tooltip: l10n?.calendarNext ?? 'Next',
-                onPressed: notifier.next,
-              ),
-            ],
-          ),
+                TextButton(
+                  key: const Key('calendar-today'),
+                  onPressed: notifier.goToToday,
+                  child: Text(l10n?.calendarToday ?? 'Today'),
+                ),
+                IconButton(
+                  key: const Key('calendar-next'),
+                  icon: const Icon(Icons.chevron_right),
+                  tooltip: l10n?.calendarNext ?? 'Next',
+                  onPressed: notifier.next,
+                ),
+                displayButton,
+              ],
+            )
+          else
+            Align(alignment: Alignment.centerRight, child: displayButton),
           if (showSwitcher) ...[
             const SizedBox(height: 8),
             Align(
@@ -238,5 +256,126 @@ class _CalendarHeader extends ConsumerWidget {
         final fmt = DateFormat.MMMd(localeName);
         return '${fmt.format(range.start)} – ${fmt.format(range.end)}';
     }
+  }
+
+  void _openDisplaySettings(BuildContext context, String? projectId) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => _DisplaySettingsSheet(projectId: projectId),
+    );
+  }
+}
+
+/// Bottom sheet exposing calendar display options: completed-task visibility,
+/// bar color mode, and list/tag filters.
+class _DisplaySettingsSheet extends ConsumerWidget {
+  const _DisplaySettingsSheet({this.projectId});
+
+  final String? projectId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final settings = ref.watch(calendarDisplaySettingsProvider);
+    final notifier = ref.read(calendarDisplaySettingsProvider.notifier);
+    final projects = ref.watch(projectListProvider).asData?.value ?? const [];
+    final tags = ref.watch(tagListProvider).asData?.value ?? const [];
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n?.calendarDisplaySettings ?? 'Display settings',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            SwitchListTile(
+              key: const Key('display-show-completed'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n?.calendarShowCompleted ?? 'Show completed'),
+              value: settings.showCompleted,
+              onChanged: notifier.setShowCompleted,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n?.calendarColorMode ?? 'Task colors',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<BarColorMode>(
+              segments: [
+                ButtonSegment(
+                  value: BarColorMode.priority,
+                  label: Text(l10n?.calendarColorByPriority ?? 'By priority'),
+                ),
+                ButtonSegment(
+                  value: BarColorMode.project,
+                  label: Text(l10n?.calendarColorByProject ?? 'By list'),
+                ),
+              ],
+              selected: {settings.colorMode},
+              onSelectionChanged: (s) => notifier.setColorMode(s.first),
+            ),
+            if (projectId == null && projects.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(
+                l10n?.calendarFilterByList ?? 'Filter by list',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (final p in projects)
+                    FilterChip(
+                      label: Text(p.name),
+                      selected: settings.projectIds.contains(p.id),
+                      onSelected: (_) => notifier.toggleProject(p.id),
+                    ),
+                ],
+              ),
+            ],
+            if (tags.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(
+                l10n?.calendarFilterByTag ?? 'Filter by tag',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (final t in tags)
+                    FilterChip(
+                      label: Text(t.name),
+                      selected: settings.tagIds.contains(t.id),
+                      onSelected: (_) => notifier.toggleTag(t.id),
+                    ),
+                ],
+              ),
+            ],
+            if (settings.hasFilters) ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: notifier.clearFilters,
+                  icon: const Icon(Icons.clear_all),
+                  label: Text(l10n?.calendarClearFilters ?? 'Clear filters'),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 }

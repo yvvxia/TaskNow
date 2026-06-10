@@ -305,6 +305,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will permanently remove the task.';
 
   @override
+  String get detailDeleteTask => 'Delete task';
+
+  @override
   String get errorEmptyTitle => 'Title cannot be empty';
 
   @override
@@ -332,10 +335,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get projectLabel => 'Project';
 
   @override
+  String get projectSelectTitle => 'Select project';
+
+  @override
   String get calendarCreateTaskHere => 'Create task';
 
   @override
   String get calendarOpenDay => 'Open day';
+
+  @override
+  String get calendarDisplaySettings => 'Display settings';
+
+  @override
+  String get calendarShowCompleted => 'Show completed';
+
+  @override
+  String get calendarColorMode => 'Task colors';
+
+  @override
+  String get calendarColorByPriority => 'By priority';
+
+  @override
+  String get calendarColorByProject => 'By list';
+
+  @override
+  String get calendarFilterByList => 'Filter by list';
+
+  @override
+  String get calendarFilterByTag => 'Filter by tag';
+
+  @override
+  String get calendarClearFilters => 'Clear filters';
+
+  @override
+  String get calendarQuickArrange => 'Quick arrange';
+
+  @override
+  String get calendarQuickArrangeHint =>
+      'Drag a task onto the timeline to schedule it';
+
+  @override
+  String get calendarQuickArrangeEmpty => 'No unscheduled tasks';
 
   @override
   String get dashboardEmpty => 'Nothing due. You are all clear!';
@@ -588,4 +628,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get filterPriorityAny => 'Any';
+
+  @override
+  String get detailSectionTags => 'Tags';
+
+  @override
+  String get detailAddTag => 'Add tag';
+
+  @override
+  String get detailMoreMenu => 'More';
+
+  @override
+  String get detailMenuDates => 'Dates';
+
+  @override
+  String get detailMenuRecurrence => 'Recurrence';
+
+  @override
+  String get detailMenuReminders => 'Reminders';
+
+  @override
+  String get detailMenuInfo => 'Info';
+
+  @override
+  String get detailMenuDelete => 'Delete task';
+
+  @override
+  String get notesEdit => 'Edit';
+
+  @override
+  String get notesPreview => 'Preview';
+
+  @override
+  String get notesPlaceholder => 'Write your notes in Markdown…';
+
+  @override
+  String get autoCompleteOnSubtasksLabel =>
+      'Auto-complete when all subtasks are done';
+
+  @override
+  String subtaskProgress(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get detailDatesDialogTitle => 'Dates';
 }

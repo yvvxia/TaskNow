@@ -303,6 +303,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get deleteTaskGenericMessage => '将永久删除该任务。';
 
   @override
+  String get detailDeleteTask => '删除任务';
+
+  @override
   String get errorEmptyTitle => '标题不能为空';
 
   @override
@@ -330,10 +333,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String get projectLabel => '项目';
 
   @override
+  String get projectSelectTitle => '选择项目';
+
+  @override
   String get calendarCreateTaskHere => '创建任务';
 
   @override
   String get calendarOpenDay => '打开当天';
+
+  @override
+  String get calendarDisplaySettings => '显示设置';
+
+  @override
+  String get calendarShowCompleted => '显示已完成';
+
+  @override
+  String get calendarColorMode => '任务颜色';
+
+  @override
+  String get calendarColorByPriority => '按优先级';
+
+  @override
+  String get calendarColorByProject => '按清单';
+
+  @override
+  String get calendarFilterByList => '按清单筛选';
+
+  @override
+  String get calendarFilterByTag => '按标签筛选';
+
+  @override
+  String get calendarClearFilters => '清除筛选';
+
+  @override
+  String get calendarQuickArrange => '快速安排';
+
+  @override
+  String get calendarQuickArrangeHint => '将任务拖到时间轴上即可安排时间';
+
+  @override
+  String get calendarQuickArrangeEmpty => '没有待安排的任务';
 
   @override
   String get dashboardEmpty => '没有待办，一切就绪！';
@@ -580,4 +619,48 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get filterPriorityAny => '任意';
+
+  @override
+  String get detailSectionTags => '标签';
+
+  @override
+  String get detailAddTag => '添加标签';
+
+  @override
+  String get detailMoreMenu => '更多';
+
+  @override
+  String get detailMenuDates => '日期';
+
+  @override
+  String get detailMenuRecurrence => '重复';
+
+  @override
+  String get detailMenuReminders => '提醒';
+
+  @override
+  String get detailMenuInfo => '信息';
+
+  @override
+  String get detailMenuDelete => '删除任务';
+
+  @override
+  String get notesEdit => '编辑';
+
+  @override
+  String get notesPreview => '预览';
+
+  @override
+  String get notesPlaceholder => '用 Markdown 书写笔记…';
+
+  @override
+  String get autoCompleteOnSubtasksLabel => '子任务全部完成时自动完成任务';
+
+  @override
+  String subtaskProgress(int done, int total) {
+    return '已完成 $done/$total';
+  }
+
+  @override
+  String get detailDatesDialogTitle => '日期';
 }

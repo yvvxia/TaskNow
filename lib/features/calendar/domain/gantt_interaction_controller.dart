@@ -46,6 +46,18 @@ class GanttInteractionController extends _$GanttInteractionController {
         .call(task.copyWith(startDate: newStart, dueDate: newDue));
   }
 
+  /// Assigns an absolute [start]/[end] to a task (used when dropping an
+  /// unscheduled task onto the timeline). Reminders are re-synced by the update
+  /// use case. Invalid ranges (`start > end`) are dropped.
+  Future<void> scheduleAt(String taskId, DateTime start, DateTime end) async {
+    if (start.isAfter(end)) return;
+    final task = await _find(taskId);
+    if (task == null) return;
+    await ref
+        .read(updateTaskUseCaseProvider)
+        .call(task.copyWith(startDate: start, dueDate: end));
+  }
+
   Future<void> _resize(String taskId, DragEdge edge, DateTime newDate) async {
     final task = await _find(taskId);
     if (task == null) return;

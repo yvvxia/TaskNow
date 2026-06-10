@@ -56,4 +56,10 @@ abstract final class SettingKeys {
 
   /// Desktop sidebar collapsed to icon-only rail.
   static const sidebarCollapsed = SettingKey<bool>('sidebarCollapsed', false);
+
+  /// Whether completed tasks are shown in the calendar views.
+  static const calendarShowCompleted = SettingKey<bool>(
+    'calendarShowCompleted',
+    true,
+  );
 }

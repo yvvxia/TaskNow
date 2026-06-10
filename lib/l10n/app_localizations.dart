@@ -638,6 +638,12 @@ abstract class AppLocalizations {
   /// **'This will permanently remove the task.'**
   String get deleteTaskGenericMessage;
 
+  /// Label of the delete-task button on the task detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Delete task'**
+  String get detailDeleteTask;
+
   /// Error when task title is empty
   ///
   /// In en, this message translates to:
@@ -692,6 +698,12 @@ abstract class AppLocalizations {
   /// **'Project'**
   String get projectLabel;
 
+  /// Title of the project picker sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Select project'**
+  String get projectSelectTitle;
+
   /// Context-menu action to create a task on the selected day
   ///
   /// In en, this message translates to:
@@ -703,6 +715,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open day'**
   String get calendarOpenDay;
+
+  /// Title of the calendar display settings menu/sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Display settings'**
+  String get calendarDisplaySettings;
+
+  /// Toggle to show or hide completed tasks in the calendar
+  ///
+  /// In en, this message translates to:
+  /// **'Show completed'**
+  String get calendarShowCompleted;
+
+  /// Section label for the bar color mode setting
+  ///
+  /// In en, this message translates to:
+  /// **'Task colors'**
+  String get calendarColorMode;
+
+  /// Color tasks by priority
+  ///
+  /// In en, this message translates to:
+  /// **'By priority'**
+  String get calendarColorByPriority;
+
+  /// Color tasks by their list/project
+  ///
+  /// In en, this message translates to:
+  /// **'By list'**
+  String get calendarColorByProject;
+
+  /// Section label for filtering calendar tasks by project/list
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by list'**
+  String get calendarFilterByList;
+
+  /// Section label for filtering calendar tasks by tag
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by tag'**
+  String get calendarFilterByTag;
+
+  /// Action to clear all calendar list/tag filters
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get calendarClearFilters;
+
+  /// Title of the quick-arrange panel listing unscheduled tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Quick arrange'**
+  String get calendarQuickArrange;
+
+  /// Hint shown in the quick-arrange panel
+  ///
+  /// In en, this message translates to:
+  /// **'Drag a task onto the timeline to schedule it'**
+  String get calendarQuickArrangeHint;
+
+  /// Empty state in the quick-arrange panel
+  ///
+  /// In en, this message translates to:
+  /// **'No unscheduled tasks'**
+  String get calendarQuickArrangeEmpty;
 
   /// Dashboard empty state when there are no relevant tasks
   ///
@@ -1159,6 +1237,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Any'**
   String get filterPriorityAny;
+
+  /// Task detail section: tags
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get detailSectionTags;
+
+  /// Button to add a tag to a task
+  ///
+  /// In en, this message translates to:
+  /// **'Add tag'**
+  String get detailAddTag;
+
+  /// Overflow menu tooltip on task detail
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get detailMoreMenu;
+
+  /// Task detail toolbar: dates button
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get detailMenuDates;
+
+  /// Task detail overflow: recurrence
+  ///
+  /// In en, this message translates to:
+  /// **'Recurrence'**
+  String get detailMenuRecurrence;
+
+  /// Task detail overflow: reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get detailMenuReminders;
+
+  /// Task detail overflow: metadata
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get detailMenuInfo;
+
+  /// Task detail overflow: delete
+  ///
+  /// In en, this message translates to:
+  /// **'Delete task'**
+  String get detailMenuDelete;
+
+  /// Switch notes area to edit mode
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get notesEdit;
+
+  /// Switch notes area to preview mode
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get notesPreview;
+
+  /// Hint for the notes markdown editor
+  ///
+  /// In en, this message translates to:
+  /// **'Write your notes in Markdown…'**
+  String get notesPlaceholder;
+
+  /// Toggle: complete parent when all subtasks done
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-complete when all subtasks are done'**
+  String get autoCompleteOnSubtasksLabel;
+
+  /// Subtask completion progress
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String subtaskProgress(int done, int total);
+
+  /// Title of the dates picker dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get detailDatesDialogTitle;
 }
 
 class _AppLocalizationsDelegate

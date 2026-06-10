@@ -312,6 +312,9 @@
   "deleteTaskGenericMessage": "This will permanently remove the task.",
   "@deleteTaskGenericMessage": {"description": "Body of the delete-task confirmation dialog when the title is unavailable"},
 
+  "detailDeleteTask": "Delete task",
+  "@detailDeleteTask": {"description": "Label of the delete-task button on the task detail screen"},
+
   "errorEmptyTitle": "Title cannot be empty",
   "@errorEmptyTitle": {"description": "Error when task title is empty"},
 
@@ -339,11 +342,47 @@
   "projectLabel": "Project",
   "@projectLabel": {"description": "Label for the project picker"},
 
+  "projectSelectTitle": "Select project",
+  "@projectSelectTitle": {"description": "Title of the project picker sheet"},
+
   "calendarCreateTaskHere": "Create task",
   "@calendarCreateTaskHere": {"description": "Context-menu action to create a task on the selected day"},
 
   "calendarOpenDay": "Open day",
   "@calendarOpenDay": {"description": "Context-menu action to open the day view"},
+
+  "calendarDisplaySettings": "Display settings",
+  "@calendarDisplaySettings": {"description": "Title of the calendar display settings menu/sheet"},
+
+  "calendarShowCompleted": "Show completed",
+  "@calendarShowCompleted": {"description": "Toggle to show or hide completed tasks in the calendar"},
+
+  "calendarColorMode": "Task colors",
+  "@calendarColorMode": {"description": "Section label for the bar color mode setting"},
+
+  "calendarColorByPriority": "By priority",
+  "@calendarColorByPriority": {"description": "Color tasks by priority"},
+
+  "calendarColorByProject": "By list",
+  "@calendarColorByProject": {"description": "Color tasks by their list/project"},
+
+  "calendarFilterByList": "Filter by list",
+  "@calendarFilterByList": {"description": "Section label for filtering calendar tasks by project/list"},
+
+  "calendarFilterByTag": "Filter by tag",
+  "@calendarFilterByTag": {"description": "Section label for filtering calendar tasks by tag"},
+
+  "calendarClearFilters": "Clear filters",
+  "@calendarClearFilters": {"description": "Action to clear all calendar list/tag filters"},
+
+  "calendarQuickArrange": "Quick arrange",
+  "@calendarQuickArrange": {"description": "Title of the quick-arrange panel listing unscheduled tasks"},
+
+  "calendarQuickArrangeHint": "Drag a task onto the timeline to schedule it",
+  "@calendarQuickArrangeHint": {"description": "Hint shown in the quick-arrange panel"},
+
+  "calendarQuickArrangeEmpty": "No unscheduled tasks",
+  "@calendarQuickArrangeEmpty": {"description": "Empty state in the quick-arrange panel"},
 
   "dashboardEmpty": "Nothing due. You are all clear!",
   "@dashboardEmpty": {"description": "Dashboard empty state when there are no relevant tasks"},
@@ -604,5 +643,53 @@
   "@filterSectionProjects": {"description": "Search filter group: projects"},
 
   "filterPriorityAny": "Any",
-  "@filterPriorityAny": {"description": "Priority filter chip label when no priority is selected"}
+  "@filterPriorityAny": {"description": "Priority filter chip label when no priority is selected"},
+
+  "detailSectionTags": "Tags",
+  "@detailSectionTags": {"description": "Task detail section: tags"},
+
+  "detailAddTag": "Add tag",
+  "@detailAddTag": {"description": "Button to add a tag to a task"},
+
+  "detailMoreMenu": "More",
+  "@detailMoreMenu": {"description": "Overflow menu tooltip on task detail"},
+
+  "detailMenuDates": "Dates",
+  "@detailMenuDates": {"description": "Task detail toolbar: dates button"},
+
+  "detailMenuRecurrence": "Recurrence",
+  "@detailMenuRecurrence": {"description": "Task detail overflow: recurrence"},
+
+  "detailMenuReminders": "Reminders",
+  "@detailMenuReminders": {"description": "Task detail overflow: reminders"},
+
+  "detailMenuInfo": "Info",
+  "@detailMenuInfo": {"description": "Task detail overflow: metadata"},
+
+  "detailMenuDelete": "Delete task",
+  "@detailMenuDelete": {"description": "Task detail overflow: delete"},
+
+  "notesEdit": "Edit",
+  "@notesEdit": {"description": "Switch notes area to edit mode"},
+
+  "notesPreview": "Preview",
+  "@notesPreview": {"description": "Switch notes area to preview mode"},
+
+  "notesPlaceholder": "Write your notes in Markdown…",
+  "@notesPlaceholder": {"description": "Hint for the notes markdown editor"},
+
+  "autoCompleteOnSubtasksLabel": "Auto-complete when all subtasks are done",
+  "@autoCompleteOnSubtasksLabel": {"description": "Toggle: complete parent when all subtasks done"},
+
+  "subtaskProgress": "{done} of {total} done",
+  "@subtaskProgress": {
+    "description": "Subtask completion progress",
+    "placeholders": {
+      "done": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+
+  "detailDatesDialogTitle": "Dates",
+  "@detailDatesDialogTitle": {"description": "Title of the dates picker dialog"}
 }

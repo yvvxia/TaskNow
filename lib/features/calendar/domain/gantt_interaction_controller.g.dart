@@ -52,7 +52,7 @@ final class GanttInteractionControllerProvider
 }
 
 String _$ganttInteractionControllerHash() =>
-    r'b6b564e4f202b4a9794deaf7b56893b59deb3fe2';
+    r'a0709f6128d07fa45519733ff0081bb3376b5c7f';
 
 /// Applies [GanttDragIntent]s against the task repository via the module-02
 /// create/update use cases. Invalid intents (`start > due`) are dropped so the
